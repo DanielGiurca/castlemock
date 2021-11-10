@@ -16,8 +16,6 @@
 
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestResource;
 import com.castlemock.model.mock.rest.domain.RestResourceTestBuilder;
 import com.castlemock.repository.rest.project.RestResourceRepository;
@@ -63,11 +61,10 @@ public class CreateRestResourceServiceTest {
                 .name(resource.getName())
                 .uri(resource.getUri())
                 .build();
-        final ServiceTask<CreateRestResourceInput> serviceTask = new ServiceTask<CreateRestResourceInput>(input);
-        final ServiceResult<CreateRestResourceOutput> serviceResult = service.process(serviceTask);
+        CreateRestResourceOutput serviceResult = service.process(input);
 
-        Assert.assertNotNull(serviceResult.getOutput());
-        Assert.assertEquals(resource, serviceResult.getOutput().getCreatedRestResource());
+        Assert.assertNotNull(serviceResult);
+        Assert.assertEquals(resource, serviceResult.getCreatedRestResource());
         Mockito.verify(resourceRepository, Mockito.times(1)).save(any());
     }
 

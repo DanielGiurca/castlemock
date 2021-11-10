@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapResource;
 import com.castlemock.service.mock.soap.project.input.ReadSoapResourceInput;
 import com.castlemock.service.mock.soap.project.output.ReadSoapResourceOutput;
@@ -28,22 +25,12 @@ import com.castlemock.service.mock.soap.project.output.ReadSoapResourceOutput;
  * @since 1.16
  */
 @org.springframework.stereotype.Service
-public class ReadSoapResourceService extends AbstractSoapProjectService implements Service<ReadSoapResourceInput, ReadSoapResourceOutput> {
+public class ReadSoapResourceService extends AbstractSoapProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<ReadSoapResourceOutput> process(final ServiceTask<ReadSoapResourceInput> serviceTask) {
-        final ReadSoapResourceInput input = serviceTask.getInput();
+    public ReadSoapResourceOutput process(ReadSoapResourceInput input) {
         final SoapResource soapResource = this.resourceRepository.findOne(input.getResourceId());
-        return createServiceResult(ReadSoapResourceOutput.builder()
+        return ReadSoapResourceOutput.builder()
                 .resource(soapResource)
-                .build());
+                .build();
     }
 }

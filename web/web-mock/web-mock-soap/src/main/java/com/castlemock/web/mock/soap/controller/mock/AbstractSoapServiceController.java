@@ -16,7 +16,6 @@
 
 package com.castlemock.web.mock.soap.controller.mock;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.http.ContentEncoding;
 import com.castlemock.model.core.http.HttpHeader;
 import com.castlemock.model.core.http.HttpMethod;
@@ -24,26 +23,11 @@ import com.castlemock.model.core.utility.XPathUtility;
 import com.castlemock.model.core.utility.parser.ExternalInputBuilder;
 import com.castlemock.model.core.utility.parser.TextParser;
 import com.castlemock.model.core.utility.parser.expression.argument.ExpressionArgument;
-import com.castlemock.model.mock.soap.domain.SoapEvent;
-import com.castlemock.model.mock.soap.domain.SoapMockResponse;
-import com.castlemock.model.mock.soap.domain.SoapMockResponseStatus;
-import com.castlemock.model.mock.soap.domain.SoapOperation;
-import com.castlemock.model.mock.soap.domain.SoapOperationIdentifier;
-import com.castlemock.model.mock.soap.domain.SoapOperationStatus;
-import com.castlemock.model.mock.soap.domain.SoapProject;
-import com.castlemock.model.mock.soap.domain.SoapRequest;
-import com.castlemock.model.mock.soap.domain.SoapResourceType;
-import com.castlemock.model.mock.soap.domain.SoapResponse;
-import com.castlemock.model.mock.soap.domain.SoapResponseStrategy;
-import com.castlemock.model.mock.soap.domain.SoapVersion;
-import com.castlemock.model.mock.soap.domain.SoapXPathExpression;
+import com.castlemock.model.mock.soap.domain.*;
+import com.castlemock.service.mock.soap.event.CreateSoapEventService;
 import com.castlemock.service.mock.soap.event.input.CreateSoapEventInput;
-import com.castlemock.service.mock.soap.project.input.CreateSoapMockResponseInput;
-import com.castlemock.service.mock.soap.project.input.IdentifySoapOperationInput;
-import com.castlemock.service.mock.soap.project.input.LoadSoapResourceInput;
-import com.castlemock.service.mock.soap.project.input.ReadSoapProjectInput;
-import com.castlemock.service.mock.soap.project.input.UpdateCurrentMockResponseSequenceIndexInput;
-import com.castlemock.service.mock.soap.project.input.UpdateSoapOperationsStatusInput;
+import com.castlemock.service.mock.soap.project.*;
+import com.castlemock.service.mock.soap.project.input.*;
 import com.castlemock.service.mock.soap.project.output.IdentifySoapOperationOutput;
 import com.castlemock.service.mock.soap.project.output.LoadSoapResourceOutput;
 import com.castlemock.service.mock.soap.project.output.ReadSoapProjectOutput;
@@ -58,6 +42,7 @@ import com.castlemock.web.mock.soap.utility.config.AddressLocationConfigurer;
 import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,15 +56,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 /**
  * The AbstractSoapServiceController provides functionality that are shared for all the SOAP controllers
@@ -102,11 +79,23 @@ public abstract class AbstractSoapServiceController extends AbstractController{
     private static final SoapMockResponseNameComparator MOCK_RESPONSE_NAME_COMPARATOR =
             new SoapMockResponseNameComparator();
 
-    private final ServletContext servletContext;
+    private ServletContext servletContext;
+    @Autowired
+    private IdentifySoapOperationService identifySoapOperationService;
+    @Autowired
+    private LoadSoapResourceService loadSoapResourceService;
+    @Autowired
+    private ReadSoapProjectService readSoapProjectService;
+    @Autowired
+    private CreateSoapEventService createSoapEventService;
+    @Autowired
+    private UpdateCurrentMockResponseSequenceIndexService updateCurrentMockResponseSequenceIndexService;
+    @Autowired
+    private CreateSoapMockResponseService createSoapMockResponseService;
+    @Autowired
+    private UpdateSoapOperationsStatusService updateSoapOperationsStatusService;
 
-    protected AbstractSoapServiceController(final ServiceProcessor serviceProcessor,
-                                            final ServletContext servletContext){
-        super(serviceProcessor);
+    protected AbstractSoapServiceController(final ServletContext servletContext){
         this.servletContext = Objects.requireNonNull(servletContext);
     }
 
@@ -127,7 +116,7 @@ public abstract class AbstractSoapServiceController extends AbstractController{
             Preconditions.checkNotNull(projectId, "THe project id cannot be null");
             Preconditions.checkNotNull(httpServletRequest, "The HTTP Servlet Request cannot be null");
             final SoapRequest request = prepareRequest(projectId, httpServletRequest);
-            final IdentifySoapOperationOutput output = serviceProcessor.process(IdentifySoapOperationInput.builder()
+            final IdentifySoapOperationOutput output = identifySoapOperationService.process(IdentifySoapOperationInput.builder()
                     .projectId(projectId)
                     .operationIdentifier(request.getOperationIdentifier())
                     .uri(request.getUri())
@@ -170,7 +159,7 @@ public abstract class AbstractSoapServiceController extends AbstractController{
     }
 
     private String getWsdl(final String projectId){
-        final ReadSoapProjectOutput projectOutput = this.serviceProcessor.process(ReadSoapProjectInput.builder()
+        final ReadSoapProjectOutput projectOutput = this.readSoapProjectService.process(ReadSoapProjectInput.builder()
                 .projectId(projectId)
                 .build());
         final SoapProject soapProject = projectOutput.getProject();
@@ -180,7 +169,7 @@ public abstract class AbstractSoapServiceController extends AbstractController{
                 .findFirst()
                 .map(soapResource -> {
                     final LoadSoapResourceOutput loadOutput =
-                            this.serviceProcessor.process(LoadSoapResourceInput.builder()
+                            this.loadSoapResourceService.process(LoadSoapResourceInput.builder()
                                     .projectId(projectId)
                                     .resourceId(soapResource.getId())
                                     .build());
@@ -296,7 +285,7 @@ public abstract class AbstractSoapServiceController extends AbstractController{
         } finally{
             if(event != null){
                 event.finish(response);
-                serviceProcessor.processAsync(CreateSoapEventInput.builder()
+                createSoapEventService.process(CreateSoapEventInput.builder()
                         .soapEvent(event)
                         .build());
             }
@@ -361,7 +350,7 @@ public abstract class AbstractSoapServiceController extends AbstractController{
                 currentSequenceNumber = 0;
             }
             mockResponse = mockResponses.get(currentSequenceNumber);
-            serviceProcessor.process(  UpdateCurrentMockResponseSequenceIndexInput.builder()
+            updateCurrentMockResponseSequenceIndexService.process(  UpdateCurrentMockResponseSequenceIndexInput.builder()
                     .projectId(soapProjectId)
                     .portId(soapPortId)
                     .operationId(soapOperation.getId())
@@ -474,7 +463,7 @@ public abstract class AbstractSoapServiceController extends AbstractController{
             if(SoapOperationStatus.RECORDING.equals(soapOperation.getStatus()) ||
                     SoapOperationStatus.RECORD_ONCE.equals(soapOperation.getStatus())){
 
-                serviceProcessor.processAsync(CreateSoapMockResponseInput.builder()
+                createSoapMockResponseService.process(CreateSoapMockResponseInput.builder()
                         .projectId(soapProjectId)
                         .portId(soapPortId)
                         .operationId(soapOperation.getId())
@@ -490,7 +479,7 @@ public abstract class AbstractSoapServiceController extends AbstractController{
                 if(SoapOperationStatus.RECORD_ONCE.equals(soapOperation.getStatus())){
                     // Change the operation status to mocked if the
                     // operation has been configured to only record once.
-                    serviceProcessor.process(UpdateSoapOperationsStatusInput.builder()
+                    updateSoapOperationsStatusService.process(UpdateSoapOperationsStatusInput.builder()
                             .projectId(soapProjectId)
                             .portId(soapPortId)
                             .operationId(soapOperation.getId())

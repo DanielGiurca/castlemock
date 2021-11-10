@@ -16,8 +16,8 @@
 
 package com.castlemock.web.mock.soap.config;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.service.core.manager.UrlManager;
+import com.castlemock.service.mock.soap.project.ImportSoapProjectService;
 import com.castlemock.service.mock.soap.project.input.ImportSoapProjectInput;
 import com.google.common.base.Strings;
 import org.slf4j.Logger;
@@ -37,7 +37,7 @@ public class SoapDemoModeInitializer {
     @Autowired
     protected UrlManager urlManager;
     @Autowired
-    private ServiceProcessor serviceProcessor;
+    private ImportSoapProjectService importSoapProjectService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SoapDemoModeInitializer.class);
 
@@ -48,7 +48,7 @@ public class SoapDemoModeInitializer {
             try {
                 final Optional<String> project = this.urlManager.readFromUrl(projectUrl);
 
-                project.ifPresent(raw -> serviceProcessor.process(ImportSoapProjectInput.builder()
+                project.ifPresent(raw -> importSoapProjectService.process(ImportSoapProjectInput.builder()
                         .projectRaw(raw)
                         .build()));
             } catch (Exception e){

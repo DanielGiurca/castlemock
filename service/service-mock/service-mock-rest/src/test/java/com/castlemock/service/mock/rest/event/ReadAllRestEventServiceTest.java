@@ -16,8 +16,6 @@
 
 package com.castlemock.service.mock.rest.event;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestEvent;
 import com.castlemock.model.mock.rest.domain.RestEventTestBuilder;
 import com.castlemock.repository.rest.event.RestEventRepository;
@@ -62,9 +60,7 @@ public class ReadAllRestEventServiceTest {
         Mockito.when(repository.findAll()).thenReturn(restEvents);
 
         final ReadAllRestEventInput input = ReadAllRestEventInput.builder().build();
-        final ServiceTask<ReadAllRestEventInput> serviceTask = new ServiceTask<ReadAllRestEventInput>(input);
-        final ServiceResult<ReadAllRestEventOutput> serviceResult = service.process(serviceTask);
-        final ReadAllRestEventOutput output = serviceResult.getOutput();
+        ReadAllRestEventOutput output = service.process(input);
 
         Assert.assertEquals(restEvents.size(), output.getRestEvents().size());
 

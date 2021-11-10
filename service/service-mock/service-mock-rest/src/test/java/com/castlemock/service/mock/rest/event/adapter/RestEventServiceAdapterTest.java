@@ -16,12 +16,14 @@
 
 package com.castlemock.service.mock.rest.event.adapter;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.TypeIdentifier;
 import com.castlemock.model.core.event.Event;
 import com.castlemock.model.mock.rest.domain.RestEvent;
 import com.castlemock.model.mock.rest.domain.RestEventTestBuilder;
 import com.castlemock.service.mock.rest.RestTypeIdentifier;
+import com.castlemock.service.mock.rest.event.ClearAllRestEventService;
+import com.castlemock.service.mock.rest.event.ReadAllRestEventService;
+import com.castlemock.service.mock.rest.event.ReadRestEventService;
 import com.castlemock.service.mock.rest.event.input.ClearAllRestEventInput;
 import com.castlemock.service.mock.rest.event.input.ReadAllRestEventInput;
 import com.castlemock.service.mock.rest.event.input.ReadRestEventInput;
@@ -45,7 +47,11 @@ import java.util.List;
 public class RestEventServiceAdapterTest {
 
     @Mock
-    private ServiceProcessor serviceProcessor;
+    private ReadAllRestEventService readAllRestEventService;
+    @Mock
+    private ReadRestEventService readRestEventService;
+    @Mock
+    private ClearAllRestEventService clearAllRestEventService;
 
     @InjectMocks
     private RestEventServiceAdapter serviceAdapter;
@@ -83,7 +89,7 @@ public class RestEventServiceAdapterTest {
         }
 
         final ReadAllRestEventOutput output = ReadAllRestEventOutput.builder().restEvents(restEvents).build();
-        Mockito.when(serviceProcessor.process(Mockito.any(ReadAllRestEventInput.class))).thenReturn(output);
+        Mockito.when(readAllRestEventService.process(Mockito.any(ReadAllRestEventInput.class))).thenReturn(output);
 
         final List<RestEvent> returnedRestEvents = serviceAdapter.readAll();
 
@@ -103,7 +109,7 @@ public class RestEventServiceAdapterTest {
     public void testRead(){
         final RestEvent restEvent = RestEventTestBuilder.builder().build();
         final ReadRestEventOutput output = ReadRestEventOutput.builder().restEvent(restEvent).build();
-        Mockito.when(serviceProcessor.process(Mockito.any(ReadRestEventInput.class))).thenReturn(output);
+        Mockito.when(readRestEventService.process(Mockito.any(ReadRestEventInput.class))).thenReturn(output);
 
         final RestEvent returnedRestEvent = serviceAdapter.read(restEvent.getId());
 
@@ -144,6 +150,6 @@ public class RestEventServiceAdapterTest {
     @Test
     public void testClearAll(){
         serviceAdapter.clearAll();
-        Mockito.verify(serviceProcessor, Mockito.times(1)).process(Mockito.any(ClearAllRestEventInput.class));
+        Mockito.verify(clearAllRestEventService, Mockito.times(1)).process(Mockito.any(ClearAllRestEventInput.class));
     }
 }

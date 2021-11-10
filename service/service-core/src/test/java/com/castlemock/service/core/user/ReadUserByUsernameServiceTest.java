@@ -16,8 +16,6 @@
 
 package com.castlemock.service.core.user;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.core.user.Role;
 import com.castlemock.model.core.user.Status;
 import com.castlemock.model.core.user.User;
@@ -68,10 +66,7 @@ public class ReadUserByUsernameServiceTest {
         final ReadUserByUsernameInput input = ReadUserByUsernameInput.builder()
                 .username("Username")
                 .build();
-        final ServiceTask<ReadUserByUsernameInput> serviceTask = new ServiceTask<ReadUserByUsernameInput>();
-        serviceTask.setInput(input);
-        final ServiceResult<ReadUserByUsernameOutput> serviceResult = service.process(serviceTask);
-        final ReadUserByUsernameOutput output = serviceResult.getOutput();
+        final ReadUserByUsernameOutput output = service.process(input);
 
         final User returnedUser = output.getUser();
         Assert.assertNotNull(returnedUser);

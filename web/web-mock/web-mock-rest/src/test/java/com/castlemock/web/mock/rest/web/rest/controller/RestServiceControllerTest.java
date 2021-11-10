@@ -16,20 +16,14 @@
 
 package com.castlemock.web.mock.rest.web.rest.controller;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.http.HttpHeader;
 import com.castlemock.model.core.http.HttpMethod;
-import com.castlemock.model.mock.rest.domain.RestJsonPathExpression;
-import com.castlemock.model.mock.rest.domain.RestMethod;
-import com.castlemock.model.mock.rest.domain.RestMethodStatus;
-import com.castlemock.model.mock.rest.domain.RestMethodTestBuilder;
-import com.castlemock.model.mock.rest.domain.RestMockResponse;
-import com.castlemock.model.mock.rest.domain.RestMockResponseStatus;
-import com.castlemock.model.mock.rest.domain.RestMockResponseTestBuilder;
-import com.castlemock.model.mock.rest.domain.RestParameterQuery;
-import com.castlemock.model.mock.rest.domain.RestParameterQueryTestBuilder;
-import com.castlemock.model.mock.rest.domain.RestResponseStrategy;
-import com.castlemock.model.mock.rest.domain.RestXPathExpression;
+import com.castlemock.model.mock.rest.domain.*;
+import com.castlemock.service.mock.rest.event.CreateRestEventService;
+import com.castlemock.service.mock.rest.project.CreateRestMockResponseService;
+import com.castlemock.service.mock.rest.project.IdentifyRestMethodService;
+import com.castlemock.service.mock.rest.project.UpdateCurrentRestMockResponseSequenceIndexService;
+import com.castlemock.service.mock.rest.project.UpdateRestMethodsStatusService;
 import com.castlemock.service.mock.rest.project.input.IdentifyRestMethodInput;
 import com.castlemock.service.mock.rest.project.output.IdentifyRestMethodOutput;
 import com.castlemock.web.core.controller.AbstractController;
@@ -52,12 +46,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -71,7 +60,15 @@ public class RestServiceControllerTest extends AbstractControllerTest {
     @InjectMocks
     private RestServiceController restServiceController;
     @Mock
-    private ServiceProcessor serviceProcessor;
+    private IdentifyRestMethodService identifyRestMethodService;
+    @Mock
+    private CreateRestEventService createRestEventService;
+    @Mock
+    private CreateRestMockResponseService createRestMockResponseService;
+    @Mock
+    private UpdateRestMethodsStatusService updateRestMethodsStatusService;
+    @Mock
+    private UpdateCurrentRestMockResponseSequenceIndexService updateCurrentRestMockResponseSequenceIndexService;
 
     private static final String PROJECT_ID = "ProjectId";
     private static final String APPLICATION_ID = "ApplicationId";
@@ -124,7 +121,7 @@ public class RestServiceControllerTest extends AbstractControllerTest {
                 .build();
 
 
-        when(serviceProcessor.process(any(IdentifyRestMethodInput.class))).thenReturn(identifyRestMethodOutput);
+        when(identifyRestMethodService.process(any(IdentifyRestMethodInput.class))).thenReturn(identifyRestMethodOutput);
         when(httpServletRequest.getRequestURI()).thenReturn(CONTEXT + SLASH + MOCK + SLASH + REST + SLASH + PROJECT +
                 SLASH + PROJECT_ID + SLASH + APPLICATION + SLASH + APPLICATION_ID + "/method/test");
 
@@ -157,7 +154,7 @@ public class RestServiceControllerTest extends AbstractControllerTest {
                 .pathParameters(PATH_PARAMETERS)
                 .build();
 
-        when(serviceProcessor.process(any(IdentifyRestMethodInput.class))).thenReturn(identifyRestMethodOutput);
+        when(identifyRestMethodService.process(any(IdentifyRestMethodInput.class))).thenReturn(identifyRestMethodOutput);
 
         final ResponseEntity<?> responseEntity = restServiceController.getMethod(PROJECT_ID, APPLICATION_ID, httpServletRequest, httpServletResponse);
         Assert.assertEquals(XML_RESPONSE_BODY, responseEntity.getBody());
@@ -187,7 +184,7 @@ public class RestServiceControllerTest extends AbstractControllerTest {
                 .pathParameters(PATH_PARAMETERS)
                 .build();
 
-        when(serviceProcessor.process(any(IdentifyRestMethodInput.class))).thenReturn(identifyRestMethodOutput);
+        when(identifyRestMethodService.process(any(IdentifyRestMethodInput.class))).thenReturn(identifyRestMethodOutput);
 
         final ResponseEntity<?> responseEntity = restServiceController.getMethod(PROJECT_ID, APPLICATION_ID, httpServletRequest, httpServletResponse);
         Assert.assertEquals(XML_RESPONSE_BODY, responseEntity.getBody());
@@ -217,7 +214,7 @@ public class RestServiceControllerTest extends AbstractControllerTest {
                 .pathParameters(NO_MATCHING_PATH_PARAMETERS)
                 .build();
 
-        when(serviceProcessor.process(any(IdentifyRestMethodInput.class))).thenReturn(identifyRestMethodOutput);
+        when(identifyRestMethodService.process(any(IdentifyRestMethodInput.class))).thenReturn(identifyRestMethodOutput);
 
         final ResponseEntity<?> responseEntity = restServiceController.getMethod(PROJECT_ID, APPLICATION_ID, httpServletRequest, httpServletResponse);
         Assert.assertEquals(QUERY_DEFAULT_RESPONSE_BODY, responseEntity.getBody());
@@ -248,12 +245,12 @@ public class RestServiceControllerTest extends AbstractControllerTest {
                 .pathParameters(PATH_PARAMETERS)
                 .build();
 
-        when(serviceProcessor.process(any(IdentifyRestMethodInput.class))).thenReturn(identifyRestMethodOutput);
+        when(identifyRestMethodService.process(any(IdentifyRestMethodInput.class))).thenReturn(identifyRestMethodOutput);
         when(httpServletRequest.getRequestURI()).thenReturn(CONTEXT + SLASH + MOCK + SLASH + REST + SLASH + PROJECT +
                 SLASH + PROJECT_ID + SLASH + APPLICATION + SLASH + APPLICATION_ID + "/method/test");
 
         final ResponseEntity<?> responseEntity = restServiceController.getMethod(PROJECT_ID, APPLICATION_ID, httpServletRequest, httpServletResponse);
-        Assert.assertEquals(XML_REQUEST_BODY, responseEntity.getBody());
+        Assert.assertEquals(XML_REQUEST_BODY.replace("\n", "").replace("\r", ""), responseEntity.getBody().toString().replace("\n", "").replace("\r", ""));
         Assert.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         Assert.assertTrue(responseEntity.getHeaders().containsKey(CONTENT_TYPE_HEADER));
         Assert.assertEquals(APPLICATION_JSON, responseEntity.getHeaders().get(CONTENT_TYPE_HEADER).get(0));
@@ -282,7 +279,7 @@ public class RestServiceControllerTest extends AbstractControllerTest {
                 .pathParameters(PATH_PARAMETERS)
                 .build();
 
-        when(serviceProcessor.process(any(IdentifyRestMethodInput.class))).thenReturn(identifyRestMethodOutput);
+        when(identifyRestMethodService.process(any(IdentifyRestMethodInput.class))).thenReturn(identifyRestMethodOutput);
         when(httpServletRequest.getRequestURI()).thenReturn(CONTEXT + SLASH + MOCK + SLASH + REST + SLASH + PROJECT +
                 SLASH + PROJECT_ID + SLASH + APPLICATION + SLASH + APPLICATION_ID + "/method/test");
 
@@ -318,7 +315,7 @@ public class RestServiceControllerTest extends AbstractControllerTest {
                 .pathParameters(PATH_PARAMETERS)
                 .build();
 
-        when(serviceProcessor.process(any(IdentifyRestMethodInput.class))).thenReturn(identifyRestMethodOutput);
+        when(identifyRestMethodService.process(any(IdentifyRestMethodInput.class))).thenReturn(identifyRestMethodOutput);
         when(httpServletRequest.getRequestURI()).thenReturn(CONTEXT + SLASH + MOCK + SLASH + REST + SLASH + PROJECT +
                 SLASH + PROJECT_ID + SLASH + APPLICATION + SLASH + APPLICATION_ID + "/method/test");
 

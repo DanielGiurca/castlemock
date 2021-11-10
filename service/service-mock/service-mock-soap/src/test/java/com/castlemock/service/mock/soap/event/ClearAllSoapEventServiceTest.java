@@ -16,19 +16,12 @@
 
 package com.castlemock.service.mock.soap.event;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.repository.soap.event.SoapEventRepository;
-import com.castlemock.service.mock.soap.event.input.ClearAllSoapEventInput;
 import com.castlemock.service.mock.soap.event.output.ClearAllSoapEventOutput;
 import org.dozer.DozerBeanMapper;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
+import org.mockito.*;
 
 /**
  * @author Karl Dahlgren
@@ -52,10 +45,7 @@ public class ClearAllSoapEventServiceTest {
 
     @Test
     public void testProcess(){
-        final ClearAllSoapEventInput input = ClearAllSoapEventInput.builder().build();
-        final ServiceTask<ClearAllSoapEventInput> serviceTask = new ServiceTask<ClearAllSoapEventInput>(input);
-        final ServiceResult<ClearAllSoapEventOutput> serviceResult = service.process(serviceTask);
-        final ClearAllSoapEventOutput output = serviceResult.getOutput();
+        final ClearAllSoapEventOutput output  = service.process();
 
         Mockito.verify(repository, Mockito.times(1)).clearAll();
     }

@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestApplication;
 import com.castlemock.model.mock.rest.domain.RestMethod;
 import com.castlemock.model.mock.rest.domain.RestMockResponse;
@@ -39,23 +36,13 @@ import java.util.List;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class ImportRestDefinitionService extends AbstractRestProjectService implements Service<ImportRestDefinitionInput, ImportRestDefinitionOutput> {
+public class ImportRestDefinitionService extends AbstractRestProjectService {
 
     @Autowired
     private FileManager fileManager;
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
     @SuppressWarnings("deprecation")
-    public ServiceResult<ImportRestDefinitionOutput> process(final ServiceTask<ImportRestDefinitionInput> serviceTask) {
-        final ImportRestDefinitionInput input = serviceTask.getInput();
+    public ImportRestDefinitionOutput process(ImportRestDefinitionInput input) {
         final String projectId = input.getRestProjectId();
 
         final RestDefinitionConverter restDefinitionConverter =
@@ -113,7 +100,7 @@ public class ImportRestDefinitionService extends AbstractRestProjectService impl
         }
 
         // Set the last version of the REST application
-        return createServiceResult(ImportRestDefinitionOutput.builder().build());
+        return ImportRestDefinitionOutput.builder().build();
     }
 
 

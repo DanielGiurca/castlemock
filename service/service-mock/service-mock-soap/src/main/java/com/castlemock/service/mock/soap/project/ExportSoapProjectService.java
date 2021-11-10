@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.core.utility.serializer.ExportContainerSerializer;
 import com.castlemock.model.mock.soap.SoapExportContainer;
 import com.castlemock.model.mock.soap.domain.SoapMockResponse;
@@ -37,19 +34,9 @@ import java.util.List;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class ExportSoapProjectService extends AbstractSoapProjectService implements Service<ExportSoapProjectInput, ExportSoapProjectOutput> {
+public class ExportSoapProjectService extends AbstractSoapProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<ExportSoapProjectOutput> process(final ServiceTask<ExportSoapProjectInput> serviceTask) {
-        final ExportSoapProjectInput input = serviceTask.getInput();
+    public ExportSoapProjectOutput process(ExportSoapProjectInput input) {
         final SoapProject project = repository.findOne(input.getProjectId());
         final List<SoapPort> ports = this.portRepository.findWithProjectId(input.getProjectId());
         final List<SoapResource> resources = this.resourceRepository.findWithProjectId(input.getProjectId());
@@ -79,9 +66,9 @@ public class ExportSoapProjectService extends AbstractSoapProjectService impleme
         exportContainer.setMockResponses(mockResponses);
 
         final String serialized = ExportContainerSerializer.serialize(exportContainer);
-        return createServiceResult(ExportSoapProjectOutput.builder()
+        return ExportSoapProjectOutput.builder()
                 .project(serialized)
-                .build());
+                .build();
     }
 
 }

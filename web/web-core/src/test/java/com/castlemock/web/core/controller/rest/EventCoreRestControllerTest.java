@@ -16,7 +16,6 @@
 
 package com.castlemock.web.core.controller.rest;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.event.Event;
 import com.castlemock.model.core.event.EventTestBuilder;
 import com.castlemock.model.core.service.event.EventServiceFacade;
@@ -43,9 +42,8 @@ class EventCoreRestControllerTest {
 
     @BeforeEach
     void setup(){
-        final ServiceProcessor serviceProcessor = mock(ServiceProcessor.class);
         this.eventServiceFacade = mock(EventServiceFacade.class);
-        this.eventCoreRestController = new EventCoreRestController(serviceProcessor, eventServiceFacade);
+        this.eventCoreRestController = new EventCoreRestController( eventServiceFacade);
     }
 
     @Test

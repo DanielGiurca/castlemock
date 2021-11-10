@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapMockResponse;
 import com.castlemock.model.mock.soap.domain.SoapOperation;
 import com.castlemock.model.mock.soap.domain.SoapPort;
@@ -38,23 +35,12 @@ import java.util.Set;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class CreateSoapPortsService extends AbstractSoapProjectService implements Service<CreateSoapPortsInput, CreateSoapPortsOutput> {
+public class CreateSoapPortsService extends AbstractSoapProjectService {
 
     @Autowired
     private SoapPortConverter soapPortConverter;
 
-    /**
-     *
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<CreateSoapPortsOutput> process(final ServiceTask<CreateSoapPortsInput> serviceTask) {
-        final CreateSoapPortsInput input = serviceTask.getInput();
+    public CreateSoapPortsOutput process(CreateSoapPortsInput input) {
         final String soapProjectId = input.getProjectId();
 
         Set<SoapPortConverterResult> results = null;
@@ -125,7 +111,7 @@ public class CreateSoapPortsService extends AbstractSoapProjectService implement
             this.resourceRepository.saveSoapResource(soapResource, result.getDefinition());
         }
 
-        return createServiceResult(CreateSoapPortsOutput.builder().build());
+        return CreateSoapPortsOutput.builder().build();
     }
 
 }

@@ -16,8 +16,6 @@
 
 package com.castlemock.service.mock.soap.event;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapEvent;
 import com.castlemock.model.mock.soap.domain.SoapEventTestBuilder;
 import com.castlemock.repository.soap.event.SoapEventRepository;
@@ -27,11 +25,7 @@ import org.dozer.DozerBeanMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
+import org.mockito.*;
 import org.springframework.test.util.ReflectionTestUtils;
 
 /**
@@ -62,9 +56,7 @@ public class CreateSoapEventServiceTest {
         Mockito.when(repository.count()).thenReturn(0);
 
         final CreateSoapEventInput input = CreateSoapEventInput.builder().soapEvent(soapEvent).build();
-        final ServiceTask<CreateSoapEventInput> serviceTask = new ServiceTask<CreateSoapEventInput>(input);
-        final ServiceResult<CreateSoapEventOutput> serviceResult = service.process(serviceTask);
-        final CreateSoapEventOutput createRestApplicationOutput = serviceResult.getOutput();
+        CreateSoapEventOutput createRestApplicationOutput = service.process(input);
         final SoapEvent returnedSoapEvent = createRestApplicationOutput.getCreatedSoapEvent();
 
         Mockito.verify(repository, Mockito.times(0)).deleteOldestEvent();
@@ -82,9 +74,7 @@ public class CreateSoapEventServiceTest {
         Mockito.when(repository.count()).thenReturn(6);
 
         final CreateSoapEventInput input = CreateSoapEventInput.builder().soapEvent(soapEvent).build();
-        final ServiceTask<CreateSoapEventInput> serviceTask = new ServiceTask<CreateSoapEventInput>(input);
-        final ServiceResult<CreateSoapEventOutput> serviceResult = service.process(serviceTask);
-        final CreateSoapEventOutput createRestApplicationOutput = serviceResult.getOutput();
+        final CreateSoapEventOutput createRestApplicationOutput = service.process(input);
         final SoapEvent returnedSoapEvent = createRestApplicationOutput.getCreatedSoapEvent();
 
         Mockito.verify(repository, Mockito.times(1)).deleteOldestEvent();

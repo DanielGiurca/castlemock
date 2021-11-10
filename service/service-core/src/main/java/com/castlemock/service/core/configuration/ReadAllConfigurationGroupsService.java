@@ -16,9 +16,6 @@
 
 package com.castlemock.service.core.configuration;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.core.configuration.ConfigurationGroup;
 import com.castlemock.service.core.configuration.input.ReadAllConfigurationGroupsInput;
 import com.castlemock.service.core.configuration.output.ReadAllConfigurationGroupsOutput;
@@ -30,20 +27,11 @@ import java.util.List;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class ReadAllConfigurationGroupsService extends AbstractConfigurationGroupService implements Service<ReadAllConfigurationGroupsInput, ReadAllConfigurationGroupsOutput> {
+public class ReadAllConfigurationGroupsService extends AbstractConfigurationGroupService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<ReadAllConfigurationGroupsOutput> process(final ServiceTask<ReadAllConfigurationGroupsInput> serviceTask) {
+    public ReadAllConfigurationGroupsOutput process(ReadAllConfigurationGroupsInput serviceTask) {
         final List<ConfigurationGroup> configurationGroups = findAll();
         final ReadAllConfigurationGroupsOutput output = new ReadAllConfigurationGroupsOutput(configurationGroups);
-        return createServiceResult(output);
+        return output;
     }
 }

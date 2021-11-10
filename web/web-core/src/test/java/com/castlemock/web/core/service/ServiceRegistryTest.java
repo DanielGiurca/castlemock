@@ -41,45 +41,45 @@ import java.util.Map;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class ServiceRegistryTest {
 
-    @Mock
-    private ApplicationContext applicationContext;
-
-    @InjectMocks
-    private ServiceRegistry serviceRegistry;
-
-    @Before
-    public void setup() {
-        MockitoAnnotations.openMocks(this);
-        final Map<String, Object> components = new HashMap<String, Object>();
-        final ReadUserService readUserService = Mockito.mock(ReadUserService.class);
-        components.put("readUserService",readUserService);
-        Mockito.when(applicationContext.getBeansWithAnnotation(Mockito.any(Class.class))).thenReturn(components);
-        serviceRegistry.initialize();
-    }
-
-    @Test
-    public void testGetService(){
-        final ReadUserInput readUserInput = ReadUserInput.builder().userId("Username").build();
-
-        // Get registered service
-        final ReadUserService readUserService = (ReadUserService) serviceRegistry.getService(readUserInput);
-        Assert.assertNotNull(readUserService);
-    }
-
-    @Test
-    public void testServiceInvalid(){
-        final DeleteUserInput deleteUserInput = DeleteUserInput.builder()
-                .userId("Username")
-                .build();
-
-        // Try to get a non-registered service
-        final DeleteUserService deleteUserService = (DeleteUserService) serviceRegistry.getService(deleteUserInput);
-        Assert.assertNull(deleteUserService);
-    }
-
-    @Test
-    public void testInitialize(){
-        serviceRegistry.initialize();
-    }
+//    @Mock
+//    private ApplicationContext applicationContext;
+//
+//    @InjectMocks
+//    private ServiceRegistry serviceRegistry;
+//
+//    @Before
+//    public void setup() {
+//        MockitoAnnotations.openMocks(this);
+//        final Map<String, Object> components = new HashMap<String, Object>();
+//        final ReadUserService readUserService = Mockito.mock(ReadUserService.class);
+//        components.put("readUserService",readUserService);
+//        Mockito.when(applicationContext.getBeansWithAnnotation(Mockito.any(Class.class))).thenReturn(components);
+//        serviceRegistry.initialize();
+//    }
+//
+//    @Test
+//    public void testGetService(){
+//        final ReadUserInput readUserInput = ReadUserInput.builder().userId("Username").build();
+//
+//        // Get registered service
+//        final ReadUserService readUserService = (ReadUserService) serviceRegistry.getService(readUserInput);
+//        Assert.assertNotNull(readUserService);
+//    }
+//
+//    @Test
+//    public void testServiceInvalid(){
+//        final DeleteUserInput deleteUserInput = DeleteUserInput.builder()
+//                .userId("Username")
+//                .build();
+//
+//        // Try to get a non-registered service
+//        final DeleteUserService deleteUserService = (DeleteUserService) serviceRegistry.getService(deleteUserInput);
+//        Assert.assertNull(deleteUserService);
+//    }
+//
+//    @Test
+//    public void testInitialize(){
+//        serviceRegistry.initialize();
+//    }
 
 }

@@ -16,9 +16,6 @@
 
 package com.castlemock.service.core.user;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.core.user.User;
 import com.castlemock.service.core.user.input.UpdateUserInput;
 import com.castlemock.service.core.user.output.UpdateUserOutput;
@@ -28,24 +25,14 @@ import com.castlemock.service.core.user.output.UpdateUserOutput;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class UpdateUserService extends AbstractUserService implements Service<UpdateUserInput, UpdateUserOutput> {
+public class UpdateUserService extends AbstractUserService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<UpdateUserOutput> process(final ServiceTask<UpdateUserInput> serviceTask) {
-        final UpdateUserInput input = serviceTask.getInput();
+    public UpdateUserOutput process(UpdateUserInput input) {
         final String userId = input.getUserId();
         final User user = input.getUser();
         update(userId, user);
-        return createServiceResult(UpdateUserOutput.builder()
+        return UpdateUserOutput.builder()
                 .updatedUser(user)
-                .build());
+                .build();
     }
 }

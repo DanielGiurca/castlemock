@@ -16,8 +16,6 @@
 
 package com.castlemock.service.mock.rest.event;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestEvent;
 import com.castlemock.model.mock.rest.domain.RestEventTestBuilder;
 import com.castlemock.repository.rest.event.RestEventRepository;
@@ -27,11 +25,7 @@ import org.dozer.DozerBeanMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
+import org.mockito.*;
 import org.springframework.test.util.ReflectionTestUtils;
 
 /**
@@ -61,9 +55,7 @@ public class CreateRestEventServiceTest {
         Mockito.when(repository.save(Mockito.any(RestEvent.class))).thenReturn(RestEventTestBuilder.builder().build());
 
         final CreateRestEventInput input = CreateRestEventInput.builder().restEvent(restEvent).build();
-        final ServiceTask<CreateRestEventInput> serviceTask = new ServiceTask<CreateRestEventInput>(input);
-        final ServiceResult<CreateRestEventOutput> serviceResult = service.process(serviceTask);
-        final CreateRestEventOutput createRestApplicationOutput = serviceResult.getOutput();
+        CreateRestEventOutput createRestApplicationOutput = service.process(input);
         final RestEvent returnedRestEvent = createRestApplicationOutput.getCreatedRestEvent();
 
         Assert.assertEquals(restEvent.getApplicationId(), returnedRestEvent.getApplicationId());
@@ -80,9 +72,7 @@ public class CreateRestEventServiceTest {
         Mockito.when(repository.count()).thenReturn(6);
 
         final CreateRestEventInput input = CreateRestEventInput.builder().restEvent(restEvent).build();
-        final ServiceTask<CreateRestEventInput> serviceTask = new ServiceTask<CreateRestEventInput>(input);
-        final ServiceResult<CreateRestEventOutput> serviceResult = service.process(serviceTask);
-        final CreateRestEventOutput output = serviceResult.getOutput();
+        CreateRestEventOutput output = service.process(input);
         final RestEvent returnedSoapEvent = output.getCreatedRestEvent();
 
         Mockito.verify(repository, Mockito.times(1)).deleteOldestEvent();

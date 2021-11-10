@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapPort;
 import com.castlemock.service.mock.soap.project.input.DeleteSoapPortsInput;
 import com.castlemock.service.mock.soap.project.output.DeleteSoapPortsOutput;
@@ -28,22 +25,12 @@ import com.castlemock.service.mock.soap.project.output.DeleteSoapPortsOutput;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class DeleteSoapPortsService extends AbstractSoapProjectService implements Service<DeleteSoapPortsInput, DeleteSoapPortsOutput> {
+public class DeleteSoapPortsService extends AbstractSoapProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<DeleteSoapPortsOutput> process(final ServiceTask<DeleteSoapPortsInput> serviceTask) {
-        final DeleteSoapPortsInput input = serviceTask.getInput();
+    public DeleteSoapPortsOutput process(DeleteSoapPortsInput input) {
         input.getPorts().stream()
                 .map(SoapPort::getId)
                 .forEach(this::deletePort);
-        return createServiceResult(DeleteSoapPortsOutput.builder().build());
+        return DeleteSoapPortsOutput.builder().build();
     }
 }

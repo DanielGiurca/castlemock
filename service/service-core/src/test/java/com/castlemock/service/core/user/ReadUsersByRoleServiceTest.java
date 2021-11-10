@@ -16,8 +16,6 @@
 
 package com.castlemock.service.core.user;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.core.user.Role;
 import com.castlemock.model.core.user.Status;
 import com.castlemock.model.core.user.User;
@@ -66,10 +64,7 @@ public class ReadUsersByRoleServiceTest {
 
         Mockito.when(repository.findAll()).thenReturn(users);
         final ReadUsersByRoleInput input = new ReadUsersByRoleInput(Role.ADMIN);
-        final ServiceTask<ReadUsersByRoleInput> serviceTask = new ServiceTask<ReadUsersByRoleInput>();
-        serviceTask.setInput(input);
-        final ServiceResult<ReadUsersByRoleOutput> serviceResult = service.process(serviceTask);
-        final ReadUsersByRoleOutput output = serviceResult.getOutput();
+        final ReadUsersByRoleOutput output = service.process(input);
 
         final List<User> returnedUsers = output.getUsers();
         Assert.assertNotNull(returnedUsers);

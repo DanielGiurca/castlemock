@@ -17,8 +17,6 @@
 
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.core.http.HttpMethod;
 import com.castlemock.model.mock.rest.domain.RestMethod;
 import com.castlemock.model.mock.rest.domain.RestMethodTestBuilder;
@@ -116,9 +114,7 @@ public class IdentifyRestMethodServiceTest {
                 .restResourceUri("/user")
                 .httpMethod(HttpMethod.GET)
                 .build();
-        final ServiceTask<IdentifyRestMethodInput> serviceTask1 = new ServiceTask<>(input1);
-        final ServiceResult<IdentifyRestMethodOutput> serviceResult1 = service.process(serviceTask1);
-        final IdentifyRestMethodOutput output1 = serviceResult1.getOutput();
+        final IdentifyRestMethodOutput output1  = service.process(input1);
         Assert.assertEquals(restMethod2, output1.getRestMethod());
 
 
@@ -128,9 +124,7 @@ public class IdentifyRestMethodServiceTest {
                 .restResourceUri("/user")
                 .httpMethod(HttpMethod.PUT)
                 .build();
-        final ServiceTask<IdentifyRestMethodInput> serviceTask2 = new ServiceTask<>(input2);
-        final ServiceResult<IdentifyRestMethodOutput> serviceResult2 = service.process(serviceTask2);
-        final IdentifyRestMethodOutput output2 = serviceResult2.getOutput();
+        IdentifyRestMethodOutput output2 = service.process(input2);
         Assert.assertEquals(restMethod3, output2.getRestMethod());
 
 
@@ -140,9 +134,7 @@ public class IdentifyRestMethodServiceTest {
                 .restResourceUri("/user/resource")
                 .httpMethod(HttpMethod.POST)
                 .build();
-        final ServiceTask<IdentifyRestMethodInput> serviceTask3 = new ServiceTask<IdentifyRestMethodInput>(input3);
-        final ServiceResult<IdentifyRestMethodOutput> serviceResult3 = service.process(serviceTask3);
-        final IdentifyRestMethodOutput output3 = serviceResult3.getOutput();
+        IdentifyRestMethodOutput output3 = service.process(input3);
         Assert.assertEquals(restMethod4, output3.getRestMethod());
     }
 
@@ -195,8 +187,7 @@ public class IdentifyRestMethodServiceTest {
                 .restResourceUri("/user/random")
                 .httpMethod(HttpMethod.GET)
                 .build();
-        final ServiceTask<IdentifyRestMethodInput> serviceTask1 = new ServiceTask<IdentifyRestMethodInput>(input1);
-        service.process(serviceTask1);
+        service.process(input1);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -231,8 +222,7 @@ public class IdentifyRestMethodServiceTest {
                 .restResourceUri("/random")
                 .httpMethod(HttpMethod.GET)
                 .build();
-        final ServiceTask<IdentifyRestMethodInput> serviceTask1 = new ServiceTask<IdentifyRestMethodInput>(input1);
-        service.process(serviceTask1);
+        service.process(input1);
     }
 
     @Test
@@ -267,9 +257,7 @@ public class IdentifyRestMethodServiceTest {
                 .restResourceUri("/user/random")
                 .httpMethod(HttpMethod.GET)
                 .build();
-        final ServiceTask<IdentifyRestMethodInput> serviceTask1 = new ServiceTask<IdentifyRestMethodInput>(input1);
-        final ServiceResult<IdentifyRestMethodOutput> serviceResult1 = service.process(serviceTask1);
-        final IdentifyRestMethodOutput output1 = serviceResult1.getOutput();
+        IdentifyRestMethodOutput output1 = service.process(input1);
         Assert.assertEquals(restMethod1, output1.getRestMethod());
 
         final IdentifyRestMethodInput input2 = IdentifyRestMethodInput.builder()
@@ -278,9 +266,7 @@ public class IdentifyRestMethodServiceTest {
                 .restResourceUri("/user/random/resource")
                 .httpMethod(HttpMethod.POST)
                 .build();
-        final ServiceTask<IdentifyRestMethodInput> serviceTask2 = new ServiceTask<IdentifyRestMethodInput>(input2);
-        final ServiceResult<IdentifyRestMethodOutput> serviceResult2 = service.process(serviceTask2);
-        final IdentifyRestMethodOutput output2 = serviceResult2.getOutput();
+        IdentifyRestMethodOutput output2 = service.process(input2);
         Assert.assertEquals(restMethod2, output2.getRestMethod());
     }
 
@@ -327,9 +313,7 @@ public class IdentifyRestMethodServiceTest {
                 .restResourceUri("/user/random.json")
                 .httpMethod(HttpMethod.GET)
                 .build();
-        final ServiceTask<IdentifyRestMethodInput> serviceTask1 = new ServiceTask<IdentifyRestMethodInput>(input1);
-        final ServiceResult<IdentifyRestMethodOutput> serviceResult1 = service.process(serviceTask1);
-        final IdentifyRestMethodOutput output1 = serviceResult1.getOutput();
+        IdentifyRestMethodOutput output1 = service.process(input1);
         Assert.assertEquals(restMethod1, output1.getRestMethod());
 
         final IdentifyRestMethodInput input2 = IdentifyRestMethodInput.builder()
@@ -338,9 +322,7 @@ public class IdentifyRestMethodServiceTest {
                 .restResourceUri("/user/id.xml")
                 .httpMethod(HttpMethod.GET)
                 .build();
-        final ServiceTask<IdentifyRestMethodInput> serviceTask2 = new ServiceTask<IdentifyRestMethodInput>(input2);
-        final ServiceResult<IdentifyRestMethodOutput> serviceResult2 = service.process(serviceTask2);
-        final IdentifyRestMethodOutput output2 = serviceResult2.getOutput();
+        IdentifyRestMethodOutput output2 = service.process(input2);
         Assert.assertEquals(restMethod2, output2.getRestMethod());
 
         final IdentifyRestMethodInput input3 = IdentifyRestMethodInput.builder()
@@ -349,9 +331,7 @@ public class IdentifyRestMethodServiceTest {
                 .restResourceUri("/resource/test...xml")
                 .httpMethod(HttpMethod.GET)
                 .build();
-        final ServiceTask<IdentifyRestMethodInput> serviceTask3 = new ServiceTask<IdentifyRestMethodInput>(input3);
-        final ServiceResult<IdentifyRestMethodOutput> serviceResult3 = service.process(serviceTask3);
-        final IdentifyRestMethodOutput output3 = serviceResult3.getOutput();
+        IdentifyRestMethodOutput output3 = service.process(input3);
         Assert.assertEquals(restMethod3, output3.getRestMethod());
     }
 
@@ -388,9 +368,7 @@ public class IdentifyRestMethodServiceTest {
                 .restResourceUri("/user/search")
                 .httpMethod(HttpMethod.POST)
                 .build();
-        final ServiceTask<IdentifyRestMethodInput> serviceTask1 = new ServiceTask<IdentifyRestMethodInput>(input1);
-        final ServiceResult<IdentifyRestMethodOutput> serviceResult1 = service.process(serviceTask1);
-        final IdentifyRestMethodOutput output1 = serviceResult1.getOutput();
+        IdentifyRestMethodOutput output1 = service.process(input1);
         Assert.assertEquals(restMethod2, output1.getRestMethod());
     }
 

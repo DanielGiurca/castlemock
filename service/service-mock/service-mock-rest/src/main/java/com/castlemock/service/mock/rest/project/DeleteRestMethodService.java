@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestMethod;
 import com.castlemock.service.mock.rest.project.input.DeleteRestMethodInput;
 import com.castlemock.service.mock.rest.project.output.DeleteRestMethodOutput;
@@ -28,22 +25,12 @@ import com.castlemock.service.mock.rest.project.output.DeleteRestMethodOutput;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class DeleteRestMethodService extends AbstractRestProjectService implements Service<DeleteRestMethodInput, DeleteRestMethodOutput> {
+public class DeleteRestMethodService extends AbstractRestProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<DeleteRestMethodOutput> process(final ServiceTask<DeleteRestMethodInput> serviceTask) {
-        final DeleteRestMethodInput input = serviceTask.getInput();
+    public DeleteRestMethodOutput process(DeleteRestMethodInput input) {
         final RestMethod deletedRestMethod = this.deleteMethod(input.getRestMethodId());
-        return createServiceResult(DeleteRestMethodOutput.builder()
+        return DeleteRestMethodOutput.builder()
                 .method(deletedRestMethod)
-                .build());
+                .build();
     }
 }

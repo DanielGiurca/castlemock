@@ -16,9 +16,9 @@
 
 package com.castlemock.web.core.controller.rest;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.system.SystemInformation;
 import com.castlemock.model.core.user.User;
+import com.castlemock.service.core.system.GetSystemInformationService;
 import com.castlemock.service.core.system.input.GetSystemInformationInput;
 import com.castlemock.service.core.system.output.GetSystemInformationOutput;
 import io.swagger.annotations.Api;
@@ -39,8 +39,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @ConditionalOnExpression("${server.mode.demo} == false")
 public class SystemCoreRestController extends AbstractRestController {
 
-    public SystemCoreRestController(final ServiceProcessor serviceProcessor){
-        super(serviceProcessor);
+    private final GetSystemInformationService getSystemInformationService;
+
+    public SystemCoreRestController(GetSystemInformationService getSystemInformationService) {
+        this.getSystemInformationService = getSystemInformationService;
     }
 
     @ApiOperation(value = "Get system information",response = User.class,
@@ -52,7 +54,7 @@ public class SystemCoreRestController extends AbstractRestController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public @ResponseBody
     ResponseEntity<SystemInformation> getSystemInformation() {
-        final GetSystemInformationOutput output = serviceProcessor.process(new GetSystemInformationInput());
+        final GetSystemInformationOutput output = getSystemInformationService.process(new GetSystemInformationInput());
         return ResponseEntity.ok(output.getSystemInformation());
     }
 

@@ -1,7 +1,5 @@
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapResource;
 import com.castlemock.model.mock.soap.domain.SoapResourceTestBuilder;
 import com.castlemock.repository.soap.project.SoapResourceRepository;
@@ -11,11 +9,7 @@ import org.dozer.DozerBeanMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
+import org.mockito.*;
 
 public class LoadSoapResourceServiceTest {
 
@@ -44,11 +38,10 @@ public class LoadSoapResourceServiceTest {
                 .projectId("Project id")
                 .resourceId(soapResource.getId())
                 .build();
-        final ServiceTask<LoadSoapResourceInput> serviceTask = new ServiceTask<LoadSoapResourceInput>(input);
-        final ServiceResult<LoadSoapResourceOutput> serviceResult = service.process(serviceTask);
+        LoadSoapResourceOutput serviceResult = service.process(input);
 
-        Assert.assertNotNull(serviceResult.getOutput());
-        Assert.assertEquals(resourceContent, serviceResult.getOutput().getResource());
+        Assert.assertNotNull(serviceResult);
+        Assert.assertEquals(resourceContent, serviceResult.getResource());
 
         Mockito.verify(resourceRepository, Mockito.times(1)).loadSoapResource(soapResource.getId());
     }

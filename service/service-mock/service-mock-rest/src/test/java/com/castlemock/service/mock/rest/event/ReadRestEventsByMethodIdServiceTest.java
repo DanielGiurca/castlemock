@@ -16,8 +16,6 @@
 
 package com.castlemock.service.mock.rest.event;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestEvent;
 import com.castlemock.model.mock.rest.domain.RestEventTestBuilder;
 import com.castlemock.repository.rest.event.RestEventRepository;
@@ -27,11 +25,7 @@ import org.dozer.DozerBeanMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
+import org.mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,9 +67,7 @@ public class ReadRestEventsByMethodIdServiceTest {
         final ReadRestEventWithMethodIdInput input = ReadRestEventWithMethodIdInput.builder()
                 .restMethodId("OperationId")
                 .build();
-        final ServiceTask<ReadRestEventWithMethodIdInput> serviceTask = new ServiceTask<ReadRestEventWithMethodIdInput>(input);
-        final ServiceResult<ReadRestEventWithMethodIdOutput> serviceResult = service.process(serviceTask);
-        final ReadRestEventWithMethodIdOutput output = serviceResult.getOutput();
+        ReadRestEventWithMethodIdOutput output = service.process(input);
 
 
         Assert.assertEquals(2, output.getRestEvents().size());

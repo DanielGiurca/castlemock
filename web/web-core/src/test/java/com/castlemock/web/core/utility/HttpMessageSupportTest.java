@@ -225,7 +225,7 @@ public class HttpMessageSupportTest {
         }
 
         final String output = HttpMessageSupport.getBody(httpServletRequest);
-        Assert.assertEquals(body, output);
+        Assert.assertEquals(body.replace("\n", "").replace("\r", ""), output.replace("\n", "").replace("\r", ""));
     }
 
     @Test(expected = IllegalStateException.class)

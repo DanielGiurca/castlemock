@@ -16,8 +16,9 @@
 
 package com.castlemock.web.core.controller.rest;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.user.User;
+import com.castlemock.service.core.user.ReadUserByUsernameService;
+import com.castlemock.service.core.user.UpdateCurrentUserService;
 import com.castlemock.service.core.user.input.ReadUserByUsernameInput;
 import com.castlemock.service.core.user.input.UpdateCurrentUserInput;
 import com.castlemock.service.core.user.output.ReadUserByUsernameOutput;
@@ -45,8 +46,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @ConditionalOnExpression("${server.mode.demo} == false")
 public class ProfileCoreRestController extends AbstractRestController {
 
-    public ProfileCoreRestController(final ServiceProcessor serviceProcessor){
-        super(serviceProcessor);
+    private final ReadUserByUsernameService readUserByUsernameService;
+    private final UpdateCurrentUserService updateCurrentUserService;
+
+    public ProfileCoreRestController(ReadUserByUsernameService readUserByUsernameService, UpdateCurrentUserService updateCurrentUserService) {
+        this.readUserByUsernameService = readUserByUsernameService;
+        this.updateCurrentUserService = updateCurrentUserService;
     }
 
     @ApiOperation(value = "Get profile",response = User.class,
@@ -63,7 +68,7 @@ public class ProfileCoreRestController extends AbstractRestController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        final ReadUserByUsernameOutput output = serviceProcessor.process(ReadUserByUsernameInput.builder()
+        final ReadUserByUsernameOutput output = readUserByUsernameService.process(ReadUserByUsernameInput.builder()
                 .username(authentication.getName())
                 .build());
         final User user = output.getUser();
@@ -91,7 +96,7 @@ public class ProfileCoreRestController extends AbstractRestController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        final ReadUserByUsernameOutput readUserByUsernameOutput = serviceProcessor.process(ReadUserByUsernameInput.builder()
+        final ReadUserByUsernameOutput readUserByUsernameOutput = readUserByUsernameService.process(ReadUserByUsernameInput.builder()
                 .username(authentication.getName())
                 .build());
         final User user = readUserByUsernameOutput.getUser();
@@ -100,7 +105,7 @@ public class ProfileCoreRestController extends AbstractRestController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        final UpdateCurrentUserOutput updateCurrentUserOutput = serviceProcessor.process(UpdateCurrentUserInput.builder()
+        final UpdateCurrentUserOutput updateCurrentUserOutput = updateCurrentUserService.process(UpdateCurrentUserInput.builder()
                 .username(request.getUsername())
                 .fullName(request.getFullName())
                 .email(request.getEmail())

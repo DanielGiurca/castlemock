@@ -16,9 +16,9 @@
 
 package com.castlemock.web.core.controller.rest;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.user.User;
 import com.castlemock.model.core.user.UserTestBuilder;
+import com.castlemock.service.core.user.ReadUserByUsernameService;
 import com.castlemock.service.core.user.input.ReadUserByUsernameInput;
 import com.castlemock.service.core.user.output.ReadUserByUsernameOutput;
 import com.castlemock.web.core.config.JWTEncoderDecoder;
@@ -49,17 +49,17 @@ import static org.mockito.Mockito.when;
  */
 class AuthenticationRestControllerTest {
 
-    private ServiceProcessor serviceProcessor;
+    private ReadUserByUsernameService readUserByUsernameService;
     private AuthenticationManager authenticationManager;
     private JWTEncoderDecoder jwtEncoderDecoder;
     private AuthenticationRestController authenticationRestController;
 
     @BeforeEach
     void setup(){
-        this.serviceProcessor = mock(ServiceProcessor.class);
+        this.readUserByUsernameService = mock(ReadUserByUsernameService.class);
         this.authenticationManager = mock(AuthenticationManager.class);
         this.jwtEncoderDecoder = mock(JWTEncoderDecoder.class);
-        this.authenticationRestController = new AuthenticationRestController(serviceProcessor, authenticationManager, jwtEncoderDecoder);
+        this.authenticationRestController = new AuthenticationRestController(authenticationManager, jwtEncoderDecoder, readUserByUsernameService);
 
     }
 
@@ -74,7 +74,7 @@ class AuthenticationRestControllerTest {
 
         when(authentication.isAuthenticated()).thenReturn(true);
         when(authenticationManager.authenticate(any())).thenReturn(authentication);
-        when(serviceProcessor.process(any())).thenReturn(ReadUserByUsernameOutput.builder()
+        when(readUserByUsernameService.process(any())).thenReturn(ReadUserByUsernameOutput.builder()
                 .user(user)
                 .build());
         when(jwtEncoderDecoder.createToken(any())).thenReturn(token);
@@ -93,7 +93,7 @@ class AuthenticationRestControllerTest {
 
         verify(authentication, times(1)).isAuthenticated();
         verify(authenticationManager, times(1)).authenticate(any());
-        verify(serviceProcessor, times(1)).process(any(ReadUserByUsernameInput.class));
+        verify(readUserByUsernameService, times(1)).process(any(ReadUserByUsernameInput.class));
         verify(jwtEncoderDecoder, times(1)).createToken(any());
     }
 

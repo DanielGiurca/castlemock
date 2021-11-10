@@ -16,8 +16,6 @@
 
 package com.castlemock.service.core.configuration;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.core.configuration.Configuration;
 import com.castlemock.model.core.configuration.ConfigurationGroup;
 import com.castlemock.model.core.configuration.ConfigurationType;
@@ -68,10 +66,7 @@ public class ReadAllConfigurationGroupsServiceTest {
 
         Mockito.when(repository.findAll()).thenReturn(configurationGroups);
         final ReadAllConfigurationGroupsInput input = new ReadAllConfigurationGroupsInput();
-        final ServiceTask<ReadAllConfigurationGroupsInput> serviceTask = new ServiceTask<ReadAllConfigurationGroupsInput>();
-        serviceTask.setInput(input);
-        final ServiceResult<ReadAllConfigurationGroupsOutput> serviceResult = service.process(serviceTask);
-        final ReadAllConfigurationGroupsOutput output = serviceResult.getOutput();
+        final ReadAllConfigurationGroupsOutput output = service.process(input);
 
         final List<ConfigurationGroup> returnedConfigurationGroups = output.getConfigurationGroups();
         Assert.assertEquals(returnedConfigurationGroups.size(), configurationGroups.size());

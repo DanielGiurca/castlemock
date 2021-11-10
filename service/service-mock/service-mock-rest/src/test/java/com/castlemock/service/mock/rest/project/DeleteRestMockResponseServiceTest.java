@@ -16,13 +16,10 @@
 
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestMockResponse;
 import com.castlemock.model.mock.rest.domain.RestMockResponseTestBuilder;
 import com.castlemock.repository.rest.project.RestMockResponseRepository;
 import com.castlemock.service.mock.rest.project.input.DeleteRestMockResponseInput;
-import com.castlemock.service.mock.rest.project.output.DeleteRestMockResponseOutput;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -66,8 +63,7 @@ public class DeleteRestMockResponseServiceTest {
                         .restMethodId(methodId)
                         .restMockResponseId(mockResponseId)
                         .build();
-        final ServiceTask<DeleteRestMockResponseInput> serviceTask = new ServiceTask<DeleteRestMockResponseInput>(input);
-        final ServiceResult<DeleteRestMockResponseOutput> serviceResult = service.process(serviceTask);
+        service.process(input);
 
         Mockito.verify(mockResponseRepository, Mockito.times(1)).delete(mockResponseId);
     }

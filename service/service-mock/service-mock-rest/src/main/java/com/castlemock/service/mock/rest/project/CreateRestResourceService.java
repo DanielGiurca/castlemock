@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestResource;
 import com.castlemock.service.mock.rest.project.input.CreateRestResourceInput;
 import com.castlemock.service.mock.rest.project.output.CreateRestResourceOutput;
@@ -28,26 +25,16 @@ import com.castlemock.service.mock.rest.project.output.CreateRestResourceOutput;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class CreateRestResourceService extends AbstractRestProjectService implements Service<CreateRestResourceInput, CreateRestResourceOutput> {
+public class CreateRestResourceService extends AbstractRestProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<CreateRestResourceOutput> process(final ServiceTask<CreateRestResourceInput> serviceTask) {
-        final CreateRestResourceInput input = serviceTask.getInput();
+    public CreateRestResourceOutput process(CreateRestResourceInput input) {
         final RestResource resource = new RestResource();
         resource.setName(input.getName());
         resource.setUri(input.getUri());
         resource.setApplicationId(input.getRestApplicationId());
         final RestResource createdRestResource = this.resourceRepository.save(resource);
-        return createServiceResult(CreateRestResourceOutput.builder()
+        return CreateRestResourceOutput.builder()
                 .savedRestApplication(createdRestResource)
-                .build());
+                .build();
     }
 }

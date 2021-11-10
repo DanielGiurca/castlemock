@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestMethod;
 import com.castlemock.model.mock.rest.domain.RestMockResponse;
 import com.castlemock.model.mock.rest.domain.RestResource;
@@ -41,21 +38,11 @@ import static java.util.stream.Collectors.toMap;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class IdentifyRestMethodService extends AbstractRestProjectService implements Service<IdentifyRestMethodInput, IdentifyRestMethodOutput> {
+public class IdentifyRestMethodService extends AbstractRestProjectService {
 
     protected static final String SLASH = "/";
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<IdentifyRestMethodOutput> process(final ServiceTask<IdentifyRestMethodInput> serviceTask) {
-        final IdentifyRestMethodInput input = serviceTask.getInput();
+    public IdentifyRestMethodOutput process(IdentifyRestMethodInput input) {
         final Map<String, RestResource> resources =
                 this.resourceRepository.findWithApplicationId(input.getRestApplicationId())
                         .stream()
@@ -83,14 +70,14 @@ public class IdentifyRestMethodService extends AbstractRestProjectService implem
         final List<RestMockResponse> mockResponses = this.mockResponseRepository.findWithMethodId(method.getId());
         method.setMockResponses(mockResponses);
 
-        return createServiceResult(IdentifyRestMethodOutput.builder()
+        return IdentifyRestMethodOutput.builder()
                         .restProjectId(input.getRestProjectId())
                         .restApplicationId(input.getRestApplicationId())
                         .restResourceId(resource.getId())
                         .restMethodId(method.getId())
                         .restMethod(method)
                         .pathParameters(pathParameters)
-                        .build());
+                        .build();
     }
 
 }

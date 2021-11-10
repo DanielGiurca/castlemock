@@ -16,25 +16,9 @@
 
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
-import com.castlemock.model.mock.rest.domain.RestApplication;
-import com.castlemock.model.mock.rest.domain.RestApplicationTestBuilder;
-import com.castlemock.model.mock.rest.domain.RestMethod;
-import com.castlemock.model.mock.rest.domain.RestMethodTestBuilder;
-import com.castlemock.model.mock.rest.domain.RestMockResponse;
-import com.castlemock.model.mock.rest.domain.RestMockResponseTestBuilder;
-import com.castlemock.model.mock.rest.domain.RestProject;
-import com.castlemock.model.mock.rest.domain.RestProjectTestBuilder;
-import com.castlemock.model.mock.rest.domain.RestResource;
-import com.castlemock.model.mock.rest.domain.RestResourceTestBuilder;
-import com.castlemock.repository.rest.project.RestApplicationRepository;
-import com.castlemock.repository.rest.project.RestMethodRepository;
-import com.castlemock.repository.rest.project.RestMockResponseRepository;
-import com.castlemock.repository.rest.project.RestProjectRepository;
-import com.castlemock.repository.rest.project.RestResourceRepository;
+import com.castlemock.model.mock.rest.domain.*;
+import com.castlemock.repository.rest.project.*;
 import com.castlemock.service.mock.rest.project.input.DeleteRestProjectInput;
-import com.castlemock.service.mock.rest.project.output.DeleteRestProjectOutput;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -89,8 +73,8 @@ public class DeleteRestProjectServiceTest {
         final DeleteRestProjectInput input = DeleteRestProjectInput.builder()
                 .restProjectId(project.getId())
                 .build();
-        final ServiceTask<DeleteRestProjectInput> serviceTask = new ServiceTask<DeleteRestProjectInput>(input);
-        final ServiceResult<DeleteRestProjectOutput> serviceResult = service.process(serviceTask);
+
+        service.process(input);
 
         Mockito.verify(repository, Mockito.times(1)).delete(project.getId());
         Mockito.verify(applicationRepository, Mockito.times(1)).delete(application.getId());

@@ -1,8 +1,6 @@
 package com.castlemock.service.core.system;
 
 import com.castlemock.model.core.Environment;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.repository.Profiles;
 import com.castlemock.service.core.system.input.GetSystemInformationInput;
 import com.castlemock.service.core.system.output.GetSystemInformationOutput;
@@ -45,8 +43,7 @@ public class GetSystemInformationServiceTest {
     @Test
     public void testProcess(){
         final GetSystemInformationInput input = new GetSystemInformationInput();
-        final ServiceTask<GetSystemInformationInput> serviceTask = new ServiceTask<GetSystemInformationInput>(input);
-        final ServiceResult<GetSystemInformationOutput> output = service.process(serviceTask);
+        final GetSystemInformationOutput output = service.process(input);
         Assert.assertNotNull(output);
     }
 }

@@ -1,13 +1,6 @@
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
-import com.castlemock.model.mock.rest.domain.RestApplication;
-import com.castlemock.model.mock.rest.domain.RestApplicationTestBuilder;
-import com.castlemock.model.mock.rest.domain.RestMethod;
-import com.castlemock.model.mock.rest.domain.RestMethodTestBuilder;
-import com.castlemock.model.mock.rest.domain.RestResource;
-import com.castlemock.model.mock.rest.domain.RestResourceTestBuilder;
+import com.castlemock.model.mock.rest.domain.*;
 import com.castlemock.repository.rest.project.RestApplicationRepository;
 import com.castlemock.repository.rest.project.RestMethodRepository;
 import com.castlemock.repository.rest.project.RestProjectRepository;
@@ -57,19 +50,18 @@ public class ReadRestApplicationServiceTest {
                 .restProjectId(projectId)
                 .restApplicationId(application.getId())
                 .build();
-        final ServiceTask<ReadRestApplicationInput> serviceTask = new ServiceTask<ReadRestApplicationInput>(input);
 
         Mockito.when(applicationRepository.findOne(application.getId())).thenReturn(application);
         Mockito.when(resourceRepository.findWithApplicationId(application.getId())).thenReturn(Arrays.asList(resource));
         Mockito.when(methodRepository.findWithResourceId(resource.getId())).thenReturn(Arrays.asList(method));
-        final ServiceResult<ReadRestApplicationOutput> result = service.process(serviceTask);
+        ReadRestApplicationOutput result = service.process(input);
 
         Mockito.verify(applicationRepository, Mockito.times(1)).findOne(application.getId());
         Mockito.verify(resourceRepository, Mockito.times(1)).findWithApplicationId(application.getId());
         Mockito.verify(methodRepository, Mockito.times(1)).findWithResourceId(resource.getId());
 
-        Assert.assertNotNull(result.getOutput());
-        Assert.assertEquals(application, result.getOutput().getRestApplication());
+        Assert.assertNotNull(result);
+        Assert.assertEquals(application, result.getRestApplication());
     }
 
 }

@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestMethod;
 import com.castlemock.service.mock.rest.project.input.UpdateRestMethodsForwardedEndpointInput;
 import com.castlemock.service.mock.rest.project.output.UpdateRestMethodsForwardedEndpointOutput;
@@ -28,24 +25,14 @@ import com.castlemock.service.mock.rest.project.output.UpdateRestMethodsForwarde
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class UpdateRestMethodsForwardedEndpointService extends AbstractRestProjectService implements Service<UpdateRestMethodsForwardedEndpointInput, UpdateRestMethodsForwardedEndpointOutput> {
+public class UpdateRestMethodsForwardedEndpointService extends AbstractRestProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<UpdateRestMethodsForwardedEndpointOutput> process(final ServiceTask<UpdateRestMethodsForwardedEndpointInput> serviceTask) {
-        final UpdateRestMethodsForwardedEndpointInput input = serviceTask.getInput();
+    public UpdateRestMethodsForwardedEndpointOutput process(UpdateRestMethodsForwardedEndpointInput input) {
         for(String methodId : input.getMethodIds()){
             final RestMethod restMethod = this.methodRepository.findOne(methodId);
             restMethod.setForwardedEndpoint(input.getForwardedEndpoint());
             this.methodRepository.update(restMethod.getId(), restMethod);
         }
-        return createServiceResult(UpdateRestMethodsForwardedEndpointOutput.builder().build());
+        return UpdateRestMethodsForwardedEndpointOutput.builder().build();
     }
 }

@@ -1,7 +1,5 @@
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestMethod;
 import com.castlemock.model.mock.rest.domain.RestMethodTestBuilder;
 import com.castlemock.model.mock.rest.domain.RestResource;
@@ -48,17 +46,16 @@ public class ReadRestResourceServiceTest {
                 .restApplicationId(applicationId)
                 .restResourceId(resource.getId())
                 .build();
-        final ServiceTask<ReadRestResourceInput> serviceTask = new ServiceTask<ReadRestResourceInput>(input);
 
         Mockito.when(resourceRepository.findOne(resource.getId())).thenReturn(resource);
         Mockito.when(methodRepository.findWithResourceId(resource.getId())).thenReturn(Arrays.asList(method));
-        final ServiceResult<ReadRestResourceOutput> result = service.process(serviceTask);
+        ReadRestResourceOutput result = service.process(input);
 
         Mockito.verify(resourceRepository, Mockito.times(1)).findOne(resource.getId());
         Mockito.verify(methodRepository, Mockito.times(1)).findWithResourceId(resource.getId());
 
-        Assert.assertNotNull(result.getOutput());
-        Assert.assertEquals(resource, result.getOutput().getRestResource());
+        Assert.assertNotNull(result);
+        Assert.assertEquals(resource, result.getRestResource());
     }
 
 }

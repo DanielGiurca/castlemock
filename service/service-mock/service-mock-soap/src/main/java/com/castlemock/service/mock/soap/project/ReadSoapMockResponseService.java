@@ -1,8 +1,5 @@
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapMockResponse;
 import com.castlemock.service.mock.soap.project.input.ReadSoapMockResponseInput;
 import com.castlemock.service.mock.soap.project.output.ReadSoapMockResponseOutput;
@@ -12,22 +9,12 @@ import com.castlemock.service.mock.soap.project.output.ReadSoapMockResponseOutpu
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class ReadSoapMockResponseService extends AbstractSoapProjectService implements Service<ReadSoapMockResponseInput, ReadSoapMockResponseOutput> {
+public class ReadSoapMockResponseService extends AbstractSoapProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<ReadSoapMockResponseOutput> process(ServiceTask<ReadSoapMockResponseInput> serviceTask) {
-        final ReadSoapMockResponseInput input = serviceTask.getInput();
+    public ReadSoapMockResponseOutput process(ReadSoapMockResponseInput input) {
         final SoapMockResponse soapMockResponse = this.mockResponseRepository.findOne(input.getSoapMockResponseId());
-        return createServiceResult(ReadSoapMockResponseOutput.builder()
+        return ReadSoapMockResponseOutput.builder()
                 .mockResponse(soapMockResponse)
-                .build());
+                .build();
     }
 }

@@ -16,8 +16,9 @@
 
 package com.castlemock.web.core.controller.rest;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.user.User;
+import com.castlemock.service.core.user.ReadUserByUsernameService;
+import com.castlemock.service.core.user.UpdateCurrentUserService;
 import com.castlemock.web.core.model.UpdateProfileRequestTestBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,13 +32,15 @@ import static org.mockito.Mockito.mock;
 
 class ProfileCoreRestControllerTest {
 
-    private ServiceProcessor serviceProcessor;
+    private UpdateCurrentUserService updateCurrentUserService;
+    private ReadUserByUsernameService readUserByUsernameService;
     private ProfileCoreRestController profileCoreRestController;
 
     @BeforeEach
     void setup(){
-        this.serviceProcessor = mock(ServiceProcessor.class);
-        this.profileCoreRestController = new ProfileCoreRestController(serviceProcessor);
+        this.updateCurrentUserService = mock(UpdateCurrentUserService.class);
+        this.readUserByUsernameService = mock(ReadUserByUsernameService.class);
+        this.profileCoreRestController = new ProfileCoreRestController(readUserByUsernameService,updateCurrentUserService);
     }
 
     @Test

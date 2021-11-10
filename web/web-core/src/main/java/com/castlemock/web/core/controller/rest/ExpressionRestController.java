@@ -16,7 +16,7 @@
 
 package com.castlemock.web.core.controller.rest;
 
-import com.castlemock.model.core.ServiceProcessor;
+import com.castlemock.service.core.expression.ValidateExpressionService;
 import com.castlemock.service.core.expression.input.ValidateExpressionInput;
 import com.castlemock.service.core.expression.output.ValidateExpressionOutput;
 import com.castlemock.web.core.model.ValidateExpressionRequest;
@@ -44,9 +44,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @ConditionalOnExpression("${server.mode.demo} == false")
 public class ExpressionRestController extends AbstractRestController {
 
-    public ExpressionRestController(final ServiceProcessor serviceProcessor){
-        super(serviceProcessor);
+    private final ValidateExpressionService validateExpressionService;
+
+    public ExpressionRestController(ValidateExpressionService validateExpressionService) {
+        this.validateExpressionService = validateExpressionService;
     }
+
 
     @ApiOperation(value = "Validate expression",response = ValidateExpressionResponse.class,
             notes = "Validate expression. Required authorization: Reader, Modification, Admin.")
@@ -57,7 +60,7 @@ public class ExpressionRestController extends AbstractRestController {
     @PreAuthorize("hasAuthority('READER') or hasAuthority('MODIFIER') or hasAuthority('ADMIN')")
     public @ResponseBody
     ResponseEntity<ValidateExpressionResponse> validateExpression(@RequestBody final ValidateExpressionRequest request) {
-        final ValidateExpressionOutput output = serviceProcessor.process(ValidateExpressionInput.builder()
+        final ValidateExpressionOutput output = validateExpressionService.process(ValidateExpressionInput.builder()
                 .requestBody(request.getRequestBody())
                 .responseBody(request.getResponseBody())
                 .build());

@@ -16,8 +16,6 @@
 
 package com.castlemock.service.core.user;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.core.user.Role;
 import com.castlemock.model.core.user.Status;
 import com.castlemock.model.core.user.User;
@@ -72,10 +70,7 @@ public class UpdateUserServiceTest {
                 .userId(user.getId())
                 .user(updatedUser)
                 .build();
-        final ServiceTask<UpdateUserInput> serviceTask = new ServiceTask<UpdateUserInput>();
-        serviceTask.setInput(input);
-        final ServiceResult<UpdateUserOutput> serviceResult = service.process(serviceTask);
-        final UpdateUserOutput output = serviceResult.getOutput();
+        final UpdateUserOutput output = service.process(input);
 
         final User returnedUser = output.getUpdatedUser();
         Assert.assertNotNull(returnedUser);

@@ -16,7 +16,6 @@
 
 package com.castlemock.web.core.controller.rest;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.event.Event;
 import com.castlemock.model.core.service.event.EventServiceFacade;
 import io.swagger.annotations.Api;
@@ -50,9 +49,7 @@ public class EventCoreRestController extends AbstractRestController {
 
     private final EventServiceFacade eventServiceFacade;
 
-    public EventCoreRestController(final ServiceProcessor serviceProcessor,
-                                   final EventServiceFacade eventServiceFacade){
-        super(serviceProcessor);
+    public EventCoreRestController(final EventServiceFacade eventServiceFacade){
         this.eventServiceFacade = Objects.requireNonNull(eventServiceFacade);
     }
 

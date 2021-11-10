@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestMethod;
 import com.castlemock.model.mock.rest.domain.RestMockResponse;
 import com.castlemock.model.mock.rest.domain.RestResource;
@@ -32,19 +29,9 @@ import java.util.List;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class ReadRestMethodService extends AbstractRestProjectService implements Service<ReadRestMethodInput, ReadRestMethodOutput> {
+public class ReadRestMethodService extends AbstractRestProjectService{
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<ReadRestMethodOutput> process(final ServiceTask<ReadRestMethodInput> serviceTask) {
-        final ReadRestMethodInput input = serviceTask.getInput();
+    public ReadRestMethodOutput process(ReadRestMethodInput input) {
         final RestResource restResource = this.resourceRepository.findOne(input.getRestResourceId());
         final RestMethod restMethod = this.methodRepository.findOne(input.getRestMethodId());
         final List<RestMockResponse> mockResponses = this.mockResponseRepository.findWithMethodId(input.getRestMethodId());
@@ -62,8 +49,8 @@ public class ReadRestMethodService extends AbstractRestProjectService implements
                     .ifPresent(mockResponse -> restMethod.setDefaultResponseName(mockResponse.getName()));
         }
 
-        return createServiceResult(ReadRestMethodOutput.builder()
+        return ReadRestMethodOutput.builder()
                 .restMethod(restMethod)
-                .build());
+                .build();
     }
 }

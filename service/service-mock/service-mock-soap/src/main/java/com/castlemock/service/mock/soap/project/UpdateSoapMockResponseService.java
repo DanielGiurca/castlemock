@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapMockResponse;
 import com.castlemock.service.mock.soap.project.input.UpdateSoapMockResponseInput;
 import com.castlemock.service.mock.soap.project.output.UpdateSoapMockResponseOutput;
@@ -31,19 +28,9 @@ import com.castlemock.service.mock.soap.project.output.UpdateSoapMockResponseOut
  * @see UpdateSoapMockResponseOutput
  */
 @org.springframework.stereotype.Service
-public class UpdateSoapMockResponseService extends AbstractSoapProjectService implements Service<UpdateSoapMockResponseInput, UpdateSoapMockResponseOutput> {
+public class UpdateSoapMockResponseService extends AbstractSoapProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<UpdateSoapMockResponseOutput> process(final ServiceTask<UpdateSoapMockResponseInput> serviceTask) {
-        final UpdateSoapMockResponseInput input = serviceTask.getInput();
+    public UpdateSoapMockResponseOutput process(UpdateSoapMockResponseInput input) {
         final SoapMockResponse mockResponse = this.mockResponseRepository.findOne(input.getMockResponseId());
 
         mockResponse.setName(input.getName());
@@ -55,8 +42,8 @@ public class UpdateSoapMockResponseService extends AbstractSoapProjectService im
         mockResponse.setXpathExpressions(input.getXpathExpressions());
 
         final SoapMockResponse updatedSoapMockResponse = mockResponseRepository.update(input.getMockResponseId(), mockResponse);
-        return createServiceResult(UpdateSoapMockResponseOutput.builder()
+        return UpdateSoapMockResponseOutput.builder()
                 .mockResponse(updatedSoapMockResponse)
-                .build());
+                .build();
     }
 }

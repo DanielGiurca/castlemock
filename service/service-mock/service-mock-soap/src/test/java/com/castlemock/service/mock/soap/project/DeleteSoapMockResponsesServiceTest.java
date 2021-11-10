@@ -16,8 +16,6 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapMockResponse;
 import com.castlemock.repository.soap.project.SoapMockResponseRepository;
 import com.castlemock.service.mock.soap.project.input.DeleteSoapMockResponsesInput;
@@ -70,8 +68,7 @@ public class DeleteSoapMockResponsesServiceTest {
                 .operationId(operationId)
                 .mockResponses(responses)
                 .build();
-        final ServiceTask<DeleteSoapMockResponsesInput> serviceTask = new ServiceTask<DeleteSoapMockResponsesInput>(input);
-        final ServiceResult<DeleteSoapMockResponsesOutput> serviceResult = service.process(serviceTask);
+        DeleteSoapMockResponsesOutput serviceResult = service.process(input);
 
 
         Mockito.verify(mockResponseRepository, Mockito.times(1)).delete("Response1");

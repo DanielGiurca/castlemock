@@ -16,12 +16,14 @@
 
 package com.castlemock.service.mock.rest.event.adapter;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.TypeIdentifier;
 import com.castlemock.model.core.event.Event;
 import com.castlemock.model.core.service.event.EventServiceAdapter;
 import com.castlemock.model.mock.rest.domain.RestEvent;
 import com.castlemock.service.mock.rest.RestTypeIdentifier;
+import com.castlemock.service.mock.rest.event.ClearAllRestEventService;
+import com.castlemock.service.mock.rest.event.ReadAllRestEventService;
+import com.castlemock.service.mock.rest.event.ReadRestEventService;
 import com.castlemock.service.mock.rest.event.input.ClearAllRestEventInput;
 import com.castlemock.service.mock.rest.event.input.ReadAllRestEventInput;
 import com.castlemock.service.mock.rest.event.input.ReadRestEventInput;
@@ -42,7 +44,12 @@ import java.util.List;
 public class RestEventServiceAdapter implements EventServiceAdapter<RestEvent> {
 
     @Autowired
-    private ServiceProcessor serviceProcessor;
+    private ReadAllRestEventService readAllRestEventService;
+    @Autowired
+    private ReadRestEventService readRestEventService;
+    @Autowired
+    private ClearAllRestEventService clearAllRestEventService;
+
     private RestTypeIdentifier REST_TYPE_IDENTIFIER = new RestTypeIdentifier();
     private static final String SLASH = "/";
     private static final String WEB = "web";
@@ -96,7 +103,7 @@ public class RestEventServiceAdapter implements EventServiceAdapter<RestEvent> {
      */
     @Override
     public List<RestEvent> readAll() {
-        final ReadAllRestEventOutput output = serviceProcessor.process(ReadAllRestEventInput.builder().build());
+        final ReadAllRestEventOutput output = readAllRestEventService.process(ReadAllRestEventInput.builder().build());
 
         for(RestEvent restEvent : output.getRestEvents()){
             final String resourceLink = generateResourceLink(restEvent);
@@ -116,7 +123,7 @@ public class RestEventServiceAdapter implements EventServiceAdapter<RestEvent> {
      */
     @Override
     public RestEvent read(String id) {
-        final ReadRestEventOutput output = serviceProcessor.process(ReadRestEventInput.builder()
+        final ReadRestEventOutput output = readRestEventService.process(ReadRestEventInput.builder()
                 .restEventId(id)
                 .build());
         return output.getRestEvent();
@@ -165,7 +172,7 @@ public class RestEventServiceAdapter implements EventServiceAdapter<RestEvent> {
      */
     @Override
     public void clearAll() {
-        serviceProcessor.process(ClearAllRestEventInput.builder().build());
+        clearAllRestEventService.process(ClearAllRestEventInput.builder().build());
     }
 
 }

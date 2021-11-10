@@ -1,13 +1,6 @@
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
-import com.castlemock.model.mock.rest.domain.RestApplication;
-import com.castlemock.model.mock.rest.domain.RestApplicationTestBuilder;
-import com.castlemock.model.mock.rest.domain.RestMethod;
-import com.castlemock.model.mock.rest.domain.RestMethodTestBuilder;
-import com.castlemock.model.mock.rest.domain.RestResource;
-import com.castlemock.model.mock.rest.domain.RestResourceTestBuilder;
+import com.castlemock.model.mock.rest.domain.*;
 import com.castlemock.repository.rest.project.RestMethodRepository;
 import com.castlemock.repository.rest.project.RestResourceRepository;
 import com.castlemock.service.mock.rest.project.input.UpdateRestResourcesForwardedEndpointInput;
@@ -65,8 +58,8 @@ public class UpdateRestResourcesForwardedEndpointServiceTest {
                 .resourceIds(Set.of(resource1.getId()))
                 .forwardedEndpoint("new-endpoint")
                 .build();
-        final ServiceTask<UpdateRestResourcesForwardedEndpointInput> serviceTask = new ServiceTask<>(input);
-        final ServiceResult<UpdateRestResourcesForwardedEndpointOutput> result = service.process(serviceTask);
+
+        UpdateRestResourcesForwardedEndpointOutput result = service.process(input);
 
         assertNotNull(result);
         Mockito.verify(methodRepository, Mockito.times(1)).findWithResourceId(resource1.getId());

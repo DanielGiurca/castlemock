@@ -16,11 +16,7 @@
 
 package com.castlemock.web.core.controller;
 
-import com.castlemock.model.core.ServiceProcessor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-
-import java.util.Objects;
 
 /**
  * The AbstractController provides functionality that are shared among all the controllers in Castle Mock
@@ -33,8 +29,6 @@ public abstract class AbstractController {
     protected boolean demoMode;
     @Value("${server.endpoint.address:}")
     protected String endpointAddress;
-    @Autowired
-    protected ServiceProcessor serviceProcessor;
 
     protected static final String CONTENT_TYPE = "Content-Type";
     protected static final String ACCEPT_HEADER = "Accept";
@@ -45,9 +39,5 @@ public abstract class AbstractController {
     protected static final String SPACE = " ";
 
     protected static final int DEFAULT_ECHO_RESPONSE_CODE = 200;
-
-    protected AbstractController(final ServiceProcessor serviceProcessor){
-        this.serviceProcessor = Objects.requireNonNull(serviceProcessor);
-    }
 
 }

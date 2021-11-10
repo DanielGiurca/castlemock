@@ -16,12 +16,9 @@
 
 package com.castlemock.service.mock.soap.event;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapEvent;
 import com.castlemock.model.mock.soap.domain.SoapEventTestBuilder;
 import com.castlemock.repository.soap.event.SoapEventRepository;
-import com.castlemock.service.mock.soap.event.input.ReadAllSoapEventInput;
 import com.castlemock.service.mock.soap.event.output.ReadAllSoapEventOutput;
 import org.junit.Assert;
 import org.junit.Before;
@@ -61,10 +58,7 @@ public class ReadAllSoapEventServiceTest {
 
         Mockito.when(repository.findAll()).thenReturn(soapEvents);
 
-        final ReadAllSoapEventInput input = ReadAllSoapEventInput.builder().build();
-        final ServiceTask<ReadAllSoapEventInput> serviceTask = new ServiceTask<ReadAllSoapEventInput>(input);
-        final ServiceResult<ReadAllSoapEventOutput> serviceResult = service.process(serviceTask);
-        final ReadAllSoapEventOutput output = serviceResult.getOutput();
+        ReadAllSoapEventOutput output = service.process();
 
         Assert.assertEquals(soapEvents.size(), output.getSoapEvents().size());
 

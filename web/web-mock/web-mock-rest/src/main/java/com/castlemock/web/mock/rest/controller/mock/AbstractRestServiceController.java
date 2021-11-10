@@ -16,7 +16,6 @@
 
 package com.castlemock.web.mock.rest.controller.mock;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.http.ContentEncoding;
 import com.castlemock.model.core.http.HttpHeader;
 import com.castlemock.model.core.http.HttpMethod;
@@ -26,17 +25,13 @@ import com.castlemock.model.core.utility.XPathUtility;
 import com.castlemock.model.core.utility.parser.ExternalInputBuilder;
 import com.castlemock.model.core.utility.parser.TextParser;
 import com.castlemock.model.core.utility.parser.expression.argument.ExpressionArgument;
-import com.castlemock.model.mock.rest.domain.RestEvent;
-import com.castlemock.model.mock.rest.domain.RestJsonPathExpression;
-import com.castlemock.model.mock.rest.domain.RestMethod;
-import com.castlemock.model.mock.rest.domain.RestMethodStatus;
-import com.castlemock.model.mock.rest.domain.RestMockResponse;
-import com.castlemock.model.mock.rest.domain.RestMockResponseStatus;
-import com.castlemock.model.mock.rest.domain.RestRequest;
-import com.castlemock.model.mock.rest.domain.RestResponse;
-import com.castlemock.model.mock.rest.domain.RestResponseStrategy;
-import com.castlemock.model.mock.rest.domain.RestXPathExpression;
+import com.castlemock.model.mock.rest.domain.*;
+import com.castlemock.service.mock.rest.event.CreateRestEventService;
 import com.castlemock.service.mock.rest.event.input.CreateRestEventInput;
+import com.castlemock.service.mock.rest.project.CreateRestMockResponseService;
+import com.castlemock.service.mock.rest.project.IdentifyRestMethodService;
+import com.castlemock.service.mock.rest.project.UpdateCurrentRestMockResponseSequenceIndexService;
+import com.castlemock.service.mock.rest.project.UpdateRestMethodsStatusService;
 import com.castlemock.service.mock.rest.project.input.CreateRestMockResponseInput;
 import com.castlemock.service.mock.rest.project.input.IdentifyRestMethodInput;
 import com.castlemock.service.mock.rest.project.input.UpdateCurrentRestMockResponseSequenceIndexInput;
@@ -63,17 +58,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -98,10 +83,19 @@ public abstract class AbstractRestServiceController extends AbstractController {
             new RestMockResponseNameComparator();
 
     private final ServletContext servletContext;
+    private final IdentifyRestMethodService identifyRestMethodService;
+    private final CreateRestEventService createRestEventService;
+    private final CreateRestMockResponseService createRestMockResponseService;
+    private final UpdateRestMethodsStatusService updateRestMethodsStatusService;
+    private final UpdateCurrentRestMockResponseSequenceIndexService updateCurrentRestMockResponseSequenceIndexService;
 
-    protected AbstractRestServiceController(final ServiceProcessor serviceProcessor, final ServletContext servletContext){
-        super(serviceProcessor);
+    protected AbstractRestServiceController(final ServletContext servletContext, IdentifyRestMethodService identifyRestMethodService, CreateRestEventService createRestEventService, CreateRestMockResponseService createRestMockResponseService, UpdateRestMethodsStatusService updateRestMethodsStatusService, UpdateCurrentRestMockResponseSequenceIndexService updateCurrentRestMockResponseSequenceIndexService){
         this.servletContext = Objects.requireNonNull(servletContext);
+        this.identifyRestMethodService = identifyRestMethodService;
+        this.createRestEventService = createRestEventService;
+        this.createRestMockResponseService = createRestMockResponseService;
+        this.updateRestMethodsStatusService = updateRestMethodsStatusService;
+        this.updateCurrentRestMockResponseSequenceIndexService = updateCurrentRestMockResponseSequenceIndexService;
     }
 
     /**
@@ -125,7 +119,7 @@ public abstract class AbstractRestServiceController extends AbstractController {
             Preconditions.checkNotNull(httpServletResponse, "The HTTP Servlet Response cannot be null");
             final RestRequest restRequest = prepareRequest(projectId, applicationId, httpMethod, httpServletRequest);
 
-            final IdentifyRestMethodOutput output = serviceProcessor.process(IdentifyRestMethodInput.builder()
+            final IdentifyRestMethodOutput output = identifyRestMethodService.process(IdentifyRestMethodInput.builder()
                     .restProjectId(projectId)
                     .restApplicationId(applicationId)
                     .restResourceUri(restRequest.getUri())
@@ -235,7 +229,7 @@ public abstract class AbstractRestServiceController extends AbstractController {
         } finally {
             if (event != null) {
                 event.finish(response);
-                serviceProcessor.processAsync(CreateRestEventInput.builder()
+                createRestEventService.process(CreateRestEventInput.builder()
                         .restEvent(event)
                         .build());
             }
@@ -321,7 +315,7 @@ public abstract class AbstractRestServiceController extends AbstractController {
                                                          final HttpServletRequest httpServletRequest) {
         final RestResponse response = forwardRequest(restRequest, projectId, applicationId, resourceId,
                 restMethod, pathParameters, httpServletRequest);
-        serviceProcessor.processAsync(CreateRestMockResponseInput.builder()
+        createRestMockResponseService.process(CreateRestMockResponseInput.builder()
                 .projectId(projectId)
                 .applicationId(applicationId)
                 .resourceId(resourceId)
@@ -359,7 +353,7 @@ public abstract class AbstractRestServiceController extends AbstractController {
         final RestResponse response =
                 forwardRequestAndRecordResponse(restRequest, projectId,
                         applicationId, resourceId, restMethod, pathParameters, httpServletRequest);
-        serviceProcessor.process(UpdateRestMethodsStatusInput.builder()
+        updateRestMethodsStatusService.process(UpdateRestMethodsStatusInput.builder()
                 .projectId(projectId)
                 .applicationId(applicationId)
                 .resourceId(resourceId)
@@ -453,7 +447,7 @@ public abstract class AbstractRestServiceController extends AbstractController {
                 currentSequenceNumber = 0;
             }
             mockResponse = mockResponses.get(currentSequenceNumber);
-            serviceProcessor.process(UpdateCurrentRestMockResponseSequenceIndexInput.builder()
+            updateCurrentRestMockResponseSequenceIndexService.process(UpdateCurrentRestMockResponseSequenceIndexInput.builder()
                     .restProjectId(projectId)
                     .restApplicationId(applicationId)
                     .restResourceId(resourceId)

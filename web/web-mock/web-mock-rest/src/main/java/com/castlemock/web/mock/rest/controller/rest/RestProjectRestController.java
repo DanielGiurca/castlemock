@@ -16,10 +16,13 @@
 
 package com.castlemock.web.mock.rest.controller.rest;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.mock.rest.RestDefinitionType;
 import com.castlemock.model.mock.rest.domain.RestProject;
 import com.castlemock.service.core.manager.FileManager;
+import com.castlemock.service.mock.rest.project.ImportRestDefinitionService;
+import com.castlemock.service.mock.rest.project.ReadRestProjectService;
+import com.castlemock.service.mock.rest.project.UpdateRestApplicationsForwardedEndpointService;
+import com.castlemock.service.mock.rest.project.UpdateRestApplicationsStatusService;
 import com.castlemock.service.mock.rest.project.input.ImportRestDefinitionInput;
 import com.castlemock.service.mock.rest.project.input.ReadRestProjectInput;
 import com.castlemock.service.mock.rest.project.input.UpdateRestApplicationsForwardedEndpointInput;
@@ -29,21 +32,12 @@ import com.castlemock.web.core.controller.rest.AbstractRestController;
 import com.castlemock.web.mock.rest.model.LinkDefinitionRequest;
 import com.castlemock.web.mock.rest.model.UpdateRestApplicationForwardedEndpointsRequest;
 import com.castlemock.web.mock.rest.model.UpdateRestApplicationStatusesRequest;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -58,12 +52,18 @@ import java.util.Objects;
 public class RestProjectRestController extends AbstractRestController {
 
     private final FileManager fileManager;
+    private final ReadRestProjectService readRestProjectService;
+    private final UpdateRestApplicationsStatusService updateRestApplicationsStatusService;
+    private final UpdateRestApplicationsForwardedEndpointService updateRestApplicationsForwardedEndpointService;
+    private final ImportRestDefinitionService importRestDefinitionService;
 
     @Autowired
-    public RestProjectRestController(final ServiceProcessor serviceProcessor,
-                                     final FileManager fileManager){
-        super(serviceProcessor);
+    public RestProjectRestController(final FileManager fileManager, ReadRestProjectService readRestProjectService, UpdateRestApplicationsStatusService updateRestApplicationsStatusService, UpdateRestApplicationsForwardedEndpointService updateRestApplicationsForwardedEndpointService, ImportRestDefinitionService importRestDefinitionService){
         this.fileManager = Objects.requireNonNull(fileManager);
+        this.readRestProjectService = readRestProjectService;
+        this.updateRestApplicationsStatusService = updateRestApplicationsStatusService;
+        this.updateRestApplicationsForwardedEndpointService = updateRestApplicationsForwardedEndpointService;
+        this.importRestDefinitionService = importRestDefinitionService;
     }
 
     @ApiOperation(value = "Get REST Project", response = RestProject.class)
@@ -75,7 +75,7 @@ public class RestProjectRestController extends AbstractRestController {
     ResponseEntity<RestProject> getRestProject(
             @ApiParam(name = "projectId", value = "The id of the project")
             @PathVariable(value = "projectId") final String projectId) {
-        final ReadRestProjectOutput output = super.serviceProcessor.process(ReadRestProjectInput.builder()
+        final ReadRestProjectOutput output = readRestProjectService.process(ReadRestProjectInput.builder()
                 .restProjectId(projectId)
                 .build());
 
@@ -93,7 +93,7 @@ public class RestProjectRestController extends AbstractRestController {
             @PathVariable(value = "projectId") final String projectId,
             @RequestBody UpdateRestApplicationStatusesRequest request){
         request.getApplicationIds()
-                .forEach(applicationId -> super.serviceProcessor.process(UpdateRestApplicationsStatusInput.builder()
+                .forEach(applicationId -> updateRestApplicationsStatusService.process(UpdateRestApplicationsStatusInput.builder()
                         .projectId(projectId)
                         .applicationId(applicationId)
                         .methodStatus(request.getStatus())
@@ -111,7 +111,7 @@ public class RestProjectRestController extends AbstractRestController {
             @ApiParam(name = "projectId", value = "The id of the project")
             @PathVariable(value = "projectId") final String projectId,
             @RequestBody UpdateRestApplicationForwardedEndpointsRequest request){
-        super.serviceProcessor.process(UpdateRestApplicationsForwardedEndpointInput.builder()
+        updateRestApplicationsForwardedEndpointService.process(UpdateRestApplicationsForwardedEndpointInput.builder()
                 .projectId(projectId)
                 .applicationIds(request.getApplicationIds())
                 .forwardedEndpoint(request.getForwardedEndpoint())
@@ -134,7 +134,7 @@ public class RestProjectRestController extends AbstractRestController {
 
         try {
             final File file = fileManager.uploadFile(multipartFile);
-            super.serviceProcessor.process(ImportRestDefinitionInput.builder()
+            importRestDefinitionService.process(ImportRestDefinitionInput.builder()
                     .restProjectId(projectId)
                     .files(List.of(file))
                     .generateResponse(generateResponse)
@@ -156,7 +156,7 @@ public class RestProjectRestController extends AbstractRestController {
             @ApiParam(name = "projectId", value = "The id of the project")
             @PathVariable(value = "projectId") final String projectId,
             @RequestBody final LinkDefinitionRequest request){
-        super.serviceProcessor.process(ImportRestDefinitionInput.builder()
+        importRestDefinitionService.process(ImportRestDefinitionInput.builder()
                 .restProjectId(projectId)
                 .files(null)
                 .generateResponse(request.getGenerateResponse())

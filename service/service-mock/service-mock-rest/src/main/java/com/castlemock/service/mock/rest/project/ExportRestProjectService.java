@@ -16,16 +16,9 @@
 
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.core.utility.serializer.ExportContainerSerializer;
 import com.castlemock.model.mock.rest.RestExportContainer;
-import com.castlemock.model.mock.rest.domain.RestApplication;
-import com.castlemock.model.mock.rest.domain.RestMethod;
-import com.castlemock.model.mock.rest.domain.RestMockResponse;
-import com.castlemock.model.mock.rest.domain.RestProject;
-import com.castlemock.model.mock.rest.domain.RestResource;
+import com.castlemock.model.mock.rest.domain.*;
 import com.castlemock.service.mock.rest.project.input.ExportRestProjectInput;
 import com.castlemock.service.mock.rest.project.output.ExportRestProjectOutput;
 
@@ -37,19 +30,9 @@ import java.util.List;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class ExportRestProjectService extends AbstractRestProjectService implements Service<ExportRestProjectInput, ExportRestProjectOutput> {
+public class ExportRestProjectService extends AbstractRestProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<ExportRestProjectOutput> process(final ServiceTask<ExportRestProjectInput> serviceTask) {
-        final ExportRestProjectInput input = serviceTask.getInput();
+    public ExportRestProjectOutput process(ExportRestProjectInput input) {
         final RestProject project = repository.findOne(input.getRestProjectId());
         final List<RestApplication> applications = this.applicationRepository.findWithProjectId(input.getRestProjectId());
         final List<RestResource> resources = new ArrayList<>();
@@ -80,8 +63,8 @@ public class ExportRestProjectService extends AbstractRestProjectService impleme
         exportContainer.setMockResponses(mockResponses);
 
         final String serialized = ExportContainerSerializer.serialize(exportContainer);
-        return createServiceResult(ExportRestProjectOutput.builder()
+        return ExportRestProjectOutput.builder()
                 .exportedProject(serialized)
-                .build());
+                .build();
     }
 }

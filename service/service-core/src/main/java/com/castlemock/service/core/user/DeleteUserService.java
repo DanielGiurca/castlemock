@@ -16,9 +16,6 @@
 
 package com.castlemock.service.core.user;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.service.core.user.input.DeleteUserInput;
 import com.castlemock.service.core.user.output.DeleteUserOutput;
 
@@ -27,21 +24,11 @@ import com.castlemock.service.core.user.output.DeleteUserOutput;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class DeleteUserService extends AbstractUserService implements Service<DeleteUserInput, DeleteUserOutput> {
+public class DeleteUserService extends AbstractUserService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<DeleteUserOutput> process(final ServiceTask<DeleteUserInput> serviceTask) {
-        final DeleteUserInput input = serviceTask.getInput();
+    public DeleteUserOutput process(DeleteUserInput input) {
         final String userId = input.getUserId();
         delete(userId);
-        return createServiceResult(new DeleteUserOutput());
+        return new DeleteUserOutput();
     }
 }

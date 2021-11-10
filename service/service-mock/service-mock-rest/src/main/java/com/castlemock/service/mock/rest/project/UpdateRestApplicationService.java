@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestApplication;
 import com.castlemock.service.mock.rest.project.input.UpdateRestApplicationInput;
 import com.castlemock.service.mock.rest.project.output.UpdateRestApplicationOutput;
@@ -28,25 +25,15 @@ import com.castlemock.service.mock.rest.project.output.UpdateRestApplicationOutp
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class UpdateRestApplicationService extends AbstractRestProjectService implements Service<UpdateRestApplicationInput, UpdateRestApplicationOutput> {
+public class UpdateRestApplicationService extends AbstractRestProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<UpdateRestApplicationOutput> process(final ServiceTask<UpdateRestApplicationInput> serviceTask) {
-        final UpdateRestApplicationInput input = serviceTask.getInput();
+    public UpdateRestApplicationOutput process(UpdateRestApplicationInput input) {
         final RestApplication existing = this.applicationRepository.findOne(input.getRestApplicationId());
         existing.setName(input.getName());
 
         final RestApplication updatedRestApplication = this.applicationRepository.update(input.getRestApplicationId(), existing);
-        return createServiceResult(UpdateRestApplicationOutput.builder()
+        return UpdateRestApplicationOutput.builder()
                 .updatedRestApplication(updatedRestApplication)
-                .build());
+                .build();
     }
 }

@@ -16,7 +16,6 @@
 
 package com.castlemock.service.core.user;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.user.User;
 import com.castlemock.model.core.user.UserTestBuilder;
 import com.castlemock.service.core.user.input.ReadUserByUsernameInput;
@@ -40,7 +39,7 @@ import java.util.Collection;
 public class UserDetailSecurityServiceTest {
 
     @Mock
-    private ServiceProcessor serviceProcessor;
+    private ReadUserByUsernameService serviceProcessor;
 
     @InjectMocks
     private UserDetailSecurityService service;

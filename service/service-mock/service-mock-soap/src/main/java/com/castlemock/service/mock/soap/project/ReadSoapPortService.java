@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapOperation;
 import com.castlemock.model.mock.soap.domain.SoapPort;
 import com.castlemock.service.mock.soap.project.input.ReadSoapPortInput;
@@ -31,24 +28,14 @@ import java.util.List;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class ReadSoapPortService extends AbstractSoapProjectService implements Service<ReadSoapPortInput, ReadSoapPortOutput> {
+public class ReadSoapPortService extends AbstractSoapProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<ReadSoapPortOutput> process(final ServiceTask<ReadSoapPortInput> serviceTask) {
-        final ReadSoapPortInput input = serviceTask.getInput();
+    public ReadSoapPortOutput process(ReadSoapPortInput input) {
         final SoapPort soapPort = this.portRepository.findOne(input.getPortId());
         final List<SoapOperation> operations = this.operationRepository.findWithPortId(input.getPortId());
         soapPort.setOperations(operations);
-        return createServiceResult(ReadSoapPortOutput.builder()
+        return ReadSoapPortOutput.builder()
                 .port(soapPort)
-                .build());
+                .build();
     }
 }

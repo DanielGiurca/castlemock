@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapMockResponse;
 import com.castlemock.model.mock.soap.domain.SoapOperation;
 import com.castlemock.model.mock.soap.domain.SoapPort;
@@ -32,19 +29,9 @@ import java.util.List;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class IdentifySoapOperationService extends AbstractSoapProjectService implements Service<IdentifySoapOperationInput, IdentifySoapOperationOutput> {
+public class IdentifySoapOperationService extends AbstractSoapProjectService  {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<IdentifySoapOperationOutput> process(final ServiceTask<IdentifySoapOperationInput> serviceTask) {
-        final IdentifySoapOperationInput input = serviceTask.getInput();
+    public IdentifySoapOperationOutput process(IdentifySoapOperationInput input) {
         final SoapPort port = this.portRepository.findWithUri(input.getProjectId(), input.getUri());
         final SoapOperation operation =
                 this.operationRepository.findWithMethodAndVersionAndIdentifier(
@@ -57,12 +44,12 @@ public class IdentifySoapOperationService extends AbstractSoapProjectService imp
         final List<SoapMockResponse> mockResponses = this.mockResponseRepository.findWithOperationId(operation.getId());
         operation.setMockResponses(mockResponses);
 
-        return createServiceResult(IdentifySoapOperationOutput.builder()
+        return IdentifySoapOperationOutput.builder()
                 .projectId(input.getProjectId())
                 .portId(port.getId())
                 .operationId(operation.getId())
                 .operation(operation)
-                .build());
+                .build();
     }
 
 

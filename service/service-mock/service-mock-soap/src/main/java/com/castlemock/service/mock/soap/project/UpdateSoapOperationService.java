@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapOperation;
 import com.castlemock.service.mock.soap.project.input.UpdateSoapOperationInput;
 import com.castlemock.service.mock.soap.project.output.UpdateSoapOperationOutput;
@@ -28,19 +25,9 @@ import com.castlemock.service.mock.soap.project.output.UpdateSoapOperationOutput
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class UpdateSoapOperationService extends AbstractSoapProjectService implements Service<UpdateSoapOperationInput, UpdateSoapOperationOutput> {
+public class UpdateSoapOperationService extends AbstractSoapProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<UpdateSoapOperationOutput> process(final ServiceTask<UpdateSoapOperationInput> serviceTask) {
-        final UpdateSoapOperationInput input = serviceTask.getInput();
+    public UpdateSoapOperationOutput process(UpdateSoapOperationInput input) {
         final SoapOperation soapOperation = this.operationRepository.findOne(input.getOperationId());
 
         soapOperation.setStatus(input.getStatus());
@@ -53,8 +40,8 @@ public class UpdateSoapOperationService extends AbstractSoapProjectService imple
         soapOperation.setIdentifyStrategy(input.getIdentifyStrategy());
 
         final SoapOperation updatedSoapOperation = this.operationRepository.update(input.getOperationId(), soapOperation);
-        return createServiceResult(UpdateSoapOperationOutput.builder()
+        return UpdateSoapOperationOutput.builder()
                 .operation(updatedSoapOperation)
-                .build());
+                .build();
     }
 }

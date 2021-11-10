@@ -16,8 +16,6 @@
 
 package com.castlemock.service.core.user;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.core.user.Role;
 import com.castlemock.model.core.user.Status;
 import com.castlemock.model.core.user.User;
@@ -68,10 +66,7 @@ public class CreateUserServiceTest {
 
         Mockito.when(repository.save(Mockito.any(User.class))).thenReturn(createdUser);
         final CreateUserInput input = CreateUserInput.builder().user(user).build();
-        final ServiceTask<CreateUserInput> serviceTask = new ServiceTask<CreateUserInput>();
-        serviceTask.setInput(input);
-        final ServiceResult<CreateUserOutput> serviceResult = service.process(serviceTask);
-        final CreateUserOutput output = serviceResult.getOutput();
+        final CreateUserOutput output = service.process(input);
 
         final User returnedUser = output.getSavedUser();
         Assert.assertNotNull(returnedUser);

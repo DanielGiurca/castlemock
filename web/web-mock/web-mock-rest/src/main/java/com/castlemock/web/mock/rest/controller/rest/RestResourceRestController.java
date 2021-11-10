@@ -16,41 +16,23 @@
 
 package com.castlemock.web.mock.rest.controller.rest;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.mock.rest.domain.RestMethod;
 import com.castlemock.model.mock.rest.domain.RestParameterQuery;
 import com.castlemock.model.mock.rest.domain.RestResource;
-import com.castlemock.service.mock.rest.project.input.CreateRestResourceInput;
-import com.castlemock.service.mock.rest.project.input.DeleteRestResourceInput;
-import com.castlemock.service.mock.rest.project.input.ReadRestResourceInput;
-import com.castlemock.service.mock.rest.project.input.ReadRestResourceQueryParametersInput;
-import com.castlemock.service.mock.rest.project.input.UpdateRestMethodsForwardedEndpointInput;
-import com.castlemock.service.mock.rest.project.input.UpdateRestMethodsStatusInput;
-import com.castlemock.service.mock.rest.project.input.UpdateRestResourceInput;
-import com.castlemock.service.mock.rest.project.output.CreateRestResourceOutput;
-import com.castlemock.service.mock.rest.project.output.DeleteRestResourceOutput;
-import com.castlemock.service.mock.rest.project.output.ReadRestResourceOutput;
-import com.castlemock.service.mock.rest.project.output.ReadRestResourceQueryParametersOutput;
-import com.castlemock.service.mock.rest.project.output.UpdateRestResourceOutput;
+import com.castlemock.service.mock.rest.project.*;
+import com.castlemock.service.mock.rest.project.input.*;
+import com.castlemock.service.mock.rest.project.output.*;
 import com.castlemock.web.core.controller.rest.AbstractRestController;
 import com.castlemock.web.mock.rest.model.CreateRestResourceRequest;
 import com.castlemock.web.mock.rest.model.UpdateRestMethodForwardedEndpointsRequest;
 import com.castlemock.web.mock.rest.model.UpdateRestMethodStatusesRequest;
 import com.castlemock.web.mock.rest.model.UpdateRestResourceRequest;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
@@ -60,9 +42,19 @@ import java.util.Set;
 public class RestResourceRestController extends AbstractRestController {
 
     @Autowired
-    public RestResourceRestController(final ServiceProcessor serviceProcessor){
-        super(serviceProcessor);
-    }
+    private ReadRestResourceService readRestResourceService;
+    @Autowired
+    private ReadRestResourceQueryParametersService readRestResourceQueryParametersService;
+    @Autowired
+    private DeleteRestResourceService deleteRestResourceService;
+    @Autowired
+    private UpdateRestResourceService updateRestResourceService;
+    @Autowired
+    private CreateRestResourceService createRestResourceService;
+    @Autowired
+    private UpdateRestMethodsStatusService updateRestMethodsStatusService;
+    @Autowired
+    private UpdateRestMethodsForwardedEndpointService updateRestMethodsForwardedEndpointService;
 
     @ApiOperation(value = "Get Resource", response = RestResource.class)
     @ApiResponses(value = {
@@ -78,7 +70,7 @@ public class RestResourceRestController extends AbstractRestController {
             @PathVariable(value = "applicationId") final String applicationId,
             @ApiParam(name = "resourceId", value = "The id of the resource")
             @PathVariable(value = "resourceId") final String resourceId) {
-        final ReadRestResourceOutput output = super.serviceProcessor.process(ReadRestResourceInput.builder()
+        final ReadRestResourceOutput output = readRestResourceService.process(ReadRestResourceInput.builder()
                 .restProjectId(projectId)
                 .restApplicationId(applicationId)
                 .restResourceId(resourceId)
@@ -101,7 +93,7 @@ public class RestResourceRestController extends AbstractRestController {
             @ApiParam(name = "resourceId", value = "The id of the resource")
             @PathVariable(value = "resourceId") final String resourceId) {
         final ReadRestResourceQueryParametersOutput output =
-                serviceProcessor.process(ReadRestResourceQueryParametersInput.builder()
+                readRestResourceQueryParametersService.process(ReadRestResourceQueryParametersInput.builder()
                         .projectId(projectId)
                         .applicationId(applicationId)
                         .resourceId(resourceId)
@@ -122,7 +114,7 @@ public class RestResourceRestController extends AbstractRestController {
             @PathVariable(value = "applicationId") final String applicationId,
             @ApiParam(name = "resourceId", value = "The id of the resource")
             @PathVariable(value = "resourceId") final String resourceId) {
-        final DeleteRestResourceOutput output = super.serviceProcessor.process(DeleteRestResourceInput.builder()
+        final DeleteRestResourceOutput output = deleteRestResourceService.process(DeleteRestResourceInput.builder()
                 .restProjectId(projectId)
                 .restApplicationId(applicationId)
                 .restResourceId(resourceId)
@@ -144,7 +136,7 @@ public class RestResourceRestController extends AbstractRestController {
             @ApiParam(name = "resourceId", value = "The id of the resource")
             @PathVariable(value = "resourceId") final String resourceId,
             @RequestBody UpdateRestResourceRequest request) {
-        final UpdateRestResourceOutput output = super.serviceProcessor.process(UpdateRestResourceInput.builder()
+        final UpdateRestResourceOutput output = updateRestResourceService.process(UpdateRestResourceInput.builder()
                 .restProjectId(projectId)
                 .restApplicationId(applicationId)
                 .restResourceId(resourceId)
@@ -166,7 +158,7 @@ public class RestResourceRestController extends AbstractRestController {
             @ApiParam(name = "applicationId", value = "The id of the application")
             @PathVariable(value = "applicationId") final String applicationId,
             @RequestBody CreateRestResourceRequest request) {
-        final CreateRestResourceOutput output = super.serviceProcessor.process(CreateRestResourceInput.builder()
+        final CreateRestResourceOutput output = createRestResourceService.process(CreateRestResourceInput.builder()
                 .restProjectId(projectId)
                 .restApplicationId(applicationId)
                 .name(request.getName())
@@ -190,7 +182,7 @@ public class RestResourceRestController extends AbstractRestController {
             @PathVariable(value = "resourceId") final String resourceId,
             @org.springframework.web.bind.annotation.RequestBody UpdateRestMethodStatusesRequest request){
         request.getMethodIds()
-                .forEach(methodId -> super.serviceProcessor.process(UpdateRestMethodsStatusInput.builder()
+                .forEach(methodId -> updateRestMethodsStatusService.process(UpdateRestMethodsStatusInput.builder()
                         .projectId(projectId)
                         .applicationId(applicationId)
                         .resourceId(resourceId)
@@ -214,7 +206,7 @@ public class RestResourceRestController extends AbstractRestController {
             @ApiParam(name = "resourceId", value = "The id of the resource")
             @PathVariable(value = "resourceId") final String resourceId,
             @org.springframework.web.bind.annotation.RequestBody UpdateRestMethodForwardedEndpointsRequest request){
-        super.serviceProcessor.process(UpdateRestMethodsForwardedEndpointInput.builder()
+        updateRestMethodsForwardedEndpointService.process(UpdateRestMethodsForwardedEndpointInput.builder()
                 .projectId(projectId)
                 .applicationId(applicationId)
                 .resourceId(resourceId)

@@ -16,8 +16,8 @@
 
 package com.castlemock.web.mock.rest.config;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.service.core.manager.UrlManager;
+import com.castlemock.service.mock.rest.project.ImportRestProjectService;
 import com.castlemock.service.mock.rest.project.input.ImportRestProjectInput;
 import com.google.common.base.Strings;
 import org.slf4j.Logger;
@@ -37,7 +37,7 @@ public class RestDemoModeInitializer {
     @Autowired
     protected UrlManager urlManager;
     @Autowired
-    private ServiceProcessor serviceProcessor;
+    private ImportRestProjectService importRestProjectService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RestDemoModeInitializer.class);
 
@@ -47,7 +47,7 @@ public class RestDemoModeInitializer {
             try {
                 final Optional<String> project = this.urlManager.readFromUrl(projectUrl);
 
-                project.ifPresent(raw -> serviceProcessor.process(ImportRestProjectInput.builder()
+                project.ifPresent(raw -> importRestProjectService.process(ImportRestProjectInput.builder()
                         .projectRaw(raw)
                         .build()));
             } catch (Exception e){

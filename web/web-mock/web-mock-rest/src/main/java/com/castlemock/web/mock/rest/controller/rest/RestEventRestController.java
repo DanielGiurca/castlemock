@@ -16,16 +16,12 @@
 
 package com.castlemock.web.mock.rest.controller.rest;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.mock.rest.domain.RestEvent;
+import com.castlemock.service.mock.rest.event.ReadRestEventService;
 import com.castlemock.service.mock.rest.event.input.ReadRestEventInput;
 import com.castlemock.service.mock.rest.event.output.ReadRestEventOutput;
 import com.castlemock.web.core.controller.rest.AbstractRestController;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -41,9 +37,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class RestEventRestController extends AbstractRestController {
 
     @Autowired
-    public RestEventRestController(final ServiceProcessor serviceProcessor){
-        super(serviceProcessor);
-    }
+    private ReadRestEventService readRestEventService;
 
     @ApiOperation(value = "Get REST event", response = RestEvent.class)
     @ApiResponses(value = {
@@ -54,7 +48,7 @@ public class RestEventRestController extends AbstractRestController {
     ResponseEntity<RestEvent> getRestEvent(
             @ApiParam(name = "eventId", value = "The id of the event")
             @PathVariable(value = "eventId") final String eventId) {
-        final ReadRestEventOutput output = super.serviceProcessor.process(ReadRestEventInput.builder()
+        final ReadRestEventOutput output = readRestEventService.process(ReadRestEventInput.builder()
                 .restEventId(eventId)
                 .build());
 

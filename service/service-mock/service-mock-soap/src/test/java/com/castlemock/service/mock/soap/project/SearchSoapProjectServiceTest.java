@@ -18,26 +18,16 @@ package com.castlemock.service.mock.soap.project;
 
 import com.castlemock.model.core.SearchQuery;
 import com.castlemock.model.core.SearchResult;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapProject;
 import com.castlemock.model.mock.soap.domain.SoapProjectTestBuilder;
-import com.castlemock.repository.soap.project.SoapMockResponseRepository;
-import com.castlemock.repository.soap.project.SoapOperationRepository;
-import com.castlemock.repository.soap.project.SoapPortRepository;
-import com.castlemock.repository.soap.project.SoapProjectRepository;
-import com.castlemock.repository.soap.project.SoapResourceRepository;
+import com.castlemock.repository.soap.project.*;
 import com.castlemock.service.mock.soap.project.input.SearchSoapProjectInput;
 import com.castlemock.service.mock.soap.project.output.SearchSoapProjectOutput;
 import org.dozer.DozerBeanMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
+import org.mockito.*;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 
@@ -100,11 +90,8 @@ public class SearchSoapProjectServiceTest {
         final SearchSoapProjectInput input = SearchSoapProjectInput.builder()
                 .searchQuery(searchQuery)
                 .build();
-        final ServiceTask<SearchSoapProjectInput> serviceTask = new ServiceTask<SearchSoapProjectInput>();
-        serviceTask.setInput(input);
 
-        final ServiceResult<SearchSoapProjectOutput> serviceResult = service.process(serviceTask);
-        final SearchSoapProjectOutput searchSoapProjectOutput = serviceResult.getOutput();
+        SearchSoapProjectOutput searchSoapProjectOutput = service.process(input);
 
         Assert.assertNotNull(searchSoapProjectOutput.getSearchResults());
         Assert.assertEquals(1, searchSoapProjectOutput.getSearchResults().size());

@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapProject;
 import com.castlemock.service.mock.soap.project.input.ReadAllSoapProjectsInput;
 import com.castlemock.service.mock.soap.project.output.ReadAllSoapProjectsOutput;
@@ -30,21 +27,12 @@ import java.util.List;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class ReadAllSoapProjectsService extends AbstractSoapProjectService implements Service<ReadAllSoapProjectsInput, ReadAllSoapProjectsOutput> {
+public class ReadAllSoapProjectsService extends AbstractSoapProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<ReadAllSoapProjectsOutput> process(final ServiceTask<ReadAllSoapProjectsInput> serviceTask) {
+    public ReadAllSoapProjectsOutput process(ReadAllSoapProjectsInput input) {
         final List<SoapProject> soapProjects = findAll();
-        return createServiceResult(ReadAllSoapProjectsOutput.builder()
+        return ReadAllSoapProjectsOutput.builder()
                 .projects(soapProjects)
-                .build());
+                .build();
     }
 }

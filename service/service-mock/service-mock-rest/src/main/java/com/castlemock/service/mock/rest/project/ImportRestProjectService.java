@@ -16,17 +16,9 @@
 
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.core.utility.serializer.ExportContainerSerializer;
 import com.castlemock.model.mock.rest.RestExportContainer;
-import com.castlemock.model.mock.rest.domain.RestApplication;
-import com.castlemock.model.mock.rest.domain.RestMethod;
-import com.castlemock.model.mock.rest.domain.RestMockResponse;
-import com.castlemock.model.mock.rest.domain.RestParameterQuery;
-import com.castlemock.model.mock.rest.domain.RestProject;
-import com.castlemock.model.mock.rest.domain.RestResource;
+import com.castlemock.model.mock.rest.domain.*;
 import com.castlemock.service.mock.rest.project.input.ImportRestProjectInput;
 import com.castlemock.service.mock.rest.project.output.ImportRestProjectOutput;
 
@@ -38,20 +30,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class ImportRestProjectService extends AbstractRestProjectService implements Service<ImportRestProjectInput, ImportRestProjectOutput> {
+public class ImportRestProjectService extends AbstractRestProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<ImportRestProjectOutput> process(final ServiceTask<ImportRestProjectInput> serviceTask) {
-        final ImportRestProjectInput input = serviceTask.getInput();
-
+    public ImportRestProjectOutput process(ImportRestProjectInput input) {
         final RestExportContainer exportContainer = ExportContainerSerializer.deserialize(input.getProjectRaw(), RestExportContainer.class);
         final RestProject project = exportContainer.getProject();
 
@@ -99,8 +80,8 @@ public class ImportRestProjectService extends AbstractRestProjectService impleme
             this.mockResponseRepository.save(mockResponse);
 
         }
-        return createServiceResult(ImportRestProjectOutput.builder()
+        return ImportRestProjectOutput.builder()
                 .project(project)
-                .build());
+                .build();
     }
 }

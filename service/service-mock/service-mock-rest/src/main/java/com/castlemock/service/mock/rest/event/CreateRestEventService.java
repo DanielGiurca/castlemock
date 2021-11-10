@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.rest.event;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestEvent;
 import com.castlemock.service.mock.rest.event.input.CreateRestEventInput;
 import com.castlemock.service.mock.rest.event.output.CreateRestEventOutput;
@@ -29,28 +26,18 @@ import org.springframework.beans.factory.annotation.Value;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class CreateRestEventService extends AbstractRestEventService implements Service<CreateRestEventInput, CreateRestEventOutput> {
+public class CreateRestEventService extends AbstractRestEventService {
 
     @Value("${rest.event.max}")
     private Integer restMaxEventCount;
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<CreateRestEventOutput> process(ServiceTask<CreateRestEventInput> serviceTask) {
-        final CreateRestEventInput input = serviceTask.getInput();
+    public CreateRestEventOutput process(CreateRestEventInput input) {
         if(count() >= restMaxEventCount){
             repository.deleteOldestEvent();
         }
         final RestEvent createdRestEvent = save(input.getRestEvent());
-        return createServiceResult(CreateRestEventOutput.builder()
+        return CreateRestEventOutput.builder()
                 .createdRestEvent(createdRestEvent)
-                .build());
+                .build();
     }
 }

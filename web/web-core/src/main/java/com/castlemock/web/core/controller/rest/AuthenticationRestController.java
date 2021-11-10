@@ -17,8 +17,8 @@
 package com.castlemock.web.core.controller.rest;
 
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.user.User;
+import com.castlemock.service.core.user.ReadUserByUsernameService;
 import com.castlemock.service.core.user.input.ReadUserByUsernameInput;
 import com.castlemock.service.core.user.output.ReadUserByUsernameOutput;
 import com.castlemock.web.core.config.JWTEncoderDecoder;
@@ -53,14 +53,14 @@ public class AuthenticationRestController extends AbstractRestController {
 
     private final AuthenticationManager authenticationManager;
     private final JWTEncoderDecoder jwtEncoderDecoder;
+    private final ReadUserByUsernameService readUserByUsernameService;
 
     @Autowired
-    public AuthenticationRestController(final ServiceProcessor serviceProcessor,
-                                        final AuthenticationManager authenticationManager,
-                                        final JWTEncoderDecoder jwtEncoderDecoder){
-        super(serviceProcessor);
+    public AuthenticationRestController(final AuthenticationManager authenticationManager,
+                                        final JWTEncoderDecoder jwtEncoderDecoder, ReadUserByUsernameService readUserByUsernameService){
         this.authenticationManager = Objects.requireNonNull(authenticationManager);
         this.jwtEncoderDecoder = Objects.requireNonNull(jwtEncoderDecoder);
+        this.readUserByUsernameService = readUserByUsernameService;
     }
 
     /**
@@ -76,7 +76,7 @@ public class AuthenticationRestController extends AbstractRestController {
     public @ResponseBody ResponseEntity<AuthenticationResponse> login(@RequestBody final AuthenticationRequest request, final HttpServletResponse httpServletResponse) {
         final Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
         if(authentication.isAuthenticated()){
-            final ReadUserByUsernameOutput output = serviceProcessor.process(ReadUserByUsernameInput.builder()
+            final ReadUserByUsernameOutput output = readUserByUsernameService.process(ReadUserByUsernameInput.builder()
                     .username(request.getUsername())
                     .build());
             final User user = output.getUser();

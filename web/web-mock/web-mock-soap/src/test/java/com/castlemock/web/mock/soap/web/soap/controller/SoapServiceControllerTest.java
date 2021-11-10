@@ -16,7 +16,6 @@
 
 package com.castlemock.web.mock.soap.web.soap.controller;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.http.HttpHeader;
 import com.castlemock.model.core.http.HttpMethod;
 import com.castlemock.model.mock.soap.domain.SoapMockResponse;
@@ -28,6 +27,11 @@ import com.castlemock.model.mock.soap.domain.SoapResource;
 import com.castlemock.model.mock.soap.domain.SoapResourceType;
 import com.castlemock.model.mock.soap.domain.SoapResponseStrategy;
 import com.castlemock.model.mock.soap.domain.SoapXPathExpression;
+import com.castlemock.service.mock.soap.event.CreateSoapEventService;
+import com.castlemock.service.mock.soap.project.IdentifySoapOperationService;
+import com.castlemock.service.mock.soap.project.LoadSoapResourceService;
+import com.castlemock.service.mock.soap.project.ReadSoapProjectService;
+import com.castlemock.service.mock.soap.project.UpdateCurrentMockResponseSequenceIndexService;
 import com.castlemock.service.mock.soap.project.input.IdentifySoapOperationInput;
 import com.castlemock.service.mock.soap.project.input.LoadSoapResourceInput;
 import com.castlemock.service.mock.soap.project.input.ReadSoapProjectInput;
@@ -74,8 +78,17 @@ public class SoapServiceControllerTest extends AbstractControllerTest {
 
     @InjectMocks
     private SoapServiceController soapServiceController;
+
     @Mock
-    private ServiceProcessor serviceProcessor;
+    private IdentifySoapOperationService identifySoapOperationService;
+    @Mock
+    private ReadSoapProjectService readSoapProjectService;
+    @Mock
+    private LoadSoapResourceService loadSoapResourceService;
+    @Mock
+    private CreateSoapEventService createSoapEventService;
+    @Mock
+    private UpdateCurrentMockResponseSequenceIndexService updateCurrentMockResponseSequenceIndexService;
 
     private static final String PROJECT_ID = "ProjectId";
     private static final String SOAP_PORT_ID = "SoapPortId";
@@ -154,7 +167,7 @@ public class SoapServiceControllerTest extends AbstractControllerTest {
                 .build();
 
 
-        when(serviceProcessor.process(any(IdentifySoapOperationInput.class))).thenReturn(identifySoapOperationOutput);
+        when(identifySoapOperationService.process(any(IdentifySoapOperationInput.class))).thenReturn(identifySoapOperationOutput);
         when(httpServletRequest.getRequestURI()).thenReturn(CONTEXT + SLASH + MOCK + SLASH + SOAP + SLASH + PROJECT +
                 SLASH + PROJECT_ID + SLASH + SOAP_PORT_ID);
 
@@ -184,7 +197,7 @@ public class SoapServiceControllerTest extends AbstractControllerTest {
                 .operation(soapOperation)
                 .build();
 
-        when(serviceProcessor.process(any(IdentifySoapOperationInput.class))).thenReturn(identifySoapOperationOutput);
+        when(identifySoapOperationService.process(any(IdentifySoapOperationInput.class))).thenReturn(identifySoapOperationOutput);
         when(httpServletRequest.getRequestURI()).thenReturn(CONTEXT + SLASH + MOCK + SLASH + SOAP + SLASH + PROJECT +
                 SLASH + PROJECT_ID + SLASH + SOAP_PORT_ID);
 
@@ -216,7 +229,7 @@ public class SoapServiceControllerTest extends AbstractControllerTest {
                 .operation(soapOperation)
                 .build();
 
-        when(serviceProcessor.process(any(IdentifySoapOperationInput.class))).thenReturn(identifySoapOperationOutput);
+        when(identifySoapOperationService.process(any(IdentifySoapOperationInput.class))).thenReturn(identifySoapOperationOutput);
         when(httpServletRequest.getRequestURI()).thenReturn(CONTEXT + SLASH + MOCK + SLASH + SOAP + SLASH + PROJECT +
                 SLASH + PROJECT_ID + SLASH + SOAP_PORT_ID);
 
@@ -250,7 +263,7 @@ public class SoapServiceControllerTest extends AbstractControllerTest {
                 .operation(soapOperation)
                 .build();
 
-        when(serviceProcessor.process(any(IdentifySoapOperationInput.class))).thenReturn(identifySoapOperationOutput);
+        when(identifySoapOperationService.process(any(IdentifySoapOperationInput.class))).thenReturn(identifySoapOperationOutput);
         when(httpServletRequest.getRequestURI()).thenReturn(CONTEXT + SLASH + MOCK + SLASH + SOAP + SLASH + PROJECT +
                 SLASH + PROJECT_ID + SLASH + SOAP_PORT_ID);
 
@@ -280,7 +293,7 @@ public class SoapServiceControllerTest extends AbstractControllerTest {
                 .operation(soapOperation)
                 .build();
 
-        when(serviceProcessor.process(any(IdentifySoapOperationInput.class))).thenReturn(identifySoapOperationOutput);
+        when(identifySoapOperationService.process(any(IdentifySoapOperationInput.class))).thenReturn(identifySoapOperationOutput);
         when(httpServletRequest.getRequestURI()).thenReturn(CONTEXT + SLASH + MOCK + SLASH + SOAP + SLASH + PROJECT +
                 SLASH + PROJECT_ID + SLASH + SOAP_PORT_ID);
 
@@ -308,7 +321,7 @@ public class SoapServiceControllerTest extends AbstractControllerTest {
                 .operation(soapOperation)
                 .build();
 
-        when(serviceProcessor.process(any(IdentifySoapOperationInput.class))).thenReturn(identifySoapOperationOutput);
+        when(identifySoapOperationService.process(any(IdentifySoapOperationInput.class))).thenReturn(identifySoapOperationOutput);
         when(httpServletRequest.getRequestURI()).thenReturn(CONTEXT + SLASH + MOCK + SLASH + SOAP + SLASH + PROJECT +
                 SLASH + PROJECT_ID + SLASH + SOAP_PORT_ID);
 
@@ -346,7 +359,7 @@ public class SoapServiceControllerTest extends AbstractControllerTest {
                 .operation(soapOperation)
                 .build();
 
-        when(serviceProcessor.process(any(IdentifySoapOperationInput.class))).thenReturn(identifySoapOperationOutput);
+        when(identifySoapOperationService.process(any(IdentifySoapOperationInput.class))).thenReturn(identifySoapOperationOutput);
         when(httpServletRequest.getRequestURI()).thenReturn(CONTEXT + SLASH + MOCK + SLASH + SOAP + SLASH + PROJECT +
                 SLASH + PROJECT_ID + SLASH + SOAP_PORT_ID);
 
@@ -379,12 +392,12 @@ public class SoapServiceControllerTest extends AbstractControllerTest {
                 .operation(soapOperation)
                 .build();
 
-        when(serviceProcessor.process(any(IdentifySoapOperationInput.class))).thenReturn(identifySoapOperationOutput);
+        when(identifySoapOperationService.process(any(IdentifySoapOperationInput.class))).thenReturn(identifySoapOperationOutput);
         when(httpServletRequest.getRequestURI()).thenReturn(CONTEXT + SLASH + MOCK + SLASH + SOAP + SLASH + PROJECT +
                 SLASH + PROJECT_ID + SLASH + SOAP_PORT_ID);
 
         final ResponseEntity<?> responseEntity = soapServiceController.postMethod(PROJECT_ID, httpServletRequest, httpServletResponse);
-        Assert.assertEquals(REQUEST_BODY, responseEntity.getBody());
+        Assert.assertEquals(REQUEST_BODY.replace("\n", "").replace("\r", ""), responseEntity.getBody().toString().replace("\n", "").replace("\r", ""));
         Assert.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         Assert.assertTrue(responseEntity.getHeaders().containsKey(CONTENT_TYPE_HEADER));
         Assert.assertFalse(responseEntity.getHeaders().containsKey(ACCEPT_HEADER));
@@ -408,8 +421,8 @@ public class SoapServiceControllerTest extends AbstractControllerTest {
                 .resource(WSDL)
                 .build();
 
-        when(serviceProcessor.process(isA(ReadSoapProjectInput.class))).thenReturn(readSoapProjectOutput);
-        when(serviceProcessor.process(isA(LoadSoapResourceInput.class))).thenReturn(loadSoapResourceOutput);
+        when(readSoapProjectService.process(isA(ReadSoapProjectInput.class))).thenReturn(readSoapProjectOutput);
+        when(loadSoapResourceService.process(isA(LoadSoapResourceInput.class))).thenReturn(loadSoapResourceOutput);
 
         final ResponseEntity<?> responseEntity = soapServiceController.getMethod(PROJECT_ID, httpServletRequest, httpServletResponse);
         Assert.assertEquals(WSDL, responseEntity.getBody());
@@ -433,8 +446,8 @@ public class SoapServiceControllerTest extends AbstractControllerTest {
                 .resource(WSDL)
                 .build();
 
-        when(serviceProcessor.process(isA(ReadSoapProjectInput.class))).thenReturn(readSoapProjectOutput);
-        when(serviceProcessor.process(isA(LoadSoapResourceInput.class))).thenReturn(loadSoapResourceOutput);
+        when(readSoapProjectService.process(isA(ReadSoapProjectInput.class))).thenReturn(readSoapProjectOutput);
+        when(loadSoapResourceService.process(isA(LoadSoapResourceInput.class))).thenReturn(loadSoapResourceOutput);
 
         final ResponseEntity<?> responseEntity = soapServiceController.getWildcardMethod(PROJECT_ID, httpServletRequest, httpServletResponse);
         Assert.assertEquals(WSDL, responseEntity.getBody());

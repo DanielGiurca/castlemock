@@ -16,9 +16,6 @@
 
 package com.castlemock.service.core.user;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.core.user.Role;
 import com.castlemock.model.core.user.User;
 import com.castlemock.service.core.user.input.ReadUsersByRoleInput;
@@ -31,22 +28,13 @@ import java.util.List;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class ReadUsersByRoleService extends AbstractUserService implements Service<ReadUsersByRoleInput, ReadUsersByRoleOutput> {
+public class ReadUsersByRoleService extends AbstractUserService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<ReadUsersByRoleOutput> process(final ServiceTask<ReadUsersByRoleInput> serviceTask) {
-        final ReadUsersByRoleInput input = serviceTask.getInput();
+
+    public ReadUsersByRoleOutput process(final ReadUsersByRoleInput input) {
         final Role role = input.getRole();
         final List<User> users = findByRole(role);
         final ReadUsersByRoleOutput output = new ReadUsersByRoleOutput(users);
-        return createServiceResult(output);
+        return output;
     }
 }

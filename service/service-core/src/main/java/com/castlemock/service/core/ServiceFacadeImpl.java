@@ -16,7 +16,6 @@
 
 package com.castlemock.service.core;
 
-import com.castlemock.model.core.Service;
 import com.castlemock.model.core.ServiceAdapter;
 import com.castlemock.model.core.ServiceFacade;
 import com.castlemock.model.core.TypeIdentifiable;
@@ -36,7 +35,6 @@ import java.util.Map;
  * from one single point.
  * @author Karl Dahlgren
  * @since 1.0
- * @see Service
  */
 @org.springframework.stereotype.Service
 public abstract class ServiceFacadeImpl<D extends TypeIdentifiable, I extends Serializable, SA extends ServiceAdapter<D,D,I>> implements ServiceFacade<D,I> {
@@ -49,7 +47,6 @@ public abstract class ServiceFacadeImpl<D extends TypeIdentifiable, I extends Se
      * The initialize method is responsible for for locating all the service instances for a specific module
      * and organizing them depending on the type.
      * @param clazz The class of the {@link ServiceAdapter} that the facade is managing
-     * @see Service
      * @see TypeIdentifier
      * @see TypeIdentifiable
      */

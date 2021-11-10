@@ -16,13 +16,9 @@
 
 package com.castlemock.web.mock.rest.controller.rest;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.mock.rest.domain.RestMethod;
-import com.castlemock.service.mock.rest.project.input.CreateRestMethodInput;
-import com.castlemock.service.mock.rest.project.input.DeleteRestMethodInput;
-import com.castlemock.service.mock.rest.project.input.ReadRestMethodInput;
-import com.castlemock.service.mock.rest.project.input.UpdateRestMethodInput;
-import com.castlemock.service.mock.rest.project.input.UpdateRestMockResponseStatusInput;
+import com.castlemock.service.mock.rest.project.*;
+import com.castlemock.service.mock.rest.project.input.*;
 import com.castlemock.service.mock.rest.project.output.CreateRestMethodOutput;
 import com.castlemock.service.mock.rest.project.output.DeleteRestMethodOutput;
 import com.castlemock.service.mock.rest.project.output.ReadRestMethodOutput;
@@ -31,20 +27,12 @@ import com.castlemock.web.core.controller.rest.AbstractRestController;
 import com.castlemock.web.mock.rest.model.CreateRestMethodRequest;
 import com.castlemock.web.mock.rest.model.UpdateRestMethodRequest;
 import com.castlemock.web.mock.rest.model.UpdateRestMockResponseStatusesRequest;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("api/rest/rest")
@@ -52,9 +40,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class RestMethodRestController extends AbstractRestController {
 
     @Autowired
-    public RestMethodRestController(final ServiceProcessor serviceProcessor){
-        super(serviceProcessor);
-    }
+    private ReadRestMethodService readRestMethodService;
+    @Autowired
+    private DeleteRestMethodService deleteRestMethodService;
+    @Autowired
+    private UpdateRestMethodService updateRestMethodService;
+    @Autowired
+    private CreateRestMethodService createRestMethodService;
+    @Autowired
+    private UpdateRestMockResponseStatusService updateRestMockResponseStatusService;
 
     @ApiOperation(value = "Get Method", response = RestMethod.class)
     @ApiResponses(value = {
@@ -72,7 +66,7 @@ public class RestMethodRestController extends AbstractRestController {
             @PathVariable(value = "resourceId") final String resourceId,
             @ApiParam(name = "methodId", value = "The id of the method")
             @PathVariable(value = "methodId") final String methodId) {
-        final ReadRestMethodOutput output = super.serviceProcessor.process(ReadRestMethodInput.builder()
+        final ReadRestMethodOutput output = readRestMethodService.process(ReadRestMethodInput.builder()
                 .restProjectId(projectId)
                 .restApplicationId(applicationId)
                 .restResourceId(resourceId)
@@ -96,7 +90,7 @@ public class RestMethodRestController extends AbstractRestController {
             @PathVariable(value = "resourceId") final String resourceId,
             @ApiParam(name = "methodId", value = "The id of the method")
             @PathVariable(value = "methodId") final String methodId) {
-        final DeleteRestMethodOutput output = super.serviceProcessor.process(DeleteRestMethodInput.builder()
+        final DeleteRestMethodOutput output = deleteRestMethodService.process(DeleteRestMethodInput.builder()
                 .restProjectId(projectId)
                 .restApplicationId(applicationId)
                 .restResourceId(resourceId)
@@ -121,7 +115,7 @@ public class RestMethodRestController extends AbstractRestController {
             @ApiParam(name = "methodId", value = "The id of the method")
             @PathVariable(value = "methodId") final String methodId,
             @RequestBody UpdateRestMethodRequest request) {
-        final UpdateRestMethodOutput output = super.serviceProcessor.process(UpdateRestMethodInput.builder()
+        final UpdateRestMethodOutput output = updateRestMethodService.process(UpdateRestMethodInput.builder()
                 .restProjectId(projectId)
                 .restApplicationId(applicationId)
                 .restResourceId(resourceId)
@@ -153,7 +147,7 @@ public class RestMethodRestController extends AbstractRestController {
             @ApiParam(name = "resourceId", value = "The id of the resource")
             @PathVariable(value = "resourceId") final String resourceId,
             @RequestBody CreateRestMethodRequest request) {
-       final CreateRestMethodOutput output = super.serviceProcessor.process(CreateRestMethodInput.builder()
+       final CreateRestMethodOutput output = createRestMethodService.process(CreateRestMethodInput.builder()
                 .projectId(projectId)
                 .applicationId(applicationId)
                 .resourceId(resourceId)
@@ -181,7 +175,7 @@ public class RestMethodRestController extends AbstractRestController {
             @PathVariable(value = "methodId") final String methodId,
             @RequestBody UpdateRestMockResponseStatusesRequest request){
         request.getMockResponseIds()
-                .forEach(mockResponseId -> super.serviceProcessor.process(UpdateRestMockResponseStatusInput.builder()
+                .forEach(mockResponseId -> updateRestMockResponseStatusService.process(UpdateRestMockResponseStatusInput.builder()
                         .projectId(projectId)
                         .applicationId(applicationId)
                         .resourceId(resourceId)

@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapMockResponse;
 import com.castlemock.model.mock.soap.domain.SoapOperation;
 import com.castlemock.service.mock.soap.project.input.ReadSoapOperationInput;
@@ -33,22 +30,12 @@ import java.util.List;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class ReadSoapOperationService extends AbstractSoapProjectService implements Service<ReadSoapOperationInput, ReadSoapOperationOutput> {
+public class ReadSoapOperationService extends AbstractSoapProjectService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReadSoapOperationService.class);
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
     @SuppressWarnings("deprecation")
-    public ServiceResult<ReadSoapOperationOutput> process(final ServiceTask<ReadSoapOperationInput> serviceTask) {
-        final ReadSoapOperationInput input = serviceTask.getInput();
+    public ReadSoapOperationOutput process(ReadSoapOperationInput input) {
         final SoapOperation soapOperation = this.operationRepository.findOne(input.getOperationId());
         final List<SoapMockResponse> mockResponses = this.mockResponseRepository.findWithOperationId(input.getOperationId());
         soapOperation.setMockResponses(mockResponses);
@@ -75,8 +62,8 @@ public class ReadSoapOperationService extends AbstractSoapProjectService impleme
 
 
 
-        return createServiceResult(ReadSoapOperationOutput.builder()
+        return ReadSoapOperationOutput.builder()
                 .operation(soapOperation)
-                .build());
+                .build();
     }
 }

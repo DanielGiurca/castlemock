@@ -1,7 +1,5 @@
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapMockResponse;
 import com.castlemock.model.mock.soap.domain.SoapMockResponseTestBuilder;
 import com.castlemock.model.mock.soap.domain.SoapOperation;
@@ -48,17 +46,16 @@ public class ReadSoapOperationServiceTest {
                 .portId(portId)
                 .operationId(operation.getId())
                 .build();
-        final ServiceTask<ReadSoapOperationInput> serviceTask = new ServiceTask<ReadSoapOperationInput>(input);
 
         Mockito.when(operationRepository.findOne(operation.getId())).thenReturn(operation);
         Mockito.when(mockResponseRepository.findWithOperationId(operation.getId())).thenReturn(Arrays.asList(mockResponse));
-        final ServiceResult<ReadSoapOperationOutput> result = service.process(serviceTask);
+        ReadSoapOperationOutput result = service.process(input);
 
         Mockito.verify(operationRepository, Mockito.times(1)).findOne(operation.getId());
         Mockito.verify(mockResponseRepository, Mockito.times(1)).findWithOperationId(operation.getId());
 
-        Assert.assertNotNull(result.getOutput());
-        Assert.assertEquals(operation, result.getOutput().getOperation());
+        Assert.assertNotNull(result);
+        Assert.assertEquals(operation, result.getOperation());
         Assert.assertEquals(operation.getDefaultResponseName(), null);
     }
 
@@ -76,17 +73,16 @@ public class ReadSoapOperationServiceTest {
                 .portId(portId)
                 .operationId(operation.getId())
                 .build();
-        final ServiceTask<ReadSoapOperationInput> serviceTask = new ServiceTask<ReadSoapOperationInput>(input);
 
         Mockito.when(operationRepository.findOne(operation.getId())).thenReturn(operation);
         Mockito.when(mockResponseRepository.findWithOperationId(operation.getId())).thenReturn(Arrays.asList(mockResponse));
-        final ServiceResult<ReadSoapOperationOutput> result = service.process(serviceTask);
+        ReadSoapOperationOutput result = service.process(input);
 
         Mockito.verify(operationRepository, Mockito.times(1)).findOne(operation.getId());
         Mockito.verify(mockResponseRepository, Mockito.times(1)).findWithOperationId(operation.getId());
 
-        Assert.assertNotNull(result.getOutput());
-        Assert.assertEquals(operation, result.getOutput().getOperation());
+        Assert.assertNotNull(result);
+        Assert.assertEquals(operation, result.getOperation());
         Assert.assertEquals(mockResponse.getName(), operation.getDefaultResponseName());
     }
 

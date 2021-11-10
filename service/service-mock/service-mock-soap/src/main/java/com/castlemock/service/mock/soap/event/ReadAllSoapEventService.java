@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.soap.event;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapEvent;
 import com.castlemock.service.mock.soap.event.input.ReadAllSoapEventInput;
 import com.castlemock.service.mock.soap.event.output.ReadAllSoapEventOutput;
@@ -31,13 +28,12 @@ import java.util.List;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class ReadAllSoapEventService extends AbstractSoapEventService implements Service<ReadAllSoapEventInput, ReadAllSoapEventOutput> {
+public class ReadAllSoapEventService extends AbstractSoapEventService {
 
-    @Override
-    public ServiceResult<ReadAllSoapEventOutput> process(final ServiceTask<ReadAllSoapEventInput> serviceTask) {
+    public ReadAllSoapEventOutput process() {
         final List<SoapEvent> soapEvents = findAll();
-        return createServiceResult(ReadAllSoapEventOutput.builder()
+        return ReadAllSoapEventOutput.builder()
                 .soapEvents(soapEvents)
-                .build());
+                .build();
     }
 }

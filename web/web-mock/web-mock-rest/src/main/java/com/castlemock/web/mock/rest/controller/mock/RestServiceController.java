@@ -16,11 +16,15 @@
 
 package com.castlemock.web.mock.rest.controller.mock;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.http.HttpMethod;
 import com.castlemock.model.mock.rest.domain.RestMockResponse;
 import com.castlemock.model.mock.rest.domain.RestProject;
 import com.castlemock.model.mock.rest.domain.RestResource;
+import com.castlemock.service.mock.rest.event.CreateRestEventService;
+import com.castlemock.service.mock.rest.project.CreateRestMockResponseService;
+import com.castlemock.service.mock.rest.project.IdentifyRestMethodService;
+import com.castlemock.service.mock.rest.project.UpdateCurrentRestMockResponseSequenceIndexService;
+import com.castlemock.service.mock.rest.project.UpdateRestMethodsStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -46,8 +50,8 @@ import javax.servlet.http.HttpServletResponse;
 public class RestServiceController extends AbstractRestServiceController  {
 
     @Autowired
-    public RestServiceController(final ServiceProcessor serviceProcessor, final ServletContext servletContext){
-        super(serviceProcessor, servletContext);
+    public RestServiceController(final ServletContext servletContext, IdentifyRestMethodService identifyRestMethodService, CreateRestEventService createRestEventService, CreateRestMockResponseService createRestMockResponseService, UpdateRestMethodsStatusService updateRestMethodsStatusService, UpdateCurrentRestMockResponseSequenceIndexService updateCurrentRestMockResponseSequenceIndexService){
+        super( servletContext, identifyRestMethodService, createRestEventService, createRestMockResponseService, updateRestMethodsStatusService, updateCurrentRestMockResponseSequenceIndexService);
     }
 
     /**

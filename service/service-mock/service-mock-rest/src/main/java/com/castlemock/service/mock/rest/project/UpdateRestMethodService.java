@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestMethod;
 import com.castlemock.service.mock.rest.project.input.UpdateRestMethodInput;
 import com.castlemock.service.mock.rest.project.output.UpdateRestMethodOutput;
@@ -28,19 +25,9 @@ import com.castlemock.service.mock.rest.project.output.UpdateRestMethodOutput;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class UpdateRestMethodService extends AbstractRestProjectService implements Service<UpdateRestMethodInput, UpdateRestMethodOutput> {
+public class UpdateRestMethodService extends AbstractRestProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<UpdateRestMethodOutput> process(final ServiceTask<UpdateRestMethodInput> serviceTask) {
-        final UpdateRestMethodInput input = serviceTask.getInput();
+    public UpdateRestMethodOutput process(UpdateRestMethodInput input) {
         final RestMethod existing = this.methodRepository.findOne(input.getRestMethodId());
         
         existing.setName(input.getName());
@@ -53,8 +40,8 @@ public class UpdateRestMethodService extends AbstractRestProjectService implemen
         existing.setDefaultMockResponseId(input.getDefaultMockResponseId().orElse(null));
 
         final RestMethod updated = this.methodRepository.update(input.getRestMethodId(), existing);
-        return createServiceResult(UpdateRestMethodOutput.builder()
+        return UpdateRestMethodOutput.builder()
                 .restMethod(updated)
-                .build());
+                .build();
     }
 }

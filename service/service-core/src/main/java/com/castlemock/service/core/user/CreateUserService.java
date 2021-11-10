@@ -16,9 +16,6 @@
 
 package com.castlemock.service.core.user;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.core.user.Status;
 import com.castlemock.model.core.user.User;
 import com.castlemock.service.core.user.input.CreateUserInput;
@@ -31,19 +28,9 @@ import java.util.Date;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class CreateUserService extends AbstractUserService implements Service<CreateUserInput, CreateUserOutput> {
+public class CreateUserService extends AbstractUserService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<CreateUserOutput> process(final ServiceTask<CreateUserInput> serviceTask) {
-        final CreateUserInput input = serviceTask.getInput();
+    public CreateUserOutput process(CreateUserInput input) {
         final User user = input.getUser();
 
         final User existingUser = findByUsername(user.getUsername());
@@ -59,8 +46,8 @@ public class CreateUserService extends AbstractUserService implements Service<Cr
         user.setPassword(PASSWORD_ENCODER.encode(user.getPassword()));
 
         final User savedUser = save(user);
-        return createServiceResult(CreateUserOutput.builder()
+        return CreateUserOutput.builder()
                 .savedUser(savedUser)
-                .build());
+                .build();
     }
 }

@@ -16,19 +16,12 @@
 
 package com.castlemock.service.mock.rest.event;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.repository.rest.event.RestEventRepository;
 import com.castlemock.service.mock.rest.event.input.ClearAllRestEventInput;
-import com.castlemock.service.mock.rest.event.output.ClearAllRestEventOutput;
 import org.dozer.DozerBeanMapper;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
+import org.mockito.*;
 
 /**
  * @author Karl Dahlgren
@@ -53,9 +46,7 @@ public class ClearAllRestEventServiceTest {
     @Test
     public void testProcess(){
         final ClearAllRestEventInput input = ClearAllRestEventInput.builder().build();
-        final ServiceTask<ClearAllRestEventInput> serviceTask = new ServiceTask<ClearAllRestEventInput>(input);
-        final ServiceResult<ClearAllRestEventOutput> serviceResult = service.process(serviceTask);
-        final ClearAllRestEventOutput output = serviceResult.getOutput();
+        service.process(input);
 
         Mockito.verify(repository, Mockito.times(1)).clearAll();
     }

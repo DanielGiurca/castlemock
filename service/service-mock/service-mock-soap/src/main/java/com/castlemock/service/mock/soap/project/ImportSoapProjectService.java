@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.core.utility.serializer.ExportContainerSerializer;
 import com.castlemock.model.mock.soap.SoapExportContainer;
 import com.castlemock.model.mock.soap.domain.SoapMockResponse;
@@ -38,20 +35,10 @@ import com.google.common.base.Strings;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class ImportSoapProjectService extends AbstractSoapProjectService implements Service<ImportSoapProjectInput, ImportSoapProjectOutput> {
+public class ImportSoapProjectService extends AbstractSoapProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
     @SuppressWarnings("deprecation")
-    public ServiceResult<ImportSoapProjectOutput> process(final ServiceTask<ImportSoapProjectInput> serviceTask) {
-        final ImportSoapProjectInput input = serviceTask.getInput();
+    public ImportSoapProjectOutput process(ImportSoapProjectInput input) {
 
         final SoapExportContainer exportContainer = ExportContainerSerializer.deserialize(input.getProjectRaw(), SoapExportContainer.class);
         final SoapProject project = exportContainer.getProject();
@@ -120,8 +107,8 @@ public class ImportSoapProjectService extends AbstractSoapProjectService impleme
             this.mockResponseRepository.save(mockResponse);
         }
 
-        return createServiceResult(ImportSoapProjectOutput.builder()
+        return ImportSoapProjectOutput.builder()
                 .project(project)
-                .build());
+                .build();
     }
 }

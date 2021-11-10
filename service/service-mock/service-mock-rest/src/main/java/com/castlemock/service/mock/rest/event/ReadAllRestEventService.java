@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.rest.event;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestEvent;
 import com.castlemock.service.mock.rest.event.input.ReadAllRestEventInput;
 import com.castlemock.service.mock.rest.event.output.ReadAllRestEventOutput;
@@ -30,21 +27,12 @@ import java.util.List;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class ReadAllRestEventService extends AbstractRestEventService implements Service<ReadAllRestEventInput, ReadAllRestEventOutput> {
+public class ReadAllRestEventService extends AbstractRestEventService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<ReadAllRestEventOutput> process(ServiceTask<ReadAllRestEventInput> serviceTask) {
+    public ReadAllRestEventOutput process(ReadAllRestEventInput input) {
         final List<RestEvent> restEvents = findAll();
-        return createServiceResult(ReadAllRestEventOutput.builder()
+        return ReadAllRestEventOutput.builder()
                 .restEvents(restEvents)
-                .build());
+                .build();
     }
 }

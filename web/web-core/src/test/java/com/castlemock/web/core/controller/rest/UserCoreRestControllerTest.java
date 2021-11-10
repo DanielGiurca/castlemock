@@ -16,9 +16,9 @@
 
 package com.castlemock.web.core.controller.rest;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.user.User;
 import com.castlemock.model.core.user.UserTestBuilder;
+import com.castlemock.service.core.user.*;
 import com.castlemock.service.core.user.input.DeleteUserInput;
 import com.castlemock.service.core.user.input.ReadAllUsersInput;
 import com.castlemock.service.core.user.input.ReadUserInput;
@@ -30,6 +30,7 @@ import com.castlemock.service.core.user.output.UpdateUserOutput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -44,21 +45,28 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class UserCoreRestControllerTest {
-
-    private ServiceProcessor serviceProcessor;
+    private CreateUserService createUserService;
+    private UpdateUserService updateUserService;
+    private ReadAllUsersService readAllUsersService;
+    private ReadUserService readUserService;
+    private DeleteUserService deleteUserService;
     private UserCoreRestController userCoreRestController;
 
     @BeforeEach
     void setup(){
-        this.serviceProcessor = mock(ServiceProcessor.class);
-        this.userCoreRestController = new UserCoreRestController(serviceProcessor);
+        this.createUserService = mock(CreateUserService.class);
+        this.updateUserService = mock(UpdateUserService.class);
+        this.readAllUsersService = mock(ReadAllUsersService.class);
+        this.readUserService = mock(ReadUserService.class);
+        this.deleteUserService = mock(DeleteUserService.class);
+        this.userCoreRestController = new UserCoreRestController(createUserService,updateUserService,readAllUsersService,readUserService,deleteUserService);
     }
 
     @Test
     @DisplayName("Create user")
     void testCreateUser(){
         final User user = UserTestBuilder.builder().build();
-        when(serviceProcessor.process(any())).thenReturn(CreateUserOutput.builder()
+        when(createUserService.process(any())).thenReturn(CreateUserOutput.builder()
                 .savedUser(user)
                 .build());
         final ResponseEntity<User> responseEntity = this.userCoreRestController.createUser(user);
@@ -68,14 +76,14 @@ class UserCoreRestControllerTest {
         assertNotNull(responseEntity.getBody());
         assertEquals(user, responseEntity.getBody());
 
-        verify(serviceProcessor, times(1)).process(any());
+        verify(createUserService, times(1)).process(any());
     }
 
     @Test
     @DisplayName("Update user")
     void testUpdateUser(){
         final User user = UserTestBuilder.builder().build();
-        when(serviceProcessor.process(any())).thenReturn(UpdateUserOutput.builder()
+        when(updateUserService.process(any())).thenReturn(UpdateUserOutput.builder()
                 .updatedUser(user)
                 .build());
         final ResponseEntity<User> responseEntity = this.userCoreRestController.updateUser(user.getId(), user);
@@ -85,7 +93,7 @@ class UserCoreRestControllerTest {
         assertNotNull(responseEntity.getBody());
         assertEquals(user, responseEntity.getBody());
 
-        verify(serviceProcessor, times(1)).process(any());
+        verify(updateUserService, times(1)).process(any());
     }
 
     @Test
@@ -94,7 +102,7 @@ class UserCoreRestControllerTest {
         final User user = UserTestBuilder.builder().build();
         final List<User> users = List.of(user);
 
-        when(serviceProcessor.process(any())).thenReturn(ReadAllUsersOutput.builder()
+        when(readAllUsersService.process()).thenReturn(ReadAllUsersOutput.builder()
                 .users(users)
                 .build());
 
@@ -105,7 +113,7 @@ class UserCoreRestControllerTest {
         assertNotNull(responseEntity.getBody());
         assertEquals(users, responseEntity.getBody());
 
-        verify(serviceProcessor, times(1)).process(any(ReadAllUsersInput.class));
+        verify(readAllUsersService, times(1)).process();
     }
 
     @Test
@@ -113,7 +121,7 @@ class UserCoreRestControllerTest {
     void testGetUser(){
         final User user = UserTestBuilder.builder().build();
 
-        when(serviceProcessor.process(any())).thenReturn(ReadUserOutput.builder()
+        when(readUserService.process(any())).thenReturn(ReadUserOutput.builder()
                 .user(user)
                 .build());
 
@@ -124,17 +132,17 @@ class UserCoreRestControllerTest {
         assertNotNull(responseEntity.getBody());
         assertEquals(user, responseEntity.getBody());
 
-        verify(serviceProcessor, times(1)).process(any(ReadUserInput.class));
+        verify(readUserService, times(1)).process(any(ReadUserInput.class));
     }
 
     @Test
     @DisplayName("Delete user")
     void testUser(){
-        when(serviceProcessor.process(any())).thenReturn(new DeleteUserOutput());
+        when(deleteUserService.process(any())).thenReturn(new DeleteUserOutput());
 
         this.userCoreRestController.deleteUser("userid");
 
-        verify(serviceProcessor, times(1)).process(any(DeleteUserInput.class));
+        verify(deleteUserService, times(1)).process(any(DeleteUserInput.class));
     }
 
 }

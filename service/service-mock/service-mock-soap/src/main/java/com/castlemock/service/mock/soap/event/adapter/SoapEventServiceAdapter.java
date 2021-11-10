@@ -16,13 +16,15 @@
 
 package com.castlemock.service.mock.soap.event.adapter;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.TypeIdentifier;
 import com.castlemock.model.core.event.Event;
 import com.castlemock.model.core.service.event.EventServiceAdapter;
 import com.castlemock.model.core.service.event.EventServiceFacade;
 import com.castlemock.model.mock.soap.domain.SoapEvent;
 import com.castlemock.service.mock.soap.SoapTypeIdentifier;
+import com.castlemock.service.mock.soap.event.ClearAllSoapEventService;
+import com.castlemock.service.mock.soap.event.ReadAllSoapEventService;
+import com.castlemock.service.mock.soap.event.ReadSoapEventService;
 import com.castlemock.service.mock.soap.event.input.ClearAllSoapEventInput;
 import com.castlemock.service.mock.soap.event.input.ReadAllSoapEventInput;
 import com.castlemock.service.mock.soap.event.input.ReadSoapEventInput;
@@ -52,7 +54,12 @@ public class SoapEventServiceAdapter implements EventServiceAdapter<SoapEvent> {
 
 
     @Autowired
-    private ServiceProcessor serviceProcessor;
+    private ReadAllSoapEventService readAllSoapEventService;
+    @Autowired
+    private ReadSoapEventService readSoapEventService;
+    @Autowired
+    private ClearAllSoapEventService clearAllSoapEventService;
+
     private SoapTypeIdentifier SOAP_TYPE_IDENTIFIER = new SoapTypeIdentifier();
 
     /**
@@ -99,7 +106,7 @@ public class SoapEventServiceAdapter implements EventServiceAdapter<SoapEvent> {
      */
     @Override
     public List<SoapEvent> readAll() {
-        final ReadAllSoapEventOutput output = serviceProcessor.process(ReadAllSoapEventInput.builder().build());
+        final ReadAllSoapEventOutput output = readAllSoapEventService.process();
 
         for(SoapEvent soapEvent : output.getSoapEvents()){
             final String resourceLink = generateResourceLink(soapEvent);
@@ -119,7 +126,7 @@ public class SoapEventServiceAdapter implements EventServiceAdapter<SoapEvent> {
      */
     @Override
     public SoapEvent read(String id) {
-        final ReadSoapEventOutput output = serviceProcessor.process(ReadSoapEventInput.builder()
+        final ReadSoapEventOutput output = readSoapEventService.process(ReadSoapEventInput.builder()
                 .soapEventId(id)
                 .build());
         return output.getSoapEvent();
@@ -168,6 +175,6 @@ public class SoapEventServiceAdapter implements EventServiceAdapter<SoapEvent> {
      */
     @Override
     public void clearAll() {
-        serviceProcessor.process(ClearAllSoapEventInput.builder().build());
+        clearAllSoapEventService.process();
     }
 }

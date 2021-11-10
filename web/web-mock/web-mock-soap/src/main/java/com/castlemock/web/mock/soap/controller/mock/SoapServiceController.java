@@ -16,7 +16,6 @@
 
 package com.castlemock.web.mock.soap.controller.mock;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.mock.soap.domain.SoapMockResponse;
 import com.castlemock.model.mock.soap.domain.SoapOperation;
 import com.castlemock.model.mock.soap.domain.SoapProject;
@@ -46,8 +45,8 @@ import javax.servlet.http.HttpServletResponse;
 public class SoapServiceController extends AbstractSoapServiceController {
 
     @Autowired
-    public SoapServiceController(final ServiceProcessor serviceProcessor, final ServletContext servletContext){
-        super(serviceProcessor, servletContext);
+    public SoapServiceController(final ServletContext servletContext){
+        super(servletContext);
     }
 
     /**

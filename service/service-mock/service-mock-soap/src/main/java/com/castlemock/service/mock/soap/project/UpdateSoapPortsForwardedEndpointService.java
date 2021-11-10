@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.service.mock.soap.project.input.UpdateSoapPortsForwardedEndpointInput;
 import com.castlemock.service.mock.soap.project.output.UpdateSoapPortsForwardedEndpointOutput;
 
@@ -29,19 +26,9 @@ import java.util.List;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class UpdateSoapPortsForwardedEndpointService extends AbstractSoapProjectService implements Service<UpdateSoapPortsForwardedEndpointInput, UpdateSoapPortsForwardedEndpointOutput> {
+public class UpdateSoapPortsForwardedEndpointService extends AbstractSoapProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<UpdateSoapPortsForwardedEndpointOutput> process(final ServiceTask<UpdateSoapPortsForwardedEndpointInput> serviceTask) {
-        final UpdateSoapPortsForwardedEndpointInput input = serviceTask.getInput();
+    public UpdateSoapPortsForwardedEndpointOutput process(UpdateSoapPortsForwardedEndpointInput input) {
         input.getPortIds().stream()
                 .map(portId -> this.operationRepository.findWithPortId(portId))
                 .flatMap(List::stream)
@@ -49,6 +36,6 @@ public class UpdateSoapPortsForwardedEndpointService extends AbstractSoapProject
                     operation.setForwardedEndpoint(input.getForwardedEndpoint());
                     this.operationRepository.update(operation.getId(), operation);
                 });
-        return createServiceResult(UpdateSoapPortsForwardedEndpointOutput.builder().build());
+        return UpdateSoapPortsForwardedEndpointOutput.builder().build();
     }
 }

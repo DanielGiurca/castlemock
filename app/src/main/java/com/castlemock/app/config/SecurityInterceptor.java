@@ -17,9 +17,9 @@
 package com.castlemock.app.config;
 
 import com.auth0.jwt.interfaces.Claim;
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.user.Status;
 import com.castlemock.model.core.user.User;
+import com.castlemock.service.core.user.ReadUserService;
 import com.castlemock.service.core.user.UserDetailSecurityService;
 import com.castlemock.service.core.user.input.ReadUserInput;
 import com.castlemock.service.core.user.output.ReadUserOutput;
@@ -68,7 +68,7 @@ import java.util.stream.Stream;
 public class SecurityInterceptor implements HandlerInterceptor, Filter {
 
     @Autowired
-    private ServiceProcessor serviceProcessor;
+    private ReadUserService readUserService;
     @Autowired
     private UserDetailSecurityService userDetailSecurityService;
     @Autowired
@@ -120,7 +120,7 @@ public class SecurityInterceptor implements HandlerInterceptor, Filter {
         final ReadUserInput readUserInput = ReadUserInput.builder()
                 .userId(userId)
                 .build();
-        final ReadUserOutput readUserOutput = serviceProcessor.process(readUserInput);
+        final ReadUserOutput readUserOutput = readUserService.process(readUserInput);
         final User loggedInUser = readUserOutput.getUser();
         if(loggedInUser == null){
             LOGGER.info("The following logged in user is not valid anymore: " + userId);

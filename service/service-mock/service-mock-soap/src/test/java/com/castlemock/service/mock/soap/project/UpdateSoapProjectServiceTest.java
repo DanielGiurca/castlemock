@@ -16,8 +16,6 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapProject;
 import com.castlemock.model.mock.soap.domain.SoapProjectTestBuilder;
 import com.castlemock.repository.soap.project.SoapProjectRepository;
@@ -27,11 +25,7 @@ import org.dozer.DozerBeanMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
+import org.mockito.*;
 
 /**
  * @author Karl Dahlgren
@@ -60,14 +54,11 @@ public class UpdateSoapProjectServiceTest {
                 .projectId(soapProject.getId())
                 .project(soapProject)
                 .build();
-        final ServiceTask<UpdateSoapProjectInput> serviceTask = new ServiceTask<>(input);
-
 
         Mockito.when(repository.findOne(Mockito.anyString())).thenReturn(soapProject);
         Mockito.when(repository.save(Mockito.any(SoapProject.class))).thenReturn(soapProject);
 
-        final ServiceResult<UpdateSoapProjectOutput> result = service.process(serviceTask);
-        final UpdateSoapProjectOutput output = result.getOutput();
+        UpdateSoapProjectOutput output = service.process(input);
         final SoapProject returnedSoapProject = output.getProject();
         Mockito.verify(repository, Mockito.times(1)).save(Mockito.any(SoapProject.class));
         Assert.assertEquals(soapProject.getId(), returnedSoapProject.getId());

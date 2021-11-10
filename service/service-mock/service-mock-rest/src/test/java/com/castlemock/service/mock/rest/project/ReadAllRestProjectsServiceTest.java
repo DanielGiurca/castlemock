@@ -1,7 +1,5 @@
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestProject;
 import com.castlemock.model.mock.rest.domain.RestProjectTestBuilder;
 import com.castlemock.repository.rest.project.RestProjectRepository;
@@ -37,15 +35,14 @@ public class ReadAllRestProjectsServiceTest {
         final List<RestProject> projects = Arrays.asList(project);
 
         final ReadAllRestProjectsInput input = ReadAllRestProjectsInput.builder().build();
-        final ServiceTask<ReadAllRestProjectsInput> serviceTask = new ServiceTask<ReadAllRestProjectsInput>(input);
 
         Mockito.when(repository.findAll()).thenReturn(projects);
-        final ServiceResult<ReadAllRestProjectsOutput> result = service.process(serviceTask);
+        ReadAllRestProjectsOutput result = service.process(input);
 
         Mockito.verify(repository, Mockito.times(1)).findAll();
 
-        Assert.assertNotNull(result.getOutput());
-        Assert.assertEquals(projects, result.getOutput().getRestProjects());
+        Assert.assertNotNull(result);
+        Assert.assertEquals(projects, result.getRestProjects());
     }
 
 }

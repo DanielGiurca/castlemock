@@ -16,13 +16,9 @@
 
 package com.castlemock.web.mock.soap.controller.rest;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.mock.soap.domain.SoapMockResponse;
-import com.castlemock.service.mock.soap.project.input.CreateSoapMockResponseInput;
-import com.castlemock.service.mock.soap.project.input.DeleteSoapMockResponseInput;
-import com.castlemock.service.mock.soap.project.input.DuplicateSoapMockResponsesInput;
-import com.castlemock.service.mock.soap.project.input.ReadSoapMockResponseInput;
-import com.castlemock.service.mock.soap.project.input.UpdateSoapMockResponseInput;
+import com.castlemock.service.mock.soap.project.*;
+import com.castlemock.service.mock.soap.project.input.*;
 import com.castlemock.service.mock.soap.project.output.CreateSoapMockResponseOutput;
 import com.castlemock.service.mock.soap.project.output.DeleteSoapMockResponseOutput;
 import com.castlemock.service.mock.soap.project.output.ReadSoapMockResponseOutput;
@@ -31,20 +27,12 @@ import com.castlemock.web.core.controller.rest.AbstractRestController;
 import com.castlemock.web.mock.soap.model.CreateSoapMockResponseRequest;
 import com.castlemock.web.mock.soap.model.DuplicateSoapMockOperationsRequest;
 import com.castlemock.web.mock.soap.model.UpdateSoapMockResponseRequest;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("api/rest/soap")
@@ -53,8 +41,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class SoapMockResponseRestController extends AbstractRestController {
 
     @Autowired
-    public SoapMockResponseRestController(final ServiceProcessor serviceProcessor){
-        super(serviceProcessor);
+    private ReadSoapMockResponseService readSoapMockResponseService;
+    @Autowired
+    private CreateSoapMockResponseService createSoapMockResponseService;
+    @Autowired
+    private UpdateSoapMockResponseService updateSoapMockResponseService;
+    @Autowired
+    private DeleteSoapMockResponseService deleteSoapMockResponseService;
+    @Autowired
+    private DuplicateSoapMockResponsesService duplicateSoapMockResponsesService;
+
+    @Autowired
+    public SoapMockResponseRestController(){
+
     }
 
     @ApiOperation(value = "Get mocked response", response = SoapMockResponse.class)
@@ -73,7 +72,7 @@ public class SoapMockResponseRestController extends AbstractRestController {
             @PathVariable(value = "operationId") final String operationId,
             @ApiParam(name = "responseId", value = "The id of the response")
             @PathVariable(value = "responseId") final String responseId) {
-        final ReadSoapMockResponseOutput output = super.serviceProcessor.process(ReadSoapMockResponseInput.builder()
+        final ReadSoapMockResponseOutput output = readSoapMockResponseService.process(ReadSoapMockResponseInput.builder()
                 .projectId(projectId)
                 .portId(portId)
                 .operationId(operationId)
@@ -96,7 +95,7 @@ public class SoapMockResponseRestController extends AbstractRestController {
             @ApiParam(name = "operationId", value = "The id of the operation")
             @PathVariable(value = "operationId") final String operationId,
             @RequestBody final CreateSoapMockResponseRequest request) {
-        final CreateSoapMockResponseOutput output = super.serviceProcessor.process(CreateSoapMockResponseInput.builder()
+        final CreateSoapMockResponseOutput output = createSoapMockResponseService.process(CreateSoapMockResponseInput.builder()
                 .projectId(projectId)
                 .portId(portId)
                 .operationId(operationId)
@@ -127,7 +126,7 @@ public class SoapMockResponseRestController extends AbstractRestController {
             @ApiParam(name = "responseId", value = "The id of the response")
             @PathVariable(value = "responseId") final String responseId,
             @RequestBody final UpdateSoapMockResponseRequest request) {
-        final UpdateSoapMockResponseOutput output = super.serviceProcessor.process(UpdateSoapMockResponseInput.builder()
+        final UpdateSoapMockResponseOutput output = updateSoapMockResponseService.process(UpdateSoapMockResponseInput.builder()
                 .projectId(projectId)
                 .portId(portId)
                 .operationId(operationId)
@@ -158,7 +157,7 @@ public class SoapMockResponseRestController extends AbstractRestController {
             @PathVariable(value = "operationId") final String operationId,
             @ApiParam(name = "responseId", value = "The id of the response")
             @PathVariable(value = "responseId") final String responseId) {
-        final DeleteSoapMockResponseOutput output = super.serviceProcessor.process(DeleteSoapMockResponseInput.builder()
+        final DeleteSoapMockResponseOutput output = deleteSoapMockResponseService.process(DeleteSoapMockResponseInput.builder()
                 .projectId(projectId)
                 .portId(portId)
                 .operationId(operationId)
@@ -181,7 +180,7 @@ public class SoapMockResponseRestController extends AbstractRestController {
             @ApiParam(name = "operationId", value = "The id of the operation")
             @PathVariable(value = "operationId") final String operationId,
             @RequestBody DuplicateSoapMockOperationsRequest request) {
-        super.serviceProcessor.process(DuplicateSoapMockResponsesInput.builder()
+        duplicateSoapMockResponsesService.process(DuplicateSoapMockResponsesInput.builder()
                 .projectId(projectId)
                 .portId(portId)
                 .operationId(operationId)

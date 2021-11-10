@@ -16,7 +16,6 @@
 
 package com.castlemock.web.core.controller.rest;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.project.Project;
 import com.castlemock.model.core.project.ProjectTestBuilder;
 import com.castlemock.model.core.service.project.ProjectServiceFacade;
@@ -51,10 +50,9 @@ class ProjectCoreRestControllerTest {
 
     @BeforeEach
     void setup(){
-        final ServiceProcessor serviceProcessor = mock(ServiceProcessor.class);
         this.fileManager = mock(FileManager.class);
         this.projectServiceFacade = mock(ProjectServiceFacade.class);
-        this.projectCoreRestController = new ProjectCoreRestController(serviceProcessor, fileManager, projectServiceFacade);
+        this.projectCoreRestController = new ProjectCoreRestController( fileManager, projectServiceFacade);
     }
 
     @Test

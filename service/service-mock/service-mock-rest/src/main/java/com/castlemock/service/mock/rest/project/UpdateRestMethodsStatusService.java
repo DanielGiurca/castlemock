@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestMethod;
 import com.castlemock.service.mock.rest.project.input.UpdateRestMethodsStatusInput;
 import com.castlemock.service.mock.rest.project.output.UpdateRestMethodsStatusOutput;
@@ -28,22 +25,12 @@ import com.castlemock.service.mock.rest.project.output.UpdateRestMethodsStatusOu
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class UpdateRestMethodsStatusService extends AbstractRestProjectService implements Service<UpdateRestMethodsStatusInput, UpdateRestMethodsStatusOutput> {
+public class UpdateRestMethodsStatusService extends AbstractRestProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<UpdateRestMethodsStatusOutput> process(final ServiceTask<UpdateRestMethodsStatusInput> serviceTask) {
-        final UpdateRestMethodsStatusInput input = serviceTask.getInput();
+    public UpdateRestMethodsStatusOutput process(UpdateRestMethodsStatusInput input) {
         final RestMethod method = this.methodRepository.findOne(input.getMethodId());
         method.setStatus(input.getMethodStatus());
         this.methodRepository.update(method.getId(), method);
-        return createServiceResult(UpdateRestMethodsStatusOutput.builder().build());
+        return UpdateRestMethodsStatusOutput.builder().build();
     }
 }

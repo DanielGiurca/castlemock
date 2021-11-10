@@ -16,13 +16,12 @@
 
 package com.castlemock.web.core.controller.rest;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.web.core.controller.AbstractController;
 
 public abstract class AbstractRestController extends AbstractController {
 
-    protected AbstractRestController(final ServiceProcessor serviceProcessor) {
-        super(serviceProcessor);
+    protected AbstractRestController() {
+        super();
     }
 
 }

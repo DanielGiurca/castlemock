@@ -18,7 +18,6 @@ package com.castlemock.service.core;
 
 import com.castlemock.model.core.Input;
 import com.castlemock.model.core.Output;
-import com.castlemock.model.core.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.GenericTypeResolver;
@@ -39,44 +38,44 @@ import java.util.Map;
 @Component
 public class ServiceRegistry<I extends Input, O extends Output> {
 
-    @Autowired
-    private ApplicationContext applicationContext;
-
-    /**
-     * The collection contains all the services and their identifiers (The input message class)
-     */
-    private Map<Class<I>, Service<I,O>> services = new HashMap<Class<I>, Service<I,O>>();
-
-    /**
-     * The method provides the functionality to retrieve a specific service that is identified
-     * with the provided input parameter
-     * @param input The input message. The message is used to identify the service class responsible
-     *              for processing the incoming input message and generating an output message
-     * @return The service class that is identified with the input message
-     */
-    public Service<I,O> getService(final I input){
-        return services.get(input.getClass());
-    }
-
-    /**
-     * The initialize method is responsible for initializing the service registry.
-     * The initialize method will search for all the classes with the @service annotation and
-     * store all the classes that are an instance of the Service class.
-     */
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public void initialize(){
-        final Map<String, Object> components = applicationContext.getBeansWithAnnotation(org.springframework.stereotype.Service.class);
-        for(Map.Entry<String, Object> entry : components.entrySet()){
-            final Object value = entry.getValue();
-            if(value instanceof Service){
-                final Service service = (Service) value;
-                final Class<?>[] processorInputOutputClasses = GenericTypeResolver.resolveTypeArguments(service.getClass(), Service.class);
-                if(processorInputOutputClasses != null && processorInputOutputClasses.length > 0){
-                    final Class<I> processorInputClass = (Class<I>) processorInputOutputClasses[0];
-                    services.put(processorInputClass, service);
-                }
-            }
-        }
-    }
+//    @Autowired
+//    private ApplicationContext applicationContext;
+//
+//    /**
+//     * The collection contains all the services and their identifiers (The input message class)
+//     */
+//    private Map<Class<I>, Service<I,O>> services = new HashMap<Class<I>, Service<I,O>>();
+//
+//    /**
+//     * The method provides the functionality to retrieve a specific service that is identified
+//     * with the provided input parameter
+//     * @param input The input message. The message is used to identify the service class responsible
+//     *              for processing the incoming input message and generating an output message
+//     * @return The service class that is identified with the input message
+//     */
+//    public Service<I,O> getService(final I input){
+//        return services.get(input.getClass());
+//    }
+//
+//    /**
+//     * The initialize method is responsible for initializing the service registry.
+//     * The initialize method will search for all the classes with the @service annotation and
+//     * store all the classes that are an instance of the Service class.
+//     */
+//    @SuppressWarnings({"unchecked", "rawtypes"})
+//    public void initialize(){
+//        final Map<String, Object> components = applicationContext.getBeansWithAnnotation(org.springframework.stereotype.Service.class);
+//        for(Map.Entry<String, Object> entry : components.entrySet()){
+//            final Object value = entry.getValue();
+//            if(value instanceof Service){
+//                final Service service = (Service) value;
+//                final Class<?>[] processorInputOutputClasses = GenericTypeResolver.resolveTypeArguments(service.getClass(), Service.class);
+//                if(processorInputOutputClasses != null && processorInputOutputClasses.length > 0){
+//                    final Class<I> processorInputClass = (Class<I>) processorInputOutputClasses[0];
+//                    services.put(processorInputClass, service);
+//                }
+//            }
+//        }
+//    }
 
 }

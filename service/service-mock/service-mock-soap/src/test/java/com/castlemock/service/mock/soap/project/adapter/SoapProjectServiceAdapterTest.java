@@ -18,28 +18,14 @@ package com.castlemock.service.mock.soap.project.adapter;
 
 import com.castlemock.model.core.SearchQuery;
 import com.castlemock.model.core.SearchResult;
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.TypeIdentifier;
 import com.castlemock.model.core.project.Project;
 import com.castlemock.model.mock.soap.domain.SoapProject;
 import com.castlemock.model.mock.soap.domain.SoapProjectTestBuilder;
 import com.castlemock.service.mock.soap.SoapTypeIdentifier;
-import com.castlemock.service.mock.soap.project.input.CreateSoapProjectInput;
-import com.castlemock.service.mock.soap.project.input.DeleteSoapProjectInput;
-import com.castlemock.service.mock.soap.project.input.ExportSoapProjectInput;
-import com.castlemock.service.mock.soap.project.input.ImportSoapProjectInput;
-import com.castlemock.service.mock.soap.project.input.ReadAllSoapProjectsInput;
-import com.castlemock.service.mock.soap.project.input.ReadSoapProjectInput;
-import com.castlemock.service.mock.soap.project.input.SearchSoapProjectInput;
-import com.castlemock.service.mock.soap.project.input.UpdateSoapProjectInput;
-import com.castlemock.service.mock.soap.project.output.CreateSoapProjectOutput;
-import com.castlemock.service.mock.soap.project.output.DeleteSoapProjectOutput;
-import com.castlemock.service.mock.soap.project.output.ExportSoapProjectOutput;
-import com.castlemock.service.mock.soap.project.output.ImportSoapProjectOutput;
-import com.castlemock.service.mock.soap.project.output.ReadAllSoapProjectsOutput;
-import com.castlemock.service.mock.soap.project.output.ReadSoapProjectOutput;
-import com.castlemock.service.mock.soap.project.output.SearchSoapProjectOutput;
-import com.castlemock.service.mock.soap.project.output.UpdateSoapProjectOutput;
+import com.castlemock.service.mock.soap.project.*;
+import com.castlemock.service.mock.soap.project.input.*;
+import com.castlemock.service.mock.soap.project.output.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,7 +45,21 @@ import java.util.List;
 public class SoapProjectServiceAdapterTest {
 
     @Mock
-    private ServiceProcessor serviceProcessor;
+    private CreateSoapProjectService createSoapProjectService;
+    @Mock
+    private UpdateSoapProjectService updateSoapProjectService;
+    @Mock
+    private DeleteSoapProjectService deleteSoapProjectService;
+    @Mock
+    private ReadAllSoapProjectsService readAllSoapProjectsService;
+    @Mock
+    private ReadSoapProjectService readSoapProjectService;
+    @Mock
+    private ExportSoapProjectService exportSoapProjectService;
+    @Mock
+    private ImportSoapProjectService importSoapProjectService;
+    @Mock
+    private SearchSoapProjectService searchSoapProjectService;
 
     @InjectMocks
     private SoapProjectServiceAdapter adapter;
@@ -76,12 +76,12 @@ public class SoapProjectServiceAdapterTest {
                 .project(project)
                 .build();
 
-        Mockito.when(serviceProcessor.process(Mockito.any(CreateSoapProjectInput.class))).thenReturn(output);
+        Mockito.when(createSoapProjectService.process(Mockito.any(CreateSoapProjectInput.class))).thenReturn(output);
 
         final SoapProject returnedProject = adapter.create(project);
 
         Assert.assertEquals(project, returnedProject);
-        Mockito.verify(serviceProcessor, Mockito.times(1)).process(Mockito.any(CreateSoapProjectInput.class));
+        Mockito.verify(createSoapProjectService, Mockito.times(1)).process(Mockito.any(CreateSoapProjectInput.class));
     }
 
     @Test
@@ -91,12 +91,12 @@ public class SoapProjectServiceAdapterTest {
                 .project(project)
                 .build();
 
-        Mockito.when(serviceProcessor.process(Mockito.any(DeleteSoapProjectInput.class))).thenReturn(output);
+        Mockito.when(deleteSoapProjectService.process(Mockito.any(DeleteSoapProjectInput.class))).thenReturn(output);
 
         final SoapProject returnedProject = adapter.delete(project.getId());
 
         Assert.assertEquals(project, returnedProject);
-        Mockito.verify(serviceProcessor, Mockito.times(1)).process(Mockito.any(DeleteSoapProjectInput.class));
+        Mockito.verify(deleteSoapProjectService, Mockito.times(1)).process(Mockito.any(DeleteSoapProjectInput.class));
     }
 
     @Test
@@ -106,12 +106,12 @@ public class SoapProjectServiceAdapterTest {
                 .project(project)
                 .build();
 
-        Mockito.when(serviceProcessor.process(Mockito.any(UpdateSoapProjectInput.class))).thenReturn(output);
+        Mockito.when(updateSoapProjectService.process(Mockito.any(UpdateSoapProjectInput.class))).thenReturn(output);
 
         final SoapProject returnedProject = adapter.update(project.getId(), project);
 
         Assert.assertEquals(project, returnedProject);
-        Mockito.verify(serviceProcessor, Mockito.times(1)).process(Mockito.any(UpdateSoapProjectInput.class));
+        Mockito.verify(updateSoapProjectService, Mockito.times(1)).process(Mockito.any(UpdateSoapProjectInput.class));
     }
 
     @Test
@@ -122,12 +122,12 @@ public class SoapProjectServiceAdapterTest {
                 .projects(projects)
                 .build();
 
-        Mockito.when(serviceProcessor.process(Mockito.any(ReadAllSoapProjectsInput.class))).thenReturn(output);
+        Mockito.when(readAllSoapProjectsService.process(Mockito.any(ReadAllSoapProjectsInput.class))).thenReturn(output);
 
         final List<SoapProject> returnedProjects = adapter.readAll();
 
         Assert.assertEquals(projects, returnedProjects);
-        Mockito.verify(serviceProcessor, Mockito.times(1)).process(Mockito.any(ReadAllSoapProjectsInput.class));
+        Mockito.verify(readAllSoapProjectsService, Mockito.times(1)).process(Mockito.any(ReadAllSoapProjectsInput.class));
     }
 
     @Test
@@ -137,12 +137,12 @@ public class SoapProjectServiceAdapterTest {
                 .project(project)
                 .build();
 
-        Mockito.when(serviceProcessor.process(Mockito.any(ReadSoapProjectInput.class))).thenReturn(output);
+        Mockito.when(readSoapProjectService.process(Mockito.any(ReadSoapProjectInput.class))).thenReturn(output);
 
         final SoapProject returnedProject = adapter.read(project.getId());
 
         Assert.assertEquals(project, returnedProject);
-        Mockito.verify(serviceProcessor, Mockito.times(1)).process(Mockito.any(ReadSoapProjectInput.class));
+        Mockito.verify(readSoapProjectService, Mockito.times(1)).process(Mockito.any(ReadSoapProjectInput.class));
     }
 
     @Test
@@ -160,12 +160,12 @@ public class SoapProjectServiceAdapterTest {
                 .project(exportedProject)
                 .build();
 
-        Mockito.when(serviceProcessor.process(Mockito.any(ExportSoapProjectInput.class))).thenReturn(output);
+        Mockito.when(exportSoapProjectService.process(Mockito.any(ExportSoapProjectInput.class))).thenReturn(output);
 
         final String returnedExportedProject = adapter.exportProject(project.getId());
 
         Assert.assertEquals(exportedProject, returnedExportedProject);
-        Mockito.verify(serviceProcessor, Mockito.times(1)).process(Mockito.any(ExportSoapProjectInput.class));
+        Mockito.verify(exportSoapProjectService, Mockito.times(1)).process(Mockito.any(ExportSoapProjectInput.class));
     }
 
     @Test
@@ -176,12 +176,12 @@ public class SoapProjectServiceAdapterTest {
                 .project(project)
                 .build();
 
-        Mockito.when(serviceProcessor.process(Mockito.any(ImportSoapProjectInput.class))).thenReturn(output);
+        Mockito.when(importSoapProjectService.process(Mockito.any(ImportSoapProjectInput.class))).thenReturn(output);
 
         final Project returnedProject = adapter.importProject(importedProject);
 
         Assert.assertEquals(project, returnedProject);
-        Mockito.verify(serviceProcessor, Mockito.times(1)).process(Mockito.any(ImportSoapProjectInput.class));
+        Mockito.verify(importSoapProjectService, Mockito.times(1)).process(Mockito.any(ImportSoapProjectInput.class));
     }
 
     @Test
@@ -196,7 +196,7 @@ public class SoapProjectServiceAdapterTest {
                 .searchResults(searchResults)
                 .build();
 
-        Mockito.when(serviceProcessor.process(Mockito.any(SearchSoapProjectInput.class))).thenReturn(output);
+        Mockito.when(searchSoapProjectService.process(Mockito.any(SearchSoapProjectInput.class))).thenReturn(output);
 
         final List<SearchResult> returnedSearchResults = adapter.search(new SearchQuery());
         Assert.assertEquals(returnedSearchResults.size(), searchResults.size());

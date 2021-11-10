@@ -16,9 +16,6 @@
 
 package com.castlemock.service.core.user;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.core.user.User;
 import com.castlemock.service.core.user.input.ReadAllUsersInput;
 import com.castlemock.service.core.user.output.ReadAllUsersOutput;
@@ -30,19 +27,10 @@ import java.util.List;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class ReadAllUsersService extends AbstractUserService implements Service<ReadAllUsersInput, ReadAllUsersOutput> {
+public class ReadAllUsersService extends AbstractUserService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<ReadAllUsersOutput> process(final ServiceTask<ReadAllUsersInput> serviceTask) {
+    public ReadAllUsersOutput process() {
         final List<User> users = findAll();
-        return createServiceResult(ReadAllUsersOutput.builder().users(users).build());
+        return ReadAllUsersOutput.builder().users(users).build();
     }
 }

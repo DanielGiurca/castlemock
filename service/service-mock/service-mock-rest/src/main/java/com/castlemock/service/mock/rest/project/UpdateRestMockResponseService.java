@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestMockResponse;
 import com.castlemock.service.mock.rest.project.input.UpdateRestMockResponseInput;
 import com.castlemock.service.mock.rest.project.output.UpdateRestMockResponseOutput;
@@ -29,19 +26,9 @@ import com.castlemock.service.mock.rest.project.output.UpdateRestMockResponseOut
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class UpdateRestMockResponseService extends AbstractRestProjectService implements Service<UpdateRestMockResponseInput, UpdateRestMockResponseOutput> {
+public class UpdateRestMockResponseService extends AbstractRestProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<UpdateRestMockResponseOutput> process(final ServiceTask<UpdateRestMockResponseInput> serviceTask) {
-        final UpdateRestMockResponseInput input = serviceTask.getInput();
+    public UpdateRestMockResponseOutput process(UpdateRestMockResponseInput input) {
         final RestMockResponse existing = this.mockResponseRepository.findOne(input.getRestMockResponseId());
 
         existing.setName(input.getName());
@@ -56,8 +43,8 @@ public class UpdateRestMockResponseService extends AbstractRestProjectService im
         existing.setHeaderQueries(input.getHeaderQueries());
 
         final RestMockResponse updated = this.mockResponseRepository.update(input.getRestMockResponseId(), existing);
-        return createServiceResult(UpdateRestMockResponseOutput.builder()
+        return UpdateRestMockResponseOutput.builder()
                 .updatedRestMockResponse(updated)
-                .build());
+                .build();
     }
 }

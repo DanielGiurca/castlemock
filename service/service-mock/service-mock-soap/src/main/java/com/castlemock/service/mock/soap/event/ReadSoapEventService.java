@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.soap.event;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapEvent;
 import com.castlemock.service.mock.soap.event.input.ReadSoapEventInput;
 import com.castlemock.service.mock.soap.event.output.ReadSoapEventOutput;
@@ -29,14 +26,12 @@ import com.castlemock.service.mock.soap.event.output.ReadSoapEventOutput;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class ReadSoapEventService  extends AbstractSoapEventService implements Service<ReadSoapEventInput, ReadSoapEventOutput> {
+public class ReadSoapEventService  extends AbstractSoapEventService {
 
-    @Override
-    public ServiceResult<ReadSoapEventOutput> process(ServiceTask<ReadSoapEventInput> serviceTask) {
-        final ReadSoapEventInput input = serviceTask.getInput();
+    public ReadSoapEventOutput process(ReadSoapEventInput input) {
         final SoapEvent soapEvent = find(input.getSoapEventId());
-        return createServiceResult(ReadSoapEventOutput.builder()
+        return ReadSoapEventOutput.builder()
                 .soapEvent(soapEvent)
-                .build());
+                .build();
     }
 }

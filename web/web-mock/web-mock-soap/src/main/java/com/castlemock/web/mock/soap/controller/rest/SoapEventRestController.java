@@ -16,16 +16,12 @@
 
 package com.castlemock.web.mock.soap.controller.rest;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.mock.soap.domain.SoapEvent;
+import com.castlemock.service.mock.soap.event.ReadSoapEventService;
 import com.castlemock.service.mock.soap.event.input.ReadSoapEventInput;
 import com.castlemock.service.mock.soap.event.output.ReadSoapEventOutput;
 import com.castlemock.web.core.controller.rest.AbstractRestController;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,9 +36,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Api(value="SOAP - Event", tags = {"SOAP - Event"})
 public class SoapEventRestController extends AbstractRestController {
 
+    private final ReadSoapEventService readSoapEventService;
+
     @Autowired
-    public SoapEventRestController(final ServiceProcessor serviceProcessor){
-        super(serviceProcessor);
+    public SoapEventRestController(ReadSoapEventService readSoapEventService){
+        this.readSoapEventService = readSoapEventService;
     }
 
     @ApiOperation(value = "Get SOAP event", response = SoapEvent.class)
@@ -54,7 +52,7 @@ public class SoapEventRestController extends AbstractRestController {
     ResponseEntity<SoapEvent> getSoapEvent(
             @ApiParam(name = "eventId", value = "The id of the event")
             @PathVariable(value = "eventId") final String eventId) {
-        final ReadSoapEventOutput output = super.serviceProcessor.process(ReadSoapEventInput.builder()
+        final ReadSoapEventOutput output = readSoapEventService.process(ReadSoapEventInput.builder()
                 .soapEventId(eventId)
                 .build());
 

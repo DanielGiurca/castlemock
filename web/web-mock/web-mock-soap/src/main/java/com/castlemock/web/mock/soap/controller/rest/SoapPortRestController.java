@@ -16,33 +16,21 @@
 
 package com.castlemock.web.mock.soap.controller.rest;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.mock.soap.domain.SoapPort;
-import com.castlemock.service.mock.soap.project.input.DeleteSoapPortInput;
-import com.castlemock.service.mock.soap.project.input.ReadSoapPortInput;
-import com.castlemock.service.mock.soap.project.input.UpdateSoapOperationsForwardedEndpointInput;
-import com.castlemock.service.mock.soap.project.input.UpdateSoapOperationsStatusInput;
-import com.castlemock.service.mock.soap.project.input.UpdateSoapPortInput;
+import com.castlemock.service.mock.soap.project.*;
+import com.castlemock.service.mock.soap.project.input.*;
 import com.castlemock.service.mock.soap.project.output.DeleteSoapPortOutput;
 import com.castlemock.service.mock.soap.project.output.ReadSoapPortOutput;
 import com.castlemock.web.core.controller.rest.AbstractRestController;
 import com.castlemock.web.mock.soap.model.UpdateSoapOperationForwardedEndpointsRequest;
 import com.castlemock.web.mock.soap.model.UpdateSoapOperationStatusesRequest;
 import com.castlemock.web.mock.soap.model.UpdateSoapPortRequest;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("api/rest/soap")
@@ -50,9 +38,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class SoapPortRestController extends AbstractRestController {
 
     @Autowired
-    public SoapPortRestController(final ServiceProcessor serviceProcessor){
-        super(serviceProcessor);
-    }
+    private ReadSoapPortService readSoapPortService;
+    @Autowired
+    private DeleteSoapPortService deleteSoapPortService;
+    @Autowired
+    private UpdateSoapPortService updateSoapPortService;
+    @Autowired
+    private UpdateSoapOperationsStatusService updateSoapOperationsStatusService;
+    @Autowired
+    private UpdateSoapOperationsForwardedEndpointService updateSoapOperationsForwardedEndpointService;
 
     @ApiOperation(value = "Get Port", response = SoapPort.class)
     @ApiResponses(value = {
@@ -64,7 +58,7 @@ public class SoapPortRestController extends AbstractRestController {
             @PathVariable(value = "projectId") final String projectId,
             @ApiParam(name = "portId", value = "The id of the port")
             @PathVariable(value = "portId") final String portId) {
-        final ReadSoapPortOutput output = super.serviceProcessor.process(ReadSoapPortInput.builder()
+        final ReadSoapPortOutput output = readSoapPortService.process(ReadSoapPortInput.builder()
                 .projectId(projectId)
                 .portId(portId)
                 .build());
@@ -81,7 +75,7 @@ public class SoapPortRestController extends AbstractRestController {
             @PathVariable(value = "projectId") final String projectId,
             @ApiParam(name = "portId", value = "The id of the port")
             @PathVariable(value = "portId") final String portId) {
-        final DeleteSoapPortOutput output = super.serviceProcessor.process(DeleteSoapPortInput.builder()
+        final DeleteSoapPortOutput output = deleteSoapPortService.process(DeleteSoapPortInput.builder()
                 .projectId(projectId)
                 .portId(portId)
                 .build());
@@ -100,7 +94,7 @@ public class SoapPortRestController extends AbstractRestController {
             @ApiParam(name = "portId", value = "The id of the port")
             @PathVariable(value = "portId") final String portId,
             @RequestBody UpdateSoapPortRequest request){
-        super.serviceProcessor.process(UpdateSoapPortInput.builder()
+        updateSoapPortService.process(UpdateSoapPortInput.builder()
                 .projectId(projectId)
                 .portId(portId)
                 .uri(request.getUri())
@@ -121,7 +115,7 @@ public class SoapPortRestController extends AbstractRestController {
             @PathVariable(value = "portId") final String portId,
             @RequestBody UpdateSoapOperationStatusesRequest request){
         request.getOperationIds()
-                .forEach(operationId -> super.serviceProcessor.process(UpdateSoapOperationsStatusInput.builder()
+                .forEach(operationId -> updateSoapOperationsStatusService.process(UpdateSoapOperationsStatusInput.builder()
                         .projectId(projectId)
                         .portId(portId)
                         .operationId(operationId)
@@ -142,7 +136,7 @@ public class SoapPortRestController extends AbstractRestController {
             @ApiParam(name = "portId", value = "The id of the port")
             @PathVariable(value = "portId") final String portId,
             @RequestBody UpdateSoapOperationForwardedEndpointsRequest request){
-        super.serviceProcessor.process(UpdateSoapOperationsForwardedEndpointInput.builder()
+        updateSoapOperationsForwardedEndpointService.process(UpdateSoapOperationsForwardedEndpointInput.builder()
                 .projectId(projectId)
                 .portId(portId)
                 .operationIds(request.getOperationIds())

@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.soap.event;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.core.event.EventStartDateComparator;
 import com.castlemock.model.mock.soap.domain.SoapEvent;
 import com.castlemock.model.mock.soap.domain.SoapOperation;
@@ -34,23 +31,13 @@ import java.util.List;
  * @see SoapOperation
  */
 @org.springframework.stereotype.Service
-public class ReadSoapEventsByOperationIdService extends AbstractSoapEventService implements Service<ReadSoapEventsByOperationIdInput, ReadSoapEventsByOperationIdOutput> {
+public class ReadSoapEventsByOperationIdService extends AbstractSoapEventService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<ReadSoapEventsByOperationIdOutput> process(ServiceTask<ReadSoapEventsByOperationIdInput> serviceTask) {
-        final ReadSoapEventsByOperationIdInput input = serviceTask.getInput();
+    public ReadSoapEventsByOperationIdOutput process(ReadSoapEventsByOperationIdInput input) {
         final List<SoapEvent> events = repository.findEventsByOperationId(input.getOperationId());
         events.sort(new EventStartDateComparator());
-        return createServiceResult(ReadSoapEventsByOperationIdOutput.builder()
+        return ReadSoapEventsByOperationIdOutput.builder()
                 .soapEvents(events)
-                .build());
+                .build();
     }
 }

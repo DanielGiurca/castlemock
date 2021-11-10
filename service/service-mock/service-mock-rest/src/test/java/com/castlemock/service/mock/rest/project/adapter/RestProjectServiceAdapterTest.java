@@ -18,28 +18,14 @@ package com.castlemock.service.mock.rest.project.adapter;
 
 import com.castlemock.model.core.SearchQuery;
 import com.castlemock.model.core.SearchResult;
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.TypeIdentifier;
 import com.castlemock.model.core.project.Project;
 import com.castlemock.model.mock.rest.domain.RestProject;
 import com.castlemock.model.mock.rest.domain.RestProjectTestBuilder;
 import com.castlemock.service.mock.rest.RestTypeIdentifier;
-import com.castlemock.service.mock.rest.project.input.CreateRestProjectInput;
-import com.castlemock.service.mock.rest.project.input.DeleteRestProjectInput;
-import com.castlemock.service.mock.rest.project.input.ExportRestProjectInput;
-import com.castlemock.service.mock.rest.project.input.ImportRestProjectInput;
-import com.castlemock.service.mock.rest.project.input.ReadAllRestProjectsInput;
-import com.castlemock.service.mock.rest.project.input.ReadRestProjectInput;
-import com.castlemock.service.mock.rest.project.input.SearchRestProjectInput;
-import com.castlemock.service.mock.rest.project.input.UpdateRestProjectInput;
-import com.castlemock.service.mock.rest.project.output.CreateRestProjectOutput;
-import com.castlemock.service.mock.rest.project.output.DeleteRestProjectOutput;
-import com.castlemock.service.mock.rest.project.output.ExportRestProjectOutput;
-import com.castlemock.service.mock.rest.project.output.ImportRestProjectOutput;
-import com.castlemock.service.mock.rest.project.output.ReadAllRestProjectsOutput;
-import com.castlemock.service.mock.rest.project.output.ReadRestProjectOutput;
-import com.castlemock.service.mock.rest.project.output.SearchRestProjectOutput;
-import com.castlemock.service.mock.rest.project.output.UpdateRestProjectOutput;
+import com.castlemock.service.mock.rest.project.*;
+import com.castlemock.service.mock.rest.project.input.*;
+import com.castlemock.service.mock.rest.project.output.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,7 +45,21 @@ import java.util.List;
 public class RestProjectServiceAdapterTest {
 
     @Mock
-    private ServiceProcessor serviceProcessor;
+    private CreateRestProjectService createRestProjectService;
+    @Mock
+    private DeleteRestProjectService deleteRestProjectService;
+    @Mock
+    private UpdateRestProjectService updateRestProjectService;
+    @Mock
+    private ReadAllRestProjectsService readAllRestProjectsService;
+    @Mock
+    private ReadRestProjectService readRestProjectService;
+    @Mock
+    private ExportRestProjectService exportRestProjectService;
+    @Mock
+    private ImportRestProjectService importRestProjectService;
+    @Mock
+    private SearchRestProjectService searchRestProjectService;
 
     @InjectMocks
     private RestProjectServiceAdapter adapter;
@@ -75,12 +75,12 @@ public class RestProjectServiceAdapterTest {
         final RestProject project = RestProjectTestBuilder.builder().build();
         final CreateRestProjectOutput output = CreateRestProjectOutput.builder().savedRestApplication(project).build();
 
-        Mockito.when(serviceProcessor.process(Mockito.any(CreateRestProjectInput.class))).thenReturn(output);
+        Mockito.when(createRestProjectService.process(Mockito.any(CreateRestProjectInput.class))).thenReturn(output);
 
         final RestProject returnedProject = adapter.create(project);
 
         Assert.assertEquals(project, returnedProject);
-        Mockito.verify(serviceProcessor, Mockito.times(1)).process(Mockito.any(CreateRestProjectInput.class));
+        Mockito.verify(createRestProjectService, Mockito.times(1)).process(Mockito.any(CreateRestProjectInput.class));
     }
 
     @Test
@@ -88,12 +88,12 @@ public class RestProjectServiceAdapterTest {
         final RestProject project = RestProjectTestBuilder.builder().build();
         final DeleteRestProjectOutput output = DeleteRestProjectOutput.builder().project(project).build();
 
-        Mockito.when(serviceProcessor.process(Mockito.any(DeleteRestProjectInput.class))).thenReturn(output);
+        Mockito.when(deleteRestProjectService.process(Mockito.any(DeleteRestProjectInput.class))).thenReturn(output);
 
         final RestProject returnedProject = adapter.delete(project.getId());
 
         Assert.assertEquals(project, returnedProject);
-        Mockito.verify(serviceProcessor, Mockito.times(1)).process(Mockito.any(DeleteRestProjectInput.class));
+        Mockito.verify(deleteRestProjectService, Mockito.times(1)).process(Mockito.any(DeleteRestProjectInput.class));
     }
 
     @Test
@@ -101,12 +101,12 @@ public class RestProjectServiceAdapterTest {
         final RestProject project = RestProjectTestBuilder.builder().build();
         final UpdateRestProjectOutput output = UpdateRestProjectOutput.builder().updatedRestProject(project).build();
 
-        Mockito.when(serviceProcessor.process(Mockito.any(UpdateRestProjectInput.class))).thenReturn(output);
+        Mockito.when(updateRestProjectService.process(Mockito.any(UpdateRestProjectInput.class))).thenReturn(output);
 
         final RestProject returnedProject = adapter.update(project.getId(), project);
 
         Assert.assertEquals(project, returnedProject);
-        Mockito.verify(serviceProcessor, Mockito.times(1)).process(Mockito.any(UpdateRestProjectInput.class));
+        Mockito.verify(updateRestProjectService, Mockito.times(1)).process(Mockito.any(UpdateRestProjectInput.class));
     }
 
     @Test
@@ -115,12 +115,12 @@ public class RestProjectServiceAdapterTest {
         final List<RestProject> projects = Arrays.asList(project);
         final ReadAllRestProjectsOutput output = ReadAllRestProjectsOutput.builder().restProjects(projects).build();
 
-        Mockito.when(serviceProcessor.process(Mockito.any(ReadAllRestProjectsInput.class))).thenReturn(output);
+        Mockito.when(readAllRestProjectsService.process(Mockito.any(ReadAllRestProjectsInput.class))).thenReturn(output);
 
         final List<RestProject> returnedProjects = adapter.readAll();
 
         Assert.assertEquals(projects, returnedProjects);
-        Mockito.verify(serviceProcessor, Mockito.times(1)).process(Mockito.any(ReadAllRestProjectsInput.class));
+        Mockito.verify(readAllRestProjectsService, Mockito.times(1)).process(Mockito.any(ReadAllRestProjectsInput.class));
     }
 
     @Test
@@ -128,12 +128,12 @@ public class RestProjectServiceAdapterTest {
         final RestProject project = RestProjectTestBuilder.builder().build();
         final ReadRestProjectOutput output = ReadRestProjectOutput.builder().restProject(project).build();
 
-        Mockito.when(serviceProcessor.process(Mockito.any(ReadRestProjectInput.class))).thenReturn(output);
+        Mockito.when(readRestProjectService.process(Mockito.any(ReadRestProjectInput.class))).thenReturn(output);
 
         final RestProject returnedProject = adapter.read(project.getId());
 
         Assert.assertEquals(project, returnedProject);
-        Mockito.verify(serviceProcessor, Mockito.times(1)).process(Mockito.any(ReadRestProjectInput.class));
+        Mockito.verify(readRestProjectService, Mockito.times(1)).process(Mockito.any(ReadRestProjectInput.class));
     }
 
     @Test
@@ -149,12 +149,12 @@ public class RestProjectServiceAdapterTest {
         final String exportedProject = "Exported project";
         final ExportRestProjectOutput output = ExportRestProjectOutput.builder().exportedProject(exportedProject).build();
 
-        Mockito.when(serviceProcessor.process(Mockito.any(ExportRestProjectInput.class))).thenReturn(output);
+        Mockito.when(exportRestProjectService.process(Mockito.any(ExportRestProjectInput.class))).thenReturn(output);
 
         final String returnedExportedProject = adapter.exportProject(project.getId());
 
         Assert.assertEquals(exportedProject, returnedExportedProject);
-        Mockito.verify(serviceProcessor, Mockito.times(1)).process(Mockito.any(ExportRestProjectInput.class));
+        Mockito.verify(exportRestProjectService, Mockito.times(1)).process(Mockito.any(ExportRestProjectInput.class));
     }
 
     @Test
@@ -163,12 +163,12 @@ public class RestProjectServiceAdapterTest {
         final String importedProject = "Imported project";
         final ImportRestProjectOutput output = ImportRestProjectOutput.builder().project(project).build();
 
-        Mockito.when(serviceProcessor.process(Mockito.any(ImportRestProjectInput.class))).thenReturn(output);
+        Mockito.when(importRestProjectService.process(Mockito.any(ImportRestProjectInput.class))).thenReturn(output);
 
         final Project returnedProject = adapter.importProject(importedProject);
 
         Assert.assertEquals(project, returnedProject);
-        Mockito.verify(serviceProcessor, Mockito.times(1)).process(Mockito.any(ImportRestProjectInput.class));
+        Mockito.verify(importRestProjectService, Mockito.times(1)).process(Mockito.any(ImportRestProjectInput.class));
     }
     
     @Test
@@ -181,7 +181,7 @@ public class RestProjectServiceAdapterTest {
         searchResults.add(searchResult);
         final SearchRestProjectOutput output = SearchRestProjectOutput.builder().searchResults(searchResults).build();
 
-        Mockito.when(serviceProcessor.process(Mockito.any(SearchRestProjectInput.class))).thenReturn(output);
+        Mockito.when(searchRestProjectService.process(Mockito.any(SearchRestProjectInput.class))).thenReturn(output);
 
         final List<SearchResult> returnedSearchResults = adapter.search(new SearchQuery());
         Assert.assertEquals(returnedSearchResults.size(), searchResults.size());

@@ -16,7 +16,6 @@
 
 package com.castlemock.service.core.user;
 
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.core.user.Role;
 import com.castlemock.model.core.user.User;
 import com.castlemock.model.core.user.UserTestBuilder;
@@ -63,9 +62,7 @@ public class DeleteUserServiceTest {
         final DeleteUserInput input = DeleteUserInput.builder()
                 .userId("")
                 .build();
-        final ServiceTask<DeleteUserInput> serviceTask = new ServiceTask<DeleteUserInput>();
-        serviceTask.setInput(input);
-        service.process(serviceTask);
+        service.process(input);
         Mockito.verify(repository, Mockito.times(1)).delete(Mockito.anyString());
     }
 
@@ -85,9 +82,7 @@ public class DeleteUserServiceTest {
         final DeleteUserInput input = DeleteUserInput.builder()
                 .userId("")
                 .build();
-        final ServiceTask<DeleteUserInput> serviceTask = new ServiceTask<DeleteUserInput>();
-        serviceTask.setInput(input);
-        service.process(serviceTask);
+        service.process(input);
         Mockito.verify(repository, Mockito.times(1)).delete(Mockito.anyString());
     }
 

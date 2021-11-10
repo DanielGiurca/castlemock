@@ -16,12 +16,14 @@
 
 package com.castlemock.service.mock.soap.event.adapter;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.TypeIdentifier;
 import com.castlemock.model.core.event.Event;
 import com.castlemock.model.mock.soap.domain.SoapEvent;
 import com.castlemock.model.mock.soap.domain.SoapEventTestBuilder;
 import com.castlemock.service.mock.soap.SoapTypeIdentifier;
+import com.castlemock.service.mock.soap.event.ClearAllSoapEventService;
+import com.castlemock.service.mock.soap.event.ReadAllSoapEventService;
+import com.castlemock.service.mock.soap.event.ReadSoapEventService;
 import com.castlemock.service.mock.soap.event.input.ClearAllSoapEventInput;
 import com.castlemock.service.mock.soap.event.input.ReadAllSoapEventInput;
 import com.castlemock.service.mock.soap.event.input.ReadSoapEventInput;
@@ -45,7 +47,11 @@ import java.util.List;
 public class SoapEventServiceAdapterTest {
 
     @Mock
-    private ServiceProcessor serviceProcessor;
+    private ReadAllSoapEventService readAllSoapEventService;
+    @Mock
+    private ReadSoapEventService readSoapEventService;
+    @Mock
+    private ClearAllSoapEventService clearAllSoapEventService;
 
     @InjectMocks
     private SoapEventServiceAdapter serviceAdapter;
@@ -83,7 +89,7 @@ public class SoapEventServiceAdapterTest {
         }
 
         final ReadAllSoapEventOutput output = ReadAllSoapEventOutput.builder().soapEvents(soapEvents).build();
-        Mockito.when(serviceProcessor.process(Mockito.any(ReadAllSoapEventInput.class))).thenReturn(output);
+        Mockito.when(readAllSoapEventService.process()).thenReturn(output);
 
         final List<SoapEvent> returnedSoapEvents = serviceAdapter.readAll();
 
@@ -104,7 +110,7 @@ public class SoapEventServiceAdapterTest {
         final ReadSoapEventOutput output = ReadSoapEventOutput.builder()
                 .soapEvent(soapEvent)
                 .build();
-        Mockito.when(serviceProcessor.process(Mockito.any(ReadSoapEventInput.class))).thenReturn(output);
+        Mockito.when(readSoapEventService.process(Mockito.any(ReadSoapEventInput.class))).thenReturn(output);
 
         final SoapEvent returnedSoapEvent = serviceAdapter.read(soapEvent.getId());
 
@@ -144,6 +150,6 @@ public class SoapEventServiceAdapterTest {
     @Test
     public void testClearAll(){
         serviceAdapter.clearAll();
-        Mockito.verify(serviceProcessor, Mockito.times(1)).process(Mockito.any(ClearAllSoapEventInput.class));
+        Mockito.verify(clearAllSoapEventService, Mockito.times(1)).process();
     }
 }

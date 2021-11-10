@@ -17,7 +17,6 @@
 package com.castlemock.service.core;
 
 import com.castlemock.model.core.Output;
-import com.castlemock.model.core.ServiceResult;
 import com.castlemock.repository.Repository;
 import com.google.common.base.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,7 +103,4 @@ public abstract class AbstractService<D, I extends Serializable, R extends Repos
     }
 
 
-    protected <O extends Output> ServiceResult<O> createServiceResult(final O output){
-        return new ServiceResult<>(output);
-    }
 }

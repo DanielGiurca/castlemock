@@ -16,8 +16,6 @@
 
 package com.castlemock.service.core.configuration;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.core.configuration.Configuration;
 import com.castlemock.model.core.configuration.ConfigurationGroup;
 import com.castlemock.model.core.configuration.ConfigurationType;
@@ -92,10 +90,7 @@ public class UpdateAllConfigurationGroupsServiceTest {
         Mockito.when(repository.save(Mockito.any(ConfigurationGroup.class))).thenReturn(updatedConfigurationGroup);
 
         final UpdateAllConfigurationGroupsInput input = new UpdateAllConfigurationGroupsInput(configurationGroups);
-        final ServiceTask<UpdateAllConfigurationGroupsInput> serviceTask = new ServiceTask<>();
-        serviceTask.setInput(input);
-        final ServiceResult<UpdateAllConfigurationGroupsOutput> serviceResult = service.process(serviceTask);
-        final UpdateAllConfigurationGroupsOutput output = serviceResult.getOutput();
+        final UpdateAllConfigurationGroupsOutput output = service.process(input);
 
         Assert.assertNotNull(output);
         Assert.assertNotNull(output.getUpdatedConfigurationGroups());

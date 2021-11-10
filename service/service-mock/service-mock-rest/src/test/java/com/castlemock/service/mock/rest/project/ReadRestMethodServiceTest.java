@@ -1,13 +1,6 @@
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
-import com.castlemock.model.mock.rest.domain.RestMethod;
-import com.castlemock.model.mock.rest.domain.RestMethodTestBuilder;
-import com.castlemock.model.mock.rest.domain.RestMockResponse;
-import com.castlemock.model.mock.rest.domain.RestMockResponseTestBuilder;
-import com.castlemock.model.mock.rest.domain.RestResource;
-import com.castlemock.model.mock.rest.domain.RestResourceTestBuilder;
+import com.castlemock.model.mock.rest.domain.*;
 import com.castlemock.repository.rest.project.RestMethodRepository;
 import com.castlemock.repository.rest.project.RestMockResponseRepository;
 import com.castlemock.repository.rest.project.RestResourceRepository;
@@ -59,20 +52,19 @@ public class ReadRestMethodServiceTest {
                         .restResourceId(resource.getId())
                         .restMethodId(method.getId())
                         .build();
-        final ServiceTask<ReadRestMethodInput> serviceTask = new ServiceTask<ReadRestMethodInput>(input);
 
         Mockito.when(resourceRepository.findOne(resource.getId())).thenReturn(resource);
         Mockito.when(methodRepository.findOne(method.getId())).thenReturn(method);
         Mockito.when(mockResponseRepository.findWithMethodId(method.getId())).thenReturn(Collections.singletonList(mockResponse));
 
-        final ServiceResult<ReadRestMethodOutput> result = service.process(serviceTask);
+        ReadRestMethodOutput result = service.process(input);
 
         Mockito.verify(resourceRepository, Mockito.times(1)).findOne(resource.getId());
         Mockito.verify(methodRepository, Mockito.times(1)).findOne(method.getId());
         Mockito.verify(mockResponseRepository, Mockito.times(1)).findWithMethodId(method.getId());
 
-        Assert.assertNotNull(result.getOutput());
-        Assert.assertEquals(method, result.getOutput().getRestMethod());
+        Assert.assertNotNull(result);
+        Assert.assertEquals(method, result.getRestMethod());
         Assert.assertEquals(mockResponse.getName(), method.getDefaultResponseName());
     }
 
@@ -87,20 +79,19 @@ public class ReadRestMethodServiceTest {
                         .restResourceId(resource.getId())
                         .restMethodId(method.getId())
                         .build();
-        final ServiceTask<ReadRestMethodInput> serviceTask = new ServiceTask<ReadRestMethodInput>(input);
 
         Mockito.when(resourceRepository.findOne(resource.getId())).thenReturn(resource);
         Mockito.when(methodRepository.findOne(method.getId())).thenReturn(method);
         Mockito.when(mockResponseRepository.findWithMethodId(method.getId())).thenReturn(Collections.emptyList());
 
-        final ServiceResult<ReadRestMethodOutput> result = service.process(serviceTask);
+        ReadRestMethodOutput result = service.process(input);
 
         Mockito.verify(resourceRepository, Mockito.times(1)).findOne(resource.getId());
         Mockito.verify(methodRepository, Mockito.times(1)).findOne(method.getId());
         Mockito.verify(mockResponseRepository, Mockito.times(1)).findWithMethodId(method.getId());
 
-        Assert.assertNotNull(result.getOutput());
-        Assert.assertEquals(method, result.getOutput().getRestMethod());
+        Assert.assertNotNull(result);
+        Assert.assertEquals(method, result.getRestMethod());
         Assert.assertEquals("", method.getDefaultResponseName());
     }
 }

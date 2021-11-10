@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.soap.event;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapEvent;
 import com.castlemock.service.mock.soap.event.input.CreateSoapEventInput;
 import com.castlemock.service.mock.soap.event.output.CreateSoapEventOutput;
@@ -30,29 +27,19 @@ import org.springframework.beans.factory.annotation.Value;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class CreateSoapEventService extends AbstractSoapEventService implements Service<CreateSoapEventInput, CreateSoapEventOutput> {
+public class CreateSoapEventService extends AbstractSoapEventService {
 
     @Value("${soap.event.max}")
     private Integer soapMaxEventCount;
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<CreateSoapEventOutput> process(ServiceTask<CreateSoapEventInput> serviceTask) {
-        final CreateSoapEventInput input = serviceTask.getInput();
+    public CreateSoapEventOutput process(final CreateSoapEventInput input) {
         final SoapEvent soapEvent = input.getSoapEvent();
         if(count() >= soapMaxEventCount){
             repository.deleteOldestEvent();
         }
         final SoapEvent createdSoapEvent = save(soapEvent);
-        return createServiceResult(CreateSoapEventOutput.builder()
+        return CreateSoapEventOutput.builder()
                 .createdSoapEvent(createdSoapEvent)
-                .build());
+                .build();
     }
 }

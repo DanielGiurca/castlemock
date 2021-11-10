@@ -17,9 +17,6 @@
 package com.castlemock.service.core.system;
 
 import com.castlemock.model.core.Environment;
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.core.system.SystemInformation;
 import com.castlemock.repository.Profiles;
 import com.castlemock.service.core.configuration.AbstractConfigurationGroupService;
@@ -38,7 +35,7 @@ import org.springframework.boot.autoconfigure.mongo.MongoProperties;
  * @since 1.7
  */
 @org.springframework.stereotype.Service
-public class GetSystemInformationService extends AbstractConfigurationGroupService implements Service<GetSystemInformationInput, GetSystemInformationOutput> {
+public class GetSystemInformationService extends AbstractConfigurationGroupService {
 
     @Value("${base.file.directory}")
     private String castleMockHomeDirectory;
@@ -52,17 +49,7 @@ public class GetSystemInformationService extends AbstractConfigurationGroupServi
     @Autowired
     private ObjectProvider<MongoProperties> mongoPropertiesProvider;
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     *
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<GetSystemInformationOutput> process(final ServiceTask<GetSystemInformationInput> serviceTask) {
+    public GetSystemInformationOutput process(GetSystemInformationInput serviceTask) {
         SystemInformation.Builder builder = SystemInformation.builder()
                 .javaVersion(System.getProperty("java.version"))
                 .javaVendor(System.getProperty("java.vendor"))
@@ -93,9 +80,9 @@ public class GetSystemInformationService extends AbstractConfigurationGroupServi
         }
         builder = builder.showCastleMockHomeDirectory(springEnvironment.acceptsProfiles(mongoProfiles));
         builder = builder.showMongoProperties(springEnvironment.acceptsProfiles(fileProfiles));
-        return createServiceResult(GetSystemInformationOutput.builder()
+        return GetSystemInformationOutput.builder()
                 .systemInformation(builder.build())
-                .build());
+                .build();
     }
 
     // see org.springframework.boot.autoconfigure.mongo.MongoClientFactory

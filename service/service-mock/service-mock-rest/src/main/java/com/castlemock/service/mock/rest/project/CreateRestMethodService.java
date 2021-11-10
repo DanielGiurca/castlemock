@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestMethod;
 import com.castlemock.model.mock.rest.domain.RestMethodStatus;
 import com.castlemock.model.mock.rest.domain.RestResponseStrategy;
@@ -30,19 +27,9 @@ import com.castlemock.service.mock.rest.project.output.CreateRestMethodOutput;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class CreateRestMethodService extends AbstractRestProjectService implements Service<CreateRestMethodInput, CreateRestMethodOutput> {
+public class CreateRestMethodService extends AbstractRestProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<CreateRestMethodOutput> process(final ServiceTask<CreateRestMethodInput> serviceTask) {
-        final CreateRestMethodInput input = serviceTask.getInput();
+    public CreateRestMethodOutput process(CreateRestMethodInput input) {
         final RestMethod restMethod = new RestMethod();
         restMethod.setName(input.getName());
         restMethod.setHttpMethod(input.getHttpMethod());
@@ -55,8 +42,8 @@ public class CreateRestMethodService extends AbstractRestProjectService implemen
         }
 
         final RestMethod createdRestMethod = this.methodRepository.save(restMethod);
-        return createServiceResult(CreateRestMethodOutput.builder()
+        return CreateRestMethodOutput.builder()
                 .createdRestMethod(createdRestMethod)
-                .build());
+                .build();
     }
 }

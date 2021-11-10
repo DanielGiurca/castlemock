@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapMockResponse;
 import com.castlemock.service.mock.soap.project.input.CreateSoapMockResponseInput;
 import com.castlemock.service.mock.soap.project.output.CreateSoapMockResponseOutput;
@@ -30,19 +27,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class CreateSoapMockResponseService extends AbstractSoapProjectService implements Service<CreateSoapMockResponseInput, CreateSoapMockResponseOutput> {
+public class CreateSoapMockResponseService extends AbstractSoapProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<CreateSoapMockResponseOutput> process(final ServiceTask<CreateSoapMockResponseInput> serviceTask) {
-        final CreateSoapMockResponseInput input = serviceTask.getInput();
+    public CreateSoapMockResponseOutput process(CreateSoapMockResponseInput input) {
         final SoapMockResponse mockResponse = SoapMockResponse.builder()
                 .name(input.getName())
                 .body(input.getBody().orElse(""))
@@ -55,8 +42,8 @@ public class CreateSoapMockResponseService extends AbstractSoapProjectService im
                 .xpathExpressions(input.getXpathExpressions().orElseGet(CopyOnWriteArrayList::new))
                 .build();
         final SoapMockResponse createdSoapMockResponse = this.mockResponseRepository.save(mockResponse);
-        return createServiceResult(CreateSoapMockResponseOutput.builder()
+        return CreateSoapMockResponseOutput.builder()
                 .mockResponse(createdSoapMockResponse)
-                .build());
+                .build();
     }
 }

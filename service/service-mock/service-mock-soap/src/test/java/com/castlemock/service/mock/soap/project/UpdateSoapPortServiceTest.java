@@ -16,8 +16,6 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapPort;
 import com.castlemock.model.mock.soap.domain.SoapPortTestBuilder;
 import com.castlemock.repository.soap.project.SoapPortRepository;
@@ -58,13 +56,11 @@ public class UpdateSoapPortServiceTest {
                 .portId(port.getId())
                 .uri(newUri)
                 .build();
-        final ServiceTask<UpdateSoapPortInput> serviceTask = new ServiceTask<UpdateSoapPortInput>(input);
 
         Mockito.when(soapPortRepository.findOne(port.getId())).thenReturn(port);
         Mockito.when(soapPortRepository.update(Mockito.anyString(), Mockito.any(SoapPort.class))).thenReturn(port);
 
-        final ServiceResult<UpdateSoapPortOutput> result = service.process(serviceTask);
-        final UpdateSoapPortOutput output = result.getOutput();
+        UpdateSoapPortOutput output = service.process(input);
         final SoapPort returnedSoapPort = output.getPort();
 
         Mockito.verify(soapPortRepository, Mockito.times(1)).findOne(port.getId());

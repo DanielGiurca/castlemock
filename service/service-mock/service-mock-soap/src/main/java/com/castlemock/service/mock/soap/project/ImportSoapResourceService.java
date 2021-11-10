@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapResource;
 import com.castlemock.model.mock.soap.domain.SoapResourceType;
 import com.castlemock.service.mock.soap.project.input.ImportSoapResourceInput;
@@ -33,19 +30,9 @@ import java.util.Optional;
  * @since 1.19
  */
 @org.springframework.stereotype.Service
-public class ImportSoapResourceService extends AbstractSoapProjectService implements Service<ImportSoapResourceInput, ImportSoapResourceOutput> {
+public class ImportSoapResourceService extends AbstractSoapProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<ImportSoapResourceOutput> process(final ServiceTask<ImportSoapResourceInput> serviceTask) {
-        final ImportSoapResourceInput input = serviceTask.getInput();
+    public ImportSoapResourceOutput process(ImportSoapResourceInput input) {
         final Optional<String> projectId = input.getProjectId();
         final SoapResource soapResource = input.getResource();
         final String raw = input.getRaw();
@@ -74,8 +61,8 @@ public class ImportSoapResourceService extends AbstractSoapProjectService implem
         }
 
 
-        return createServiceResult(ImportSoapResourceOutput.builder()
+        return ImportSoapResourceOutput.builder()
                 .resource(result)
-                .build());
+                .build();
     }
 }

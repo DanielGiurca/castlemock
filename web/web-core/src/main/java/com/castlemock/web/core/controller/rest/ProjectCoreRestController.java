@@ -16,7 +16,6 @@
 
 package com.castlemock.web.core.controller.rest;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.project.Project;
 import com.castlemock.model.core.service.project.ProjectServiceFacade;
 import com.castlemock.service.core.manager.FileManager;
@@ -67,10 +66,8 @@ public class ProjectCoreRestController extends AbstractRestController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProjectCoreRestController.class);
 
     @Autowired
-    public ProjectCoreRestController(final ServiceProcessor serviceProcessor,
-                                     final FileManager fileManager,
+    public ProjectCoreRestController(final FileManager fileManager,
                                      final ProjectServiceFacade projectServiceFacade){
-        super(serviceProcessor);
         this.fileManager = Objects.requireNonNull(fileManager);
         this.projectServiceFacade = Objects.requireNonNull(projectServiceFacade);
     }

@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestMockResponse;
 import com.castlemock.model.mock.rest.domain.RestMockResponseStatus;
 import com.castlemock.service.mock.rest.project.input.CreateRestMockResponseInput;
@@ -32,19 +29,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class CreateRestMockResponseService extends AbstractRestProjectService implements Service<CreateRestMockResponseInput, CreateRestMockResponseOutput> {
+public class CreateRestMockResponseService extends AbstractRestProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<CreateRestMockResponseOutput> process(final ServiceTask<CreateRestMockResponseInput> serviceTask) {
-        final CreateRestMockResponseInput input = serviceTask.getInput();
+    public CreateRestMockResponseOutput process(CreateRestMockResponseInput input) {
         final RestMockResponse mockResponse = RestMockResponse.builder()
                 .id(RandomStringUtils.random(6, true, true))
                 .body(input.getBody().orElse(""))
@@ -61,8 +48,8 @@ public class CreateRestMockResponseService extends AbstractRestProjectService im
                 .usingExpressions(input.getUsingExpressions().orElse(false))
                 .build();
         final RestMockResponse createdMockResponse = mockResponseRepository.save(mockResponse);
-        return createServiceResult(CreateRestMockResponseOutput.builder()
+        return CreateRestMockResponseOutput.builder()
                 .restMockResponse(createdMockResponse)
-                .build());
+                .build();
     }
 }

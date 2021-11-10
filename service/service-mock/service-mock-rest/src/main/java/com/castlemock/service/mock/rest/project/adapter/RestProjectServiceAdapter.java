@@ -18,28 +18,14 @@ package com.castlemock.service.mock.rest.project.adapter;
 
 import com.castlemock.model.core.SearchQuery;
 import com.castlemock.model.core.SearchResult;
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.TypeIdentifier;
 import com.castlemock.model.core.project.Project;
 import com.castlemock.model.core.service.project.ProjectServiceAdapter;
 import com.castlemock.model.mock.rest.domain.RestProject;
 import com.castlemock.service.mock.rest.RestTypeIdentifier;
-import com.castlemock.service.mock.rest.project.input.CreateRestProjectInput;
-import com.castlemock.service.mock.rest.project.input.DeleteRestProjectInput;
-import com.castlemock.service.mock.rest.project.input.ExportRestProjectInput;
-import com.castlemock.service.mock.rest.project.input.ImportRestProjectInput;
-import com.castlemock.service.mock.rest.project.input.ReadAllRestProjectsInput;
-import com.castlemock.service.mock.rest.project.input.ReadRestProjectInput;
-import com.castlemock.service.mock.rest.project.input.SearchRestProjectInput;
-import com.castlemock.service.mock.rest.project.input.UpdateRestProjectInput;
-import com.castlemock.service.mock.rest.project.output.CreateRestProjectOutput;
-import com.castlemock.service.mock.rest.project.output.DeleteRestProjectOutput;
-import com.castlemock.service.mock.rest.project.output.ExportRestProjectOutput;
-import com.castlemock.service.mock.rest.project.output.ImportRestProjectOutput;
-import com.castlemock.service.mock.rest.project.output.ReadAllRestProjectsOutput;
-import com.castlemock.service.mock.rest.project.output.ReadRestProjectOutput;
-import com.castlemock.service.mock.rest.project.output.SearchRestProjectOutput;
-import com.castlemock.service.mock.rest.project.output.UpdateRestProjectOutput;
+import com.castlemock.service.mock.rest.project.*;
+import com.castlemock.service.mock.rest.project.input.*;
+import com.castlemock.service.mock.rest.project.output.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,7 +42,22 @@ import java.util.List;
 public class RestProjectServiceAdapter implements ProjectServiceAdapter<RestProject> {
 
     @Autowired
-    private ServiceProcessor serviceProcessor;
+    private DeleteRestProjectService deleteRestProjectService;
+    @Autowired
+    private CreateRestProjectService createRestProjectService;
+    @Autowired
+    private UpdateRestProjectService updateRestProjectService;
+    @Autowired
+    private ReadAllRestProjectsService readAllRestProjectsService;
+    @Autowired
+    private ReadRestProjectService readRestProjectService;
+    @Autowired
+    private ExportRestProjectService exportRestProjectService;
+    @Autowired
+    private ImportRestProjectService importRestProjectService;
+    @Autowired
+    private SearchRestProjectService searchRestProjectService;
+
     private RestTypeIdentifier REST_TYPE_IDENTIFIER = new RestTypeIdentifier();
 
     /**
@@ -67,7 +68,7 @@ public class RestProjectServiceAdapter implements ProjectServiceAdapter<RestProj
      */
     @Override
     public RestProject create(RestProject project) {
-        final CreateRestProjectOutput output = serviceProcessor.process(CreateRestProjectInput.builder()
+        final CreateRestProjectOutput output = createRestProjectService.process(CreateRestProjectInput.builder()
                 .restProject(project)
                 .build());
         return output.getSavedRestProject();
@@ -82,7 +83,7 @@ public class RestProjectServiceAdapter implements ProjectServiceAdapter<RestProj
      */
     @Override
     public RestProject delete(String id) {
-        final DeleteRestProjectOutput output = serviceProcessor.process(DeleteRestProjectInput.builder()
+        final DeleteRestProjectOutput output = deleteRestProjectService.process(DeleteRestProjectInput.builder()
                 .restProjectId(id)
                 .build());
         return output.getProject();
@@ -100,7 +101,7 @@ public class RestProjectServiceAdapter implements ProjectServiceAdapter<RestProj
      */
     @Override
     public RestProject update(String id, RestProject project) {
-        final UpdateRestProjectOutput output = serviceProcessor.process(UpdateRestProjectInput.builder()
+        final UpdateRestProjectOutput output = updateRestProjectService.process(UpdateRestProjectInput.builder()
                 .restProjectId(id)
                 .restProject(project)
                 .build());
@@ -113,7 +114,7 @@ public class RestProjectServiceAdapter implements ProjectServiceAdapter<RestProj
      */
     @Override
     public List<RestProject> readAll() {
-        final ReadAllRestProjectsOutput output = serviceProcessor.process(ReadAllRestProjectsInput.builder().build());
+        final ReadAllRestProjectsOutput output = readAllRestProjectsService.process(ReadAllRestProjectsInput.builder().build());
         return output.getRestProjects();
     }
 
@@ -127,7 +128,7 @@ public class RestProjectServiceAdapter implements ProjectServiceAdapter<RestProj
      */
     @Override
     public RestProject read(String id) {
-        final ReadRestProjectOutput output = serviceProcessor.process(ReadRestProjectInput.builder()
+        final ReadRestProjectOutput output = readRestProjectService.process(ReadRestProjectInput.builder()
                 .restProjectId(id)
                 .build());
         return output.getRestProject();
@@ -160,7 +161,7 @@ public class RestProjectServiceAdapter implements ProjectServiceAdapter<RestProj
      */
     @Override
     public String exportProject(String id) {
-        final ExportRestProjectOutput output = serviceProcessor.process(ExportRestProjectInput.builder()
+        final ExportRestProjectOutput output = exportRestProjectService.process(ExportRestProjectInput.builder()
                 .restProjectId(id)
                 .build());
         return output.getExportedProject();
@@ -173,7 +174,7 @@ public class RestProjectServiceAdapter implements ProjectServiceAdapter<RestProj
      */
     @Override
     public RestProject importProject(String projectRaw) {
-        final ImportRestProjectOutput output =serviceProcessor.process(ImportRestProjectInput.builder()
+        final ImportRestProjectOutput output = importRestProjectService.process(ImportRestProjectInput.builder()
                 .projectRaw(projectRaw)
                 .build());
         return output.getProject();
@@ -187,7 +188,7 @@ public class RestProjectServiceAdapter implements ProjectServiceAdapter<RestProj
      */
     @Override
     public List<SearchResult> search(SearchQuery searchQuery) {
-        final SearchRestProjectOutput output = serviceProcessor.process(SearchRestProjectInput.builder()
+        final SearchRestProjectOutput output = searchRestProjectService.process(SearchRestProjectInput.builder()
                 .searchQuery(searchQuery)
                 .build());
         return output.getSearchResults();

@@ -16,8 +16,6 @@
 
 package com.castlemock.service.mock.soap.event;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapEvent;
 import com.castlemock.model.mock.soap.domain.SoapEventTestBuilder;
 import com.castlemock.repository.soap.event.SoapEventRepository;
@@ -27,11 +25,7 @@ import org.dozer.DozerBeanMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
+import org.mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,10 +67,7 @@ public class ReadSoapEventsByOperationIdServiceTest {
         final ReadSoapEventsByOperationIdInput input = ReadSoapEventsByOperationIdInput.builder()
                 .operationId("OperationId")
                 .build();
-        final ServiceTask<ReadSoapEventsByOperationIdInput> serviceTask = new ServiceTask<ReadSoapEventsByOperationIdInput>(input);
-        final ServiceResult<ReadSoapEventsByOperationIdOutput> serviceResult = service.process(serviceTask);
-        final ReadSoapEventsByOperationIdOutput output = serviceResult.getOutput();
-
+        ReadSoapEventsByOperationIdOutput output = service.process(input);
 
         Assert.assertEquals(2, output.getSoapEvents().size());
 

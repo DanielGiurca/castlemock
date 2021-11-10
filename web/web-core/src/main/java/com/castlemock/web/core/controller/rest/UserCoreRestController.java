@@ -16,11 +16,10 @@
 
 package com.castlemock.web.core.controller.rest;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.user.User;
+import com.castlemock.service.core.user.*;
 import com.castlemock.service.core.user.input.CreateUserInput;
 import com.castlemock.service.core.user.input.DeleteUserInput;
-import com.castlemock.service.core.user.input.ReadAllUsersInput;
 import com.castlemock.service.core.user.input.ReadUserInput;
 import com.castlemock.service.core.user.input.UpdateUserInput;
 import com.castlemock.service.core.user.output.CreateUserOutput;
@@ -35,11 +34,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -49,8 +44,19 @@ import java.util.List;
 @ConditionalOnExpression("${server.mode.demo} == false")
 public class UserCoreRestController extends AbstractRestController {
 
-    public UserCoreRestController(final ServiceProcessor serviceProcessor){
-        super(serviceProcessor);
+    private final CreateUserService createUserService;
+    private final UpdateUserService updateUserService;
+    private final ReadAllUsersService readAllUsersService;
+    private final ReadUserService readUserService;
+    private final DeleteUserService deleteUserService;
+
+    public UserCoreRestController(CreateUserService createUserService, UpdateUserService updateUserService, ReadAllUsersService readAllUsersService, ReadUserService readUserService, DeleteUserService deleteUserService){
+
+        this.createUserService = createUserService;
+        this.updateUserService = updateUserService;
+        this.readAllUsersService = readAllUsersService;
+        this.readUserService = readUserService;
+        this.deleteUserService = deleteUserService;
     }
 
     @ApiOperation(value = "Create user",response = User.class,
@@ -62,7 +68,7 @@ public class UserCoreRestController extends AbstractRestController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public @ResponseBody
     ResponseEntity<User> createUser(@RequestBody final User user) {
-        final CreateUserOutput output = serviceProcessor.process(CreateUserInput.builder()
+        final CreateUserOutput output = createUserService.process(CreateUserInput.builder()
                 .user(user)
                 .build());
         final User createdUser = output.getSavedUser();
@@ -80,7 +86,7 @@ public class UserCoreRestController extends AbstractRestController {
     public @ResponseBody
     ResponseEntity<User> updateUser(@PathVariable("userId") final String userId,
                     @RequestBody final User user) {
-        final UpdateUserOutput output = serviceProcessor.process(UpdateUserInput.builder()
+        final UpdateUserOutput output = updateUserService.process(UpdateUserInput.builder()
                 .user(user)
                 .userId(userId)
                 .build());
@@ -98,7 +104,7 @@ public class UserCoreRestController extends AbstractRestController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public @ResponseBody
     ResponseEntity<List<User>> getUsers() {
-        final ReadAllUsersOutput output = serviceProcessor.process(new ReadAllUsersInput());
+        final ReadAllUsersOutput output = readAllUsersService.process();
         final List<User> users = output.getUsers();
         users.forEach(user -> user.setPassword(EMPTY));
         return ResponseEntity.ok(users);
@@ -113,7 +119,7 @@ public class UserCoreRestController extends AbstractRestController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public @ResponseBody
     ResponseEntity<User> getUser(@PathVariable("userId") final String userId) {
-        final ReadUserOutput output = serviceProcessor.process(ReadUserInput.builder()
+        final ReadUserOutput output = readUserService.process(ReadUserInput.builder()
                 .userId(userId)
                 .build());
         final User user = output.getUser();
@@ -129,7 +135,7 @@ public class UserCoreRestController extends AbstractRestController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public @ResponseBody
     void deleteUser(@PathVariable("userId") final String userId) {
-        serviceProcessor.process(DeleteUserInput.builder()
+        deleteUserService.process(DeleteUserInput.builder()
                 .userId(userId)
                 .build());
     }

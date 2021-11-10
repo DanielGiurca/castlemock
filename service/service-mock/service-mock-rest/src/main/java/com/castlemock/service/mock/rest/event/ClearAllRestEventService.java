@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.rest.event;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.service.mock.rest.event.input.ClearAllRestEventInput;
 import com.castlemock.service.mock.rest.event.output.ClearAllRestEventOutput;
 
@@ -27,21 +24,11 @@ import com.castlemock.service.mock.rest.event.output.ClearAllRestEventOutput;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class ClearAllRestEventService extends AbstractRestEventService implements Service<ClearAllRestEventInput, ClearAllRestEventOutput> {
+public class ClearAllRestEventService extends AbstractRestEventService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-
-    @Override
-    public ServiceResult<ClearAllRestEventOutput> process(ServiceTask<ClearAllRestEventInput> serviceTask) {
+    public ClearAllRestEventOutput process(ClearAllRestEventInput input) {
         repository.clearAll();
-        return createServiceResult(ClearAllRestEventOutput.builder().build());
+        return ClearAllRestEventOutput.builder().build();
     }
 
 

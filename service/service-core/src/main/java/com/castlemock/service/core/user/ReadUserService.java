@@ -16,9 +16,6 @@
 
 package com.castlemock.service.core.user;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.core.user.User;
 import com.castlemock.service.core.user.input.ReadUserInput;
 import com.castlemock.service.core.user.output.ReadUserOutput;
@@ -28,20 +25,10 @@ import com.castlemock.service.core.user.output.ReadUserOutput;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class ReadUserService extends AbstractUserService implements Service<ReadUserInput, ReadUserOutput> {
+public class ReadUserService extends AbstractUserService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<ReadUserOutput> process(final ServiceTask<ReadUserInput> serviceTask) {
-        final ReadUserInput input = serviceTask.getInput();
+    public ReadUserOutput process(ReadUserInput input) {
         final User user = find(input.getUserId());
-        return createServiceResult(ReadUserOutput.builder().user(user).build());
+        return ReadUserOutput.builder().user(user).build();
     }
 }

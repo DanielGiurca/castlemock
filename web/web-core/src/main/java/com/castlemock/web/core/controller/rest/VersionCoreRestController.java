@@ -16,7 +16,6 @@
 
 package com.castlemock.web.core.controller.rest;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.web.core.model.VersionResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -39,9 +38,6 @@ public class VersionCoreRestController extends AbstractRestController {
     @Value("${app.version:Undefined}")
     private String version;
 
-    public VersionCoreRestController(final ServiceProcessor serviceProcessor){
-        super(serviceProcessor);
-    }
 
     @ApiOperation(value = "Get system version")
     @ApiResponses(value = {

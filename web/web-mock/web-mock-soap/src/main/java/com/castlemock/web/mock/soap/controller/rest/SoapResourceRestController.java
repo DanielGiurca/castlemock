@@ -16,10 +16,12 @@
 
 package com.castlemock.web.mock.soap.controller.rest;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.mock.soap.domain.SoapResource;
 import com.castlemock.model.mock.soap.domain.SoapResourceType;
 import com.castlemock.service.core.manager.FileManager;
+import com.castlemock.service.mock.soap.project.ImportSoapResourceService;
+import com.castlemock.service.mock.soap.project.LoadSoapResourceService;
+import com.castlemock.service.mock.soap.project.ReadSoapResourceService;
 import com.castlemock.service.mock.soap.project.input.ImportSoapResourceInput;
 import com.castlemock.service.mock.soap.project.input.LoadSoapResourceInput;
 import com.castlemock.service.mock.soap.project.input.ReadSoapResourceInput;
@@ -61,12 +63,16 @@ public class SoapResourceRestController extends AbstractRestController {
     private static final Logger LOGGER = LoggerFactory.getLogger(SoapResourceRestController.class);
 
     private final FileManager fileManager;
+    private final ReadSoapResourceService readSoapResourceService;
+    private final LoadSoapResourceService loadSoapResourceService;
+    private final ImportSoapResourceService importSoapResourceService;
 
     @Autowired
-    public SoapResourceRestController(final ServiceProcessor serviceProcessor,
-                                     final FileManager fileManager){
-        super(serviceProcessor);
+    public SoapResourceRestController(final FileManager fileManager, ReadSoapResourceService readSoapResourceService, LoadSoapResourceService loadSoapResourceService, ImportSoapResourceService importSoapResourceService){
         this.fileManager = Objects.requireNonNull(fileManager);
+        this.readSoapResourceService = readSoapResourceService;
+        this.loadSoapResourceService = loadSoapResourceService;
+        this.importSoapResourceService = importSoapResourceService;
     }
 
     @ApiOperation(value = "Get SOAP resource", response = SoapResource.class)
@@ -80,13 +86,13 @@ public class SoapResourceRestController extends AbstractRestController {
             @PathVariable(value = "projectId") final String projectId,
             @ApiParam(name = "resourceId", value = "The id of the resource")
             @PathVariable(value = "resourceId") final String resourceId) {
-        final ReadSoapResourceOutput output = this.serviceProcessor.process(ReadSoapResourceInput.builder()
+        final ReadSoapResourceOutput output = this.readSoapResourceService.process(ReadSoapResourceInput.builder()
                 .projectId(projectId)
                 .resourceId(resourceId)
                 .build());
         final SoapResource soapResource = output.getResource();
         final LoadSoapResourceOutput loadOutput =
-                this.serviceProcessor.process(LoadSoapResourceInput.builder()
+                this.loadSoapResourceService.process(LoadSoapResourceInput.builder()
                         .projectId(projectId)
                         .resourceId(soapResource.getId())
                         .build());
@@ -105,7 +111,7 @@ public class SoapResourceRestController extends AbstractRestController {
             @PathVariable(value = "projectId") final String projectId,
             @ApiParam(name = "resourceId", value = "The id of the resource")
             @PathVariable(value = "resourceId") final String resourceId) {
-        final LoadSoapResourceOutput output = this.serviceProcessor.process(LoadSoapResourceInput.builder()
+        final LoadSoapResourceOutput output = this.loadSoapResourceService.process(LoadSoapResourceInput.builder()
                         .projectId(projectId)
                         .resourceId(resourceId)
                         .build());
@@ -152,7 +158,7 @@ public class SoapResourceRestController extends AbstractRestController {
                     .resource(resource)
                     .raw(raw)
                     .build();
-            ImportSoapResourceOutput output = this.serviceProcessor.process(input);
+            ImportSoapResourceOutput output = this.importSoapResourceService.process(input);
             return ResponseEntity.ok(output.getResource());
         } catch (IOException e) {
             LOGGER.error("Unable to import resource", e);

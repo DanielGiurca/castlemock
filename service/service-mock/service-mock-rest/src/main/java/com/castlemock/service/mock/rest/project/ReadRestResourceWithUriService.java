@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestResource;
 import com.castlemock.service.mock.rest.project.input.ReadRestResourceWithUriInput;
 import com.castlemock.service.mock.rest.project.output.ReadRestResourceWithUriOutput;
@@ -28,22 +25,12 @@ import com.castlemock.service.mock.rest.project.output.ReadRestResourceWithUriOu
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class ReadRestResourceWithUriService extends AbstractRestProjectService implements Service<ReadRestResourceWithUriInput, ReadRestResourceWithUriOutput> {
+public class ReadRestResourceWithUriService extends AbstractRestProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<ReadRestResourceWithUriOutput> process(final ServiceTask<ReadRestResourceWithUriInput> serviceTask) {
-        final ReadRestResourceWithUriInput input = serviceTask.getInput();
+    public ReadRestResourceWithUriOutput process(ReadRestResourceWithUriInput input) {
         final RestResource restResource = this.resourceRepository.findRestResourceByUri(input.getRestApplicationId(), input.getRestResourceUri());
-        return createServiceResult(ReadRestResourceWithUriOutput.builder()
+        return ReadRestResourceWithUriOutput.builder()
                 .restResource(restResource)
-                .build());
+                .build();
     }
 }

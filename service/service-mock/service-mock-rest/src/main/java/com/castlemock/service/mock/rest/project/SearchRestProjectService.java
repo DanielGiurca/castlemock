@@ -18,9 +18,6 @@ package com.castlemock.service.mock.rest.project;
 
 import com.castlemock.model.core.SearchQuery;
 import com.castlemock.model.core.SearchResult;
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestApplication;
 import com.castlemock.model.mock.rest.domain.RestMethod;
 import com.castlemock.model.mock.rest.domain.RestMockResponse;
@@ -41,7 +38,7 @@ import java.util.List;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class SearchRestProjectService extends AbstractRestProjectService implements Service<SearchRestProjectInput, SearchRestProjectOutput> {
+public class SearchRestProjectService extends AbstractRestProjectService {
 
 
     @Autowired
@@ -57,18 +54,7 @@ public class SearchRestProjectService extends AbstractRestProjectService impleme
     private static final String COMMA = ", ";
     private static final String REST_TYPE = "REST";
 
-
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<SearchRestProjectOutput> process(final ServiceTask<SearchRestProjectInput> serviceTask) {
-        final SearchRestProjectInput input = serviceTask.getInput();
+    public SearchRestProjectOutput process(SearchRestProjectInput input) {
         final SearchQuery searchQuery = input.getSearchQuery();
         final List<SearchResult> searchResults = new ArrayList<>();
 
@@ -140,9 +126,9 @@ public class SearchRestProjectService extends AbstractRestProjectService impleme
             searchResults.add(searchResult);
         });
 
-        return createServiceResult(SearchRestProjectOutput.builder()
+        return SearchRestProjectOutput.builder()
                 .searchResults(searchResults)
-                .build());
+                .build();
     }
 
 }

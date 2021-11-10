@@ -16,9 +16,9 @@
 
 package com.castlemock.web.core.controller.rest;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.system.SystemInformation;
 import com.castlemock.model.core.system.SystemInformationTestBuilder;
+import com.castlemock.service.core.system.GetSystemInformationService;
 import com.castlemock.service.core.system.output.GetSystemInformationOutput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,20 +34,20 @@ import static org.mockito.Mockito.when;
 
 class SystemCoreRestControllerTest {
 
-    private ServiceProcessor serviceProcessor;
+    private GetSystemInformationService getSystemInformationService;
     private SystemCoreRestController systemController;
 
     @BeforeEach
     void setup(){
-        this.serviceProcessor = mock(ServiceProcessor.class);
-        this.systemController = new SystemCoreRestController(serviceProcessor);
+        this.getSystemInformationService = mock(GetSystemInformationService.class);
+        this.systemController = new SystemCoreRestController(getSystemInformationService);
     }
 
     @Test
     @DisplayName("Get system")
     void testGetSystem(){
         final SystemInformation systemInformation = SystemInformationTestBuilder.builder().build();
-        when(serviceProcessor.process(any())).thenReturn(GetSystemInformationOutput.builder()
+        when(getSystemInformationService.process(any())).thenReturn(GetSystemInformationOutput.builder()
                 .systemInformation(systemInformation)
                 .build());
         final ResponseEntity<SystemInformation> responseEntity = this.systemController.getSystemInformation();

@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapProject;
 import com.castlemock.service.mock.soap.project.input.UpdateSoapProjectInput;
 import com.castlemock.service.mock.soap.project.output.UpdateSoapProjectOutput;
@@ -28,24 +25,14 @@ import com.castlemock.service.mock.soap.project.output.UpdateSoapProjectOutput;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class UpdateSoapProjectService extends AbstractSoapProjectService implements Service<UpdateSoapProjectInput, UpdateSoapProjectOutput> {
+public class UpdateSoapProjectService extends AbstractSoapProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<UpdateSoapProjectOutput> process(final ServiceTask<UpdateSoapProjectInput> serviceTask) {
-        final UpdateSoapProjectInput input = serviceTask.getInput();
+    public UpdateSoapProjectOutput process(UpdateSoapProjectInput input) {
         final String soapProjectId = input.getProjectId();
         final SoapProject soapProject = input.getProject();
         final SoapProject updatedSoapProject = update(soapProjectId, soapProject);
-        return createServiceResult(UpdateSoapProjectOutput.builder()
+        return UpdateSoapProjectOutput.builder()
                 .project(updatedSoapProject)
-                .build());
+                .build();
     }
 }

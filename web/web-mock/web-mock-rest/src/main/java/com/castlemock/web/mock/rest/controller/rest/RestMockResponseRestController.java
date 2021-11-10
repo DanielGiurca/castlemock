@@ -16,13 +16,9 @@
 
 package com.castlemock.web.mock.rest.controller.rest;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.mock.rest.domain.RestMockResponse;
-import com.castlemock.service.mock.rest.project.input.CreateRestMockResponseInput;
-import com.castlemock.service.mock.rest.project.input.DeleteRestMockResponseInput;
-import com.castlemock.service.mock.rest.project.input.DuplicateRestMockResponsesInput;
-import com.castlemock.service.mock.rest.project.input.ReadRestMockResponseInput;
-import com.castlemock.service.mock.rest.project.input.UpdateRestMockResponseInput;
+import com.castlemock.service.mock.rest.project.*;
+import com.castlemock.service.mock.rest.project.input.*;
 import com.castlemock.service.mock.rest.project.output.CreateRestMockResponseOutput;
 import com.castlemock.service.mock.rest.project.output.DeleteRestMockResponseOutput;
 import com.castlemock.service.mock.rest.project.output.ReadRestMockResponseOutput;
@@ -31,20 +27,12 @@ import com.castlemock.web.core.controller.rest.AbstractRestController;
 import com.castlemock.web.mock.rest.model.CreateRestMockResponseRequest;
 import com.castlemock.web.mock.rest.model.DuplicateRestMockOperationsRequest;
 import com.castlemock.web.mock.rest.model.UpdateRestMockResponseRequest;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("api/rest/rest")
@@ -53,9 +41,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class RestMockResponseRestController extends AbstractRestController {
 
     @Autowired
-    public RestMockResponseRestController(final ServiceProcessor serviceProcessor){
-        super(serviceProcessor);
-    }
+    private ReadRestMockResponseService readRestMockResponseService;
+    @Autowired
+    private DeleteRestMockResponseService deleteRestMockResponseService;
+    @Autowired
+    private UpdateRestMockResponseService updateRestMockResponseService;
+    @Autowired
+    private CreateRestMockResponseService createRestMockResponseService;
+    @Autowired
+    private DuplicateRestMockResponsesService duplicateRestMockResponsesService;
 
     @ApiOperation(value = "Get mocked response", response = RestMockResponse.class)
     @ApiResponses(value = {
@@ -75,7 +69,7 @@ public class RestMockResponseRestController extends AbstractRestController {
             @PathVariable(value = "methodId") final String methodId,
             @ApiParam(name = "responseId", value = "The id of the response")
             @PathVariable(value = "responseId") final String responseId) {
-        final ReadRestMockResponseOutput output = super.serviceProcessor.process(ReadRestMockResponseInput.builder()
+        final ReadRestMockResponseOutput output = readRestMockResponseService.process(ReadRestMockResponseInput.builder()
                 .restProjectId(projectId)
                 .restApplicationId(applicationId)
                 .restResourceId(resourceId)
@@ -102,7 +96,7 @@ public class RestMockResponseRestController extends AbstractRestController {
             @PathVariable(value = "methodId") final String methodId,
             @ApiParam(name = "responseId", value = "The id of the response")
             @PathVariable(value = "responseId") final String responseId) {
-        final DeleteRestMockResponseOutput output = super.serviceProcessor.process(DeleteRestMockResponseInput.builder()
+        final DeleteRestMockResponseOutput output = deleteRestMockResponseService.process(DeleteRestMockResponseInput.builder()
                 .restProjectId(projectId)
                 .restApplicationId(applicationId)
                 .restResourceId(resourceId)
@@ -130,7 +124,7 @@ public class RestMockResponseRestController extends AbstractRestController {
             @ApiParam(name = "responseId", value = "The id of the response")
             @PathVariable(value = "responseId") final String responseId,
             @RequestBody UpdateRestMockResponseRequest request) {
-        final UpdateRestMockResponseOutput output = super.serviceProcessor.process(UpdateRestMockResponseInput.builder()
+        final UpdateRestMockResponseOutput output = updateRestMockResponseService.process(UpdateRestMockResponseInput.builder()
                 .restProjectId(projectId)
                 .restApplicationId(applicationId)
                 .restResourceId(resourceId)
@@ -167,7 +161,7 @@ public class RestMockResponseRestController extends AbstractRestController {
             @ApiParam(name = "methodId", value = "The id of the method")
             @PathVariable(value = "methodId") final String methodId,
             @RequestBody CreateRestMockResponseRequest request) {
-        final CreateRestMockResponseOutput output = super.serviceProcessor.process(CreateRestMockResponseInput.builder()
+        final CreateRestMockResponseOutput output = createRestMockResponseService.process(CreateRestMockResponseInput.builder()
                 .projectId(projectId)
                 .applicationId(applicationId)
                 .resourceId(resourceId)
@@ -203,7 +197,7 @@ public class RestMockResponseRestController extends AbstractRestController {
             @ApiParam(name = "methodId", value = "The id of the method")
             @PathVariable(value = "methodId") final String methodId,
             @RequestBody DuplicateRestMockOperationsRequest request) {
-        super.serviceProcessor.process(DuplicateRestMockResponsesInput.builder()
+        duplicateRestMockResponsesService.process(DuplicateRestMockResponsesInput.builder()
                 .projectId(projectId)
                 .applicationId(applicationId)
                 .resourceId(resourceId)

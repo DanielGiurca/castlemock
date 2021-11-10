@@ -16,8 +16,6 @@
 
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestProject;
 import com.castlemock.model.mock.rest.domain.RestProjectTestBuilder;
 import com.castlemock.repository.rest.project.RestProjectRepository;
@@ -56,11 +54,10 @@ public class CreateRestProjectServiceTest {
         final CreateRestProjectInput input = CreateRestProjectInput.builder()
                 .restProject(project)
                 .build();
-        final ServiceTask<CreateRestProjectInput> serviceTask = new ServiceTask<CreateRestProjectInput>(input);
-        final ServiceResult<CreateRestProjectOutput> serviceResult = service.process(serviceTask);
+        CreateRestProjectOutput serviceResult = service.process(input);
 
-        Assert.assertNotNull(serviceResult.getOutput());
-        Assert.assertEquals(project, serviceResult.getOutput().getSavedRestProject());
+        Assert.assertNotNull(serviceResult);
+        Assert.assertEquals(project, serviceResult.getSavedRestProject());
         Mockito.verify(repository, Mockito.times(1)).save(project);
     }
 }

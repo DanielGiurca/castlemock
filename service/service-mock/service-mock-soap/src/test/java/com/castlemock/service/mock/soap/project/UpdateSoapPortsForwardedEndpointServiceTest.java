@@ -16,15 +16,12 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapOperation;
 import com.castlemock.model.mock.soap.domain.SoapOperationTestBuilder;
 import com.castlemock.model.mock.soap.domain.SoapPort;
 import com.castlemock.model.mock.soap.domain.SoapPortTestBuilder;
 import com.castlemock.repository.soap.project.SoapOperationRepository;
 import com.castlemock.service.mock.soap.project.input.UpdateSoapPortsForwardedEndpointInput;
-import com.castlemock.service.mock.soap.project.output.UpdateSoapPortsForwardedEndpointOutput;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -63,11 +60,10 @@ public class UpdateSoapPortsForwardedEndpointServiceTest {
                 .portIds(Set.of(port.getId()))
                 .forwardedEndpoint("Forward Endpoint")
                 .build();
-        final ServiceTask<UpdateSoapPortsForwardedEndpointInput> serviceTask = new ServiceTask<UpdateSoapPortsForwardedEndpointInput>(input);
 
         Mockito.when(operationRepository.findWithPortId(port.getId())).thenReturn(Arrays.asList(operation));
         Mockito.when(operationRepository.update(Mockito.anyString(), Mockito.any(SoapOperation.class))).thenReturn(operation);
-        final ServiceResult<UpdateSoapPortsForwardedEndpointOutput> result = service.process(serviceTask);
+        service.process(input);
 
         Mockito.verify(operationRepository, Mockito.times(1)).findWithPortId(port.getId());
         Mockito.verify(operationRepository, Mockito.times(1)).update(operation.getId(), operation);

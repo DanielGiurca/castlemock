@@ -16,9 +16,12 @@
 
 package com.castlemock.web.mock.soap.controller.rest;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.mock.soap.domain.SoapProject;
 import com.castlemock.service.core.manager.FileManager;
+import com.castlemock.service.mock.soap.project.CreateSoapPortsService;
+import com.castlemock.service.mock.soap.project.ReadSoapProjectService;
+import com.castlemock.service.mock.soap.project.UpdateSoapPortsForwardedEndpointService;
+import com.castlemock.service.mock.soap.project.UpdateSoapPortsStatusService;
 import com.castlemock.service.mock.soap.project.input.CreateSoapPortsInput;
 import com.castlemock.service.mock.soap.project.input.ReadSoapProjectInput;
 import com.castlemock.service.mock.soap.project.input.UpdateSoapPortsForwardedEndpointInput;
@@ -56,12 +59,18 @@ import java.util.Objects;
 public class SoapProjectRestController extends AbstractRestController {
 
     private final FileManager fileManager;
+    private final ReadSoapProjectService readSoapProjectService;
+    private final UpdateSoapPortsStatusService updateSoapPortsStatusService;
+    private final UpdateSoapPortsForwardedEndpointService updateSoapPortsForwardedEndpointService;
+    private final CreateSoapPortsService createSoapPortsService;
 
     @Autowired
-    public SoapProjectRestController(final ServiceProcessor serviceProcessor,
-                                     final FileManager fileManager){
-        super(serviceProcessor);
+    public SoapProjectRestController(final FileManager fileManager, ReadSoapProjectService readSoapProjectService, UpdateSoapPortsStatusService updateSoapPortsStatusService, UpdateSoapPortsForwardedEndpointService updateSoapPortsForwardedEndpointService, CreateSoapPortsService createSoapPortsService){
         this.fileManager = Objects.requireNonNull(fileManager);
+        this.readSoapProjectService = readSoapProjectService;
+        this.updateSoapPortsStatusService = updateSoapPortsStatusService;
+        this.updateSoapPortsForwardedEndpointService = updateSoapPortsForwardedEndpointService;
+        this.createSoapPortsService = createSoapPortsService;
     }
 
     @ApiOperation(value = "Get Project", response = SoapProject.class)
@@ -73,7 +82,7 @@ public class SoapProjectRestController extends AbstractRestController {
     ResponseEntity<SoapProject> getProject(
             @ApiParam(name = "projectId", value = "The id of the project")
             @PathVariable(value = "projectId") final String projectId){
-        final ReadSoapProjectOutput output = super.serviceProcessor.process(ReadSoapProjectInput.builder()
+        final ReadSoapProjectOutput output = readSoapProjectService.process(ReadSoapProjectInput.builder()
                 .projectId(projectId)
                 .build());
         return ResponseEntity.ok(output.getProject());
@@ -90,7 +99,7 @@ public class SoapProjectRestController extends AbstractRestController {
             @PathVariable(value = "projectId") final String projectId,
             @RequestBody UpdateSoapPortStatusesRequest request){
         request.getPortIds()
-                .forEach(portId -> super.serviceProcessor.process(UpdateSoapPortsStatusInput.builder()
+                .forEach(portId -> updateSoapPortsStatusService.process(UpdateSoapPortsStatusInput.builder()
                         .projectId(projectId)
                         .portId(portId)
                         .operationStatus(request.getStatus())
@@ -108,7 +117,7 @@ public class SoapProjectRestController extends AbstractRestController {
             @ApiParam(name = "projectId", value = "The id of the project")
             @PathVariable(value = "projectId") final String projectId,
             @RequestBody UpdateSoapPortForwardedEndpointsRequest request){
-        super.serviceProcessor.process(UpdateSoapPortsForwardedEndpointInput.builder()
+        updateSoapPortsForwardedEndpointService.process(UpdateSoapPortsForwardedEndpointInput.builder()
                 .projectId(projectId)
                 .portIds(request.getPortIds())
                 .forwardedEndpoint(request.getForwardedEndpoint())
@@ -130,7 +139,7 @@ public class SoapProjectRestController extends AbstractRestController {
 
         try {
             final File file = fileManager.uploadFile(multipartFile);
-            super.serviceProcessor.process(CreateSoapPortsInput.builder()
+            createSoapPortsService.process(CreateSoapPortsInput.builder()
                     .projectId(projectId)
                     .files(List.of(file))
                     .generateResponse(generateResponse)
@@ -152,7 +161,7 @@ public class SoapProjectRestController extends AbstractRestController {
             @ApiParam(name = "projectId", value = "The id of the project")
             @PathVariable(value = "projectId") final String projectId,
             @RequestBody final LinkWsdlRequest request){
-        super.serviceProcessor.process(CreateSoapPortsInput.builder()
+        createSoapPortsService.process(CreateSoapPortsInput.builder()
                 .projectId(projectId)
                 .files(null)
                 .location(request.getUrl())

@@ -16,8 +16,6 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapOperation;
 import com.castlemock.model.mock.soap.domain.SoapOperationStatus;
 import com.castlemock.model.mock.soap.domain.SoapOperationTestBuilder;
@@ -60,11 +58,10 @@ public class UpdateSoapOperationsStatusServiceTest {
                 .operationId(soapOperation.getId())
                 .operationStatus(SoapOperationStatus.MOCKED)
                 .build();
-        final ServiceTask<UpdateSoapOperationsStatusInput> serviceTask = new ServiceTask<UpdateSoapOperationsStatusInput>(input);
 
         Mockito.when(operationRepository.findOne(soapOperation.getId())).thenReturn(soapOperation);
         Mockito.when(operationRepository.update(Mockito.anyString(), Mockito.any(SoapOperation.class))).thenReturn(soapOperation);
-        final ServiceResult<UpdateSoapOperationsStatusOutput> result = service.process(serviceTask);
+        UpdateSoapOperationsStatusOutput result = service.process(input);
 
         Mockito.verify(operationRepository, Mockito.times(1)).findOne(soapOperation.getId());
         Mockito.verify(operationRepository, Mockito.times(1)).update(soapOperation.getId(), soapOperation);

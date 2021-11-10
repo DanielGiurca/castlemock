@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestParameterQuery;
 import com.castlemock.model.mock.rest.domain.RestResource;
 import com.castlemock.service.core.utility.UrlUtility;
@@ -33,21 +30,10 @@ import java.util.stream.Collectors;
  * @since 1.21
  */
 @org.springframework.stereotype.Service
-public class ReadRestResourceQueryParametersService extends AbstractRestProjectService
-        implements Service<ReadRestResourceQueryParametersInput, ReadRestResourceQueryParametersOutput> {
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     *
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<ReadRestResourceQueryParametersOutput> process(
-            final ServiceTask<ReadRestResourceQueryParametersInput> serviceTask) {
-        final ReadRestResourceQueryParametersInput input = serviceTask.getInput();
+public class ReadRestResourceQueryParametersService extends AbstractRestProjectService {
+
+    public ReadRestResourceQueryParametersOutput process(
+            ReadRestResourceQueryParametersInput input) {
         final RestResource resource = super.resourceRepository.findOne(input.getResourceId());
         final Set<String> pathParameters = UrlUtility.getPathParameters(resource.getUri());
         final Set<RestParameterQuery> parameterQueries = pathParameters.stream()
@@ -58,8 +44,8 @@ public class ReadRestResourceQueryParametersService extends AbstractRestProjectS
                 })
                 .collect(Collectors.toSet());
 
-        return createServiceResult(ReadRestResourceQueryParametersOutput.builder()
+        return ReadRestResourceQueryParametersOutput.builder()
                 .queries(parameterQueries)
-                .build());
+                .build();
     }
 }

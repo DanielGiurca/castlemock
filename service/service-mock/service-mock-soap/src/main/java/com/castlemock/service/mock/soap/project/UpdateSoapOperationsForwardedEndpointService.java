@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.service.mock.soap.project.input.UpdateSoapOperationsForwardedEndpointInput;
 import com.castlemock.service.mock.soap.project.output.UpdateSoapOperationsForwardedEndpointOutput;
 
@@ -27,19 +24,9 @@ import com.castlemock.service.mock.soap.project.output.UpdateSoapOperationsForwa
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class UpdateSoapOperationsForwardedEndpointService extends AbstractSoapProjectService implements Service<UpdateSoapOperationsForwardedEndpointInput, UpdateSoapOperationsForwardedEndpointOutput> {
+public class UpdateSoapOperationsForwardedEndpointService extends AbstractSoapProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<UpdateSoapOperationsForwardedEndpointOutput> process(final ServiceTask<UpdateSoapOperationsForwardedEndpointInput> serviceTask) {
-        final UpdateSoapOperationsForwardedEndpointInput input = serviceTask.getInput();
+    public UpdateSoapOperationsForwardedEndpointOutput process(UpdateSoapOperationsForwardedEndpointInput input) {
         input.getOperationIds().stream()
                 .map(operationId -> this.operationRepository.findOne(operationId))
                 .findFirst()
@@ -47,6 +34,6 @@ public class UpdateSoapOperationsForwardedEndpointService extends AbstractSoapPr
                     soapOperation.setForwardedEndpoint(input.getForwardedEndpoint());
                     return this.operationRepository.update(soapOperation.getId(), soapOperation);
                 });
-        return createServiceResult(UpdateSoapOperationsForwardedEndpointOutput.builder().build());
+        return UpdateSoapOperationsForwardedEndpointOutput.builder().build();
     }
 }

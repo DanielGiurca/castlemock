@@ -16,13 +16,12 @@
 
 package com.castlemock.service.core.user;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.core.user.User;
+import com.castlemock.service.core.system.LoggedInUserProvider;
 import com.castlemock.service.core.user.input.UpdateCurrentUserInput;
 import com.castlemock.service.core.user.output.UpdateCurrentUserOutput;
 import com.google.common.base.Preconditions;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 
@@ -31,20 +30,17 @@ import java.util.Date;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class UpdateCurrentUserService extends AbstractUserService implements Service<UpdateCurrentUserInput, UpdateCurrentUserOutput> {
+public class UpdateCurrentUserService extends AbstractUserService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<UpdateCurrentUserOutput> process(final ServiceTask<UpdateCurrentUserInput> serviceTask) {
-        final UpdateCurrentUserInput input = serviceTask.getInput();
-        final String loggedInUsername = serviceTask.getServiceConsumer();
+    private final LoggedInUserProvider loggedInUserProvider;
+
+    @Autowired
+    public UpdateCurrentUserService(LoggedInUserProvider loggedInUserProvider) {
+        this.loggedInUserProvider = loggedInUserProvider;
+    }
+
+    public UpdateCurrentUserOutput process(UpdateCurrentUserInput input) {
+        final String loggedInUsername = loggedInUserProvider.getLoggedInUsername();
 
         if(!input.getUsername().equalsIgnoreCase(loggedInUsername)){
             final User existingUser = findByUsername(input.getUsername());
@@ -61,7 +57,6 @@ public class UpdateCurrentUserService extends AbstractUserService implements Ser
 
 
         update(loggedInUser.getId(), loggedInUser);
-        final UpdateCurrentUserOutput output = new UpdateCurrentUserOutput(loggedInUser);
-        return createServiceResult(output);
+        return new UpdateCurrentUserOutput(loggedInUser);
     }
 }

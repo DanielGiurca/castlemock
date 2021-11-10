@@ -16,9 +16,6 @@
 
 package com.castlemock.service.core.expression;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.core.utility.parser.ExternalInputBuilder;
 import com.castlemock.model.core.utility.parser.TextParser;
 import com.castlemock.model.core.utility.parser.expression.argument.ExpressionArgument;
@@ -33,27 +30,16 @@ import java.util.Map;
  * @since 1.55
  */
 @org.springframework.stereotype.Service
-public class ValidateExpressionService extends AbstractConfigurationGroupService implements Service<ValidateExpressionInput, ValidateExpressionOutput> {
+public class ValidateExpressionService extends AbstractConfigurationGroupService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     *
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<ValidateExpressionOutput> process(final ServiceTask<ValidateExpressionInput> serviceTask) {
-        final ValidateExpressionInput input = serviceTask.getInput();
+    public ValidateExpressionOutput process(final ValidateExpressionInput input) {
         final Map<String, ExpressionArgument<?>> externalInput = new ExternalInputBuilder()
                 .requestBody(input.getRequestBody())
                 .build();
         final String output = new TextParser().parse(input.getResponseBody(), externalInput);
-        return createServiceResult(ValidateExpressionOutput.builder()
+        return ValidateExpressionOutput.builder()
                 .output(output)
-                .build());
+                .build();
     }
 
 }

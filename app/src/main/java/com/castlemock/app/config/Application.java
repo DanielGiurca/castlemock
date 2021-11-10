@@ -65,7 +65,6 @@ public abstract class Application extends SpringBootServletInitializer{
     /**
      * The initialize method is responsible for initiating all the components when the application has been started.
      * @see Repository
-     * @see com.castlemock.model.core.Service
      */
     @PostConstruct
     protected void initiate(){
@@ -112,7 +111,6 @@ public abstract class Application extends SpringBootServletInitializer{
     /**
      * The method provides the functionality to retrieve all the service facades and initialize them
      * @see ServiceFacade
-     * @see com.castlemock.model.core.Service
      */
     @SuppressWarnings("rawtypes")
     protected void initializeServiceFacade(){
@@ -135,7 +133,7 @@ public abstract class Application extends SpringBootServletInitializer{
      * @see Repository
      */
     protected void initializeProcessRegistry(){
-        serviceRegistry.initialize();
+//        serviceRegistry.initialize();
     }
 
     /**

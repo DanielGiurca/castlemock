@@ -1,7 +1,5 @@
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestMockResponse;
 import com.castlemock.model.mock.rest.domain.RestMockResponseTestBuilder;
 import com.castlemock.repository.rest.project.RestMockResponseRepository;
@@ -43,15 +41,14 @@ public class ReadRestMockResponseServiceTest {
                 .restMethodId(methodId)
                 .restMockResponse(mockResponse.getId())
                 .build();
-        final ServiceTask<ReadRestMockResponseInput> serviceTask = new ServiceTask<ReadRestMockResponseInput>(input);
 
         Mockito.when(mockResponseRepository.findOne(mockResponse.getId())).thenReturn(mockResponse);
-        final ServiceResult<ReadRestMockResponseOutput> result = service.process(serviceTask);
+        ReadRestMockResponseOutput result = service.process(input);
 
         Mockito.verify(mockResponseRepository, Mockito.times(1)).findOne(mockResponse.getId());
 
-        Assert.assertNotNull(result.getOutput());
-        Assert.assertEquals(mockResponse, result.getOutput().getRestMockResponse());
+        Assert.assertNotNull(result);
+        Assert.assertEquals(mockResponse, result.getRestMockResponse());
     }
 
 }

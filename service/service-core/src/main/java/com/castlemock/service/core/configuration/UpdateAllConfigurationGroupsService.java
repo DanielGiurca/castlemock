@@ -16,9 +16,6 @@
 
 package com.castlemock.service.core.configuration;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.core.configuration.Configuration;
 import com.castlemock.model.core.configuration.ConfigurationGroup;
 import com.castlemock.service.core.configuration.input.UpdateAllConfigurationGroupsInput;
@@ -33,19 +30,9 @@ import java.util.List;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class UpdateAllConfigurationGroupsService extends AbstractConfigurationGroupService implements Service<UpdateAllConfigurationGroupsInput, UpdateAllConfigurationGroupsOutput> {
+public class UpdateAllConfigurationGroupsService extends AbstractConfigurationGroupService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<UpdateAllConfigurationGroupsOutput> process(final ServiceTask<UpdateAllConfigurationGroupsInput> serviceTask) {
-        final UpdateAllConfigurationGroupsInput input = serviceTask.getInput();
+    public UpdateAllConfigurationGroupsOutput process(UpdateAllConfigurationGroupsInput input) {
         final List<ConfigurationGroup> configurationGroupDtos = input.getConfigurationGroups();
         Preconditions.checkNotNull(configurationGroupDtos, "The updated configuration group cannot be null");
         final List<ConfigurationGroup> sourceConfigurationGroups = findAll();
@@ -65,7 +52,7 @@ public class UpdateAllConfigurationGroupsService extends AbstractConfigurationGr
 
         final UpdateAllConfigurationGroupsOutput output = new UpdateAllConfigurationGroupsOutput(updateConfigurations);
 
-        return createServiceResult(output);
+        return output;
     }
 
     /**

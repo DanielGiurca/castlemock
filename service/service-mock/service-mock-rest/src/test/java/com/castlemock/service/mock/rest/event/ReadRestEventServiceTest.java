@@ -16,8 +16,6 @@
 
 package com.castlemock.service.mock.rest.event;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestEvent;
 import com.castlemock.model.mock.rest.domain.RestEventTestBuilder;
 import com.castlemock.repository.rest.event.RestEventRepository;
@@ -56,9 +54,7 @@ public class ReadRestEventServiceTest {
         final ReadRestEventInput input = ReadRestEventInput.builder()
                 .restEventId(restEvent.getId())
                 .build();
-        final ServiceTask<ReadRestEventInput> serviceTask = new ServiceTask<ReadRestEventInput>(input);
-        final ServiceResult<ReadRestEventOutput> serviceResult = service.process(serviceTask);
-        final ReadRestEventOutput output = serviceResult.getOutput();
+        ReadRestEventOutput output = service.process(input);
         final RestEvent returnedRestEvent = output.getRestEvent();
 
         Assert.assertEquals(restEvent.getId(), returnedRestEvent.getId());

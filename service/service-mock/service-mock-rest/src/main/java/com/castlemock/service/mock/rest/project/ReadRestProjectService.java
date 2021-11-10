@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestApplication;
 import com.castlemock.model.mock.rest.domain.RestMethodStatus;
 import com.castlemock.model.mock.rest.domain.RestProject;
@@ -33,19 +30,9 @@ import java.util.Map;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class ReadRestProjectService extends AbstractRestProjectService implements Service<ReadRestProjectInput, ReadRestProjectOutput> {
+public class ReadRestProjectService extends AbstractRestProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<ReadRestProjectOutput> process(final ServiceTask<ReadRestProjectInput> serviceTask) {
-        final ReadRestProjectInput input = serviceTask.getInput();
+    public ReadRestProjectOutput process(ReadRestProjectInput input) {
         final RestProject restProject = find(input.getRestProjectId());
         final List<RestApplication> applications = this.applicationRepository.findWithProjectId(input.getRestProjectId());
         restProject.setApplications(applications);
@@ -53,8 +40,8 @@ public class ReadRestProjectService extends AbstractRestProjectService implement
             final Map<RestMethodStatus, Integer> soapOperationStatusCount = getRestMethodStatusCount(restApplication);
             restApplication.setStatusCount(soapOperationStatusCount);
         }
-        return createServiceResult(ReadRestProjectOutput.builder()
+        return ReadRestProjectOutput.builder()
                 .restProject(restProject)
-                .build());
+                .build();
     }
 }

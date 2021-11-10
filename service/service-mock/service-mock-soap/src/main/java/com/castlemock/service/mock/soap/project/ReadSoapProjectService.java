@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapOperation;
 import com.castlemock.model.mock.soap.domain.SoapOperationStatus;
 import com.castlemock.model.mock.soap.domain.SoapPort;
@@ -37,19 +34,9 @@ import java.util.Map;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class ReadSoapProjectService extends AbstractSoapProjectService implements Service<ReadSoapProjectInput, ReadSoapProjectOutput> {
+public class ReadSoapProjectService extends AbstractSoapProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<ReadSoapProjectOutput> process(final ServiceTask<ReadSoapProjectInput> serviceTask) {
-        final ReadSoapProjectInput input = serviceTask.getInput();
+    public ReadSoapProjectOutput process(ReadSoapProjectInput input) {
         final SoapProject soapProject = find(input.getProjectId());
         final List<SoapResource> resources = this.resourceRepository.findWithProjectId(input.getProjectId());
         final List<SoapPort> ports = this.portRepository.findWithProjectId(input.getProjectId());
@@ -60,9 +47,9 @@ public class ReadSoapProjectService extends AbstractSoapProjectService implement
             final Map<SoapOperationStatus, Integer> soapOperationStatusCount = getSoapOperationStatusCount(operations);
             soapPort.setStatusCount(soapOperationStatusCount);
         }
-        return createServiceResult(ReadSoapProjectOutput.builder()
+        return ReadSoapProjectOutput.builder()
                 .project(soapProject)
-                .build());
+                .build();
     }
 
 

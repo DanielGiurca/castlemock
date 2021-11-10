@@ -16,7 +16,6 @@
 
 package com.castlemock.service.core.user;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.user.Role;
 import com.castlemock.model.core.user.Status;
 import com.castlemock.model.core.user.User;
@@ -48,7 +47,7 @@ import java.util.List;
 public class UserDetailSecurityService implements UserDetailsService {
 
     @Autowired
-    private ServiceProcessor serviceProcessor;
+    private ReadUserByUsernameService readUserByUsernameService;
 
     /**
      * Loads a user by the username
@@ -64,7 +63,7 @@ public class UserDetailSecurityService implements UserDetailsService {
         final ReadUserByUsernameInput readUserByUsernameInput = ReadUserByUsernameInput.builder()
                 .username(username)
                 .build();
-        final ReadUserByUsernameOutput readUserByUsernameOutput = serviceProcessor.process(readUserByUsernameInput);
+        final ReadUserByUsernameOutput readUserByUsernameOutput = readUserByUsernameService.process(readUserByUsernameInput);
         final User user = readUserByUsernameOutput.getUser();
         Preconditions.checkNotNull(user, "Unable to find user");
         final List<GrantedAuthority> authorities = buildUserAuthority(user.getRole());

@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestApplication;
 import com.castlemock.model.mock.rest.domain.RestMethodStatus;
 import com.castlemock.model.mock.rest.domain.RestResource;
@@ -33,19 +30,9 @@ import java.util.Map;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class ReadRestApplicationService extends AbstractRestProjectService implements Service<ReadRestApplicationInput, ReadRestApplicationOutput> {
+public class ReadRestApplicationService extends AbstractRestProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<ReadRestApplicationOutput> process(final ServiceTask<ReadRestApplicationInput> serviceTask) {
-        final ReadRestApplicationInput input = serviceTask.getInput();
+    public ReadRestApplicationOutput process(ReadRestApplicationInput input) {
         final RestApplication application = this.applicationRepository.findOne(input.getRestApplicationId());
         final List<RestResource> resources = this.resourceRepository.findWithApplicationId(application.getId());
         for(RestResource restResource : resources){
@@ -53,8 +40,8 @@ public class ReadRestApplicationService extends AbstractRestProjectService imple
             restResource.setStatusCount(restMethodStatusCount);
         }
         application.setResources(resources);
-        return createServiceResult(ReadRestApplicationOutput.builder()
+        return ReadRestApplicationOutput.builder()
                 .restApplication(application)
-                .build());
+                .build();
     }
 }

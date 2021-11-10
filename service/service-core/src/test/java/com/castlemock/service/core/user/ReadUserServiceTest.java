@@ -16,8 +16,6 @@
 
 package com.castlemock.service.core.user;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.core.user.User;
 import com.castlemock.model.core.user.UserTestBuilder;
 import com.castlemock.repository.Repository;
@@ -58,10 +56,7 @@ public class ReadUserServiceTest {
         final User user = UserTestBuilder.builder().build();
         Mockito.when(repository.findOne(Mockito.anyString())).thenReturn(user);
         final ReadUserInput input = ReadUserInput.builder().userId(user.getId()).build();
-        final ServiceTask<ReadUserInput> serviceTask = new ServiceTask<ReadUserInput>();
-        serviceTask.setInput(input);
-        final ServiceResult<ReadUserOutput> serviceResult = service.process(serviceTask);
-        final ReadUserOutput output = serviceResult.getOutput();
+        final ReadUserOutput output = service.process(input);
 
         final User returnedUser = output.getUser();
         Assert.assertNotNull(returnedUser);

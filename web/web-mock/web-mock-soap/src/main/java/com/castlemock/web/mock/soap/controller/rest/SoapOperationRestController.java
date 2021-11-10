@@ -16,8 +16,10 @@
 
 package com.castlemock.web.mock.soap.controller.rest;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.mock.soap.domain.SoapOperation;
+import com.castlemock.service.mock.soap.project.ReadSoapOperationService;
+import com.castlemock.service.mock.soap.project.UpdateSoapMockResponseStatusService;
+import com.castlemock.service.mock.soap.project.UpdateSoapOperationService;
 import com.castlemock.service.mock.soap.project.input.ReadSoapOperationInput;
 import com.castlemock.service.mock.soap.project.input.UpdateSoapMockResponseStatusInput;
 import com.castlemock.service.mock.soap.project.input.UpdateSoapOperationInput;
@@ -26,20 +28,12 @@ import com.castlemock.service.mock.soap.project.output.UpdateSoapOperationOutput
 import com.castlemock.web.core.controller.rest.AbstractRestController;
 import com.castlemock.web.mock.soap.model.UpdateSoapMockResponseStatusesRequest;
 import com.castlemock.web.mock.soap.model.UpdateSoapOperationRequest;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("api/rest/soap")
@@ -47,9 +41,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class SoapOperationRestController extends AbstractRestController {
 
     @Autowired
-    public SoapOperationRestController(final ServiceProcessor serviceProcessor){
-        super(serviceProcessor);
-    }
+    private ReadSoapOperationService readSoapOperationService;
+    @Autowired
+    private UpdateSoapOperationService updateSoapOperationService;
+    @Autowired
+    private UpdateSoapMockResponseStatusService updateSoapMockResponseStatusService;
 
     @ApiOperation(value = "Get Operation", response = SoapOperation.class)
     @ApiResponses(value = {
@@ -64,7 +60,7 @@ public class SoapOperationRestController extends AbstractRestController {
             @PathVariable(value = "portId") final String portId,
             @ApiParam(name = "operationId", value = "The id of the operation")
             @PathVariable(value = "operationId") final String operationId) {
-        final ReadSoapOperationOutput output = super.serviceProcessor.process(ReadSoapOperationInput.builder()
+        final ReadSoapOperationOutput output = readSoapOperationService.process(ReadSoapOperationInput.builder()
                 .projectId(projectId)
                 .portId(portId)
                 .operationId(operationId)
@@ -86,7 +82,7 @@ public class SoapOperationRestController extends AbstractRestController {
             @ApiParam(name = "operationId", value = "The id of the operation")
             @PathVariable(value = "operationId") final String operationId,
             @RequestBody final UpdateSoapOperationRequest request) {
-        final UpdateSoapOperationOutput output = super.serviceProcessor.process(UpdateSoapOperationInput.builder()
+        final UpdateSoapOperationOutput output = updateSoapOperationService.process(UpdateSoapOperationInput.builder()
                 .projectId(projectId)
                 .portId(portId)
                 .operationId(operationId)
@@ -117,7 +113,7 @@ public class SoapOperationRestController extends AbstractRestController {
             @PathVariable(value = "operationId") final String operationId,
             @RequestBody UpdateSoapMockResponseStatusesRequest request){
         request.getMockResponseIds()
-                .forEach(mockResponseId -> super.serviceProcessor.process(UpdateSoapMockResponseStatusInput.builder()
+                .forEach(mockResponseId -> updateSoapMockResponseStatusService.process(UpdateSoapMockResponseStatusInput.builder()
                         .projectId(projectId)
                         .portId(portId)
                         .operationId(operationId)

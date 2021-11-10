@@ -18,12 +18,12 @@ package com.castlemock.service.mock.soap.project.adapter;
 
 import com.castlemock.model.core.SearchQuery;
 import com.castlemock.model.core.SearchResult;
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.core.TypeIdentifier;
 import com.castlemock.model.core.project.Project;
 import com.castlemock.model.core.service.project.ProjectServiceAdapter;
 import com.castlemock.model.mock.soap.domain.SoapProject;
 import com.castlemock.service.mock.soap.SoapTypeIdentifier;
+import com.castlemock.service.mock.soap.project.*;
 import com.castlemock.service.mock.soap.project.input.CreateSoapProjectInput;
 import com.castlemock.service.mock.soap.project.input.DeleteSoapProjectInput;
 import com.castlemock.service.mock.soap.project.input.ExportSoapProjectInput;
@@ -40,7 +40,6 @@ import com.castlemock.service.mock.soap.project.output.ReadAllSoapProjectsOutput
 import com.castlemock.service.mock.soap.project.output.ReadSoapProjectOutput;
 import com.castlemock.service.mock.soap.project.output.SearchSoapProjectOutput;
 import com.castlemock.service.mock.soap.project.output.UpdateSoapProjectOutput;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -55,9 +54,27 @@ import java.util.List;
 @Service
 public class SoapProjectServiceAdapter implements ProjectServiceAdapter<SoapProject> {
 
-    @Autowired
-    private ServiceProcessor serviceProcessor;
+    private final CreateSoapProjectService createSoapProjectService;
+    private final UpdateSoapProjectService updateSoapProjectService;
+    private final DeleteSoapProjectService deleteSoapProjectService;
+    private final ReadAllSoapProjectsService readAllSoapProjectsService;
+    private final ReadSoapProjectService readSoapProjectService;
+    private final ExportSoapProjectService exportSoapProjectService;
+    private final ImportSoapProjectService importSoapProjectService;
+    private final SearchSoapProjectService searchSoapProjectService;
+
     private static final SoapTypeIdentifier SOAP_TYPE_IDENTIFIER = new SoapTypeIdentifier();
+
+    public SoapProjectServiceAdapter(CreateSoapProjectService createSoapProjectService, UpdateSoapProjectService updateSoapProjectService, DeleteSoapProjectService deleteSoapProjectService, ReadAllSoapProjectsService readAllSoapProjectsService, ReadSoapProjectService readSoapProjectService, ExportSoapProjectService exportSoapProjectService, ImportSoapProjectService importSoapProjectService, SearchSoapProjectService searchSoapProjectService) {
+        this.createSoapProjectService = createSoapProjectService;
+        this.updateSoapProjectService = updateSoapProjectService;
+        this.deleteSoapProjectService = deleteSoapProjectService;
+        this.readAllSoapProjectsService = readAllSoapProjectsService;
+        this.readSoapProjectService = readSoapProjectService;
+        this.exportSoapProjectService = exportSoapProjectService;
+        this.importSoapProjectService = importSoapProjectService;
+        this.searchSoapProjectService = searchSoapProjectService;
+    }
 
     /**
      * The method provides the functionality to create and store a  instance to a specific service.
@@ -67,7 +84,7 @@ public class SoapProjectServiceAdapter implements ProjectServiceAdapter<SoapProj
      */
     @Override
     public SoapProject create(final SoapProject project) {
-        final CreateSoapProjectOutput output = serviceProcessor.process(CreateSoapProjectInput.builder()
+        final CreateSoapProjectOutput output = createSoapProjectService.process(CreateSoapProjectInput.builder()
                 .project(project)
                 .build());
         return output.getProject();
@@ -82,7 +99,7 @@ public class SoapProjectServiceAdapter implements ProjectServiceAdapter<SoapProj
      */
     @Override
     public SoapProject delete(final String id) {
-        final DeleteSoapProjectOutput output = serviceProcessor.process(DeleteSoapProjectInput.builder()
+        final DeleteSoapProjectOutput output = deleteSoapProjectService.process(DeleteSoapProjectInput.builder()
                 .projectId(id)
                 .build());
         return output.getProject();
@@ -101,7 +118,7 @@ public class SoapProjectServiceAdapter implements ProjectServiceAdapter<SoapProj
     @Override
     public SoapProject update(final String id,
                               final SoapProject project) {
-        final UpdateSoapProjectOutput output = serviceProcessor.process(UpdateSoapProjectInput.builder()
+        final UpdateSoapProjectOutput output = updateSoapProjectService.process(UpdateSoapProjectInput.builder()
                 .projectId(id)
                 .project(project)
                 .build());
@@ -114,7 +131,7 @@ public class SoapProjectServiceAdapter implements ProjectServiceAdapter<SoapProj
      */
     @Override
     public List<SoapProject> readAll() {
-        final ReadAllSoapProjectsOutput output = serviceProcessor.process(ReadAllSoapProjectsInput.builder().build());
+        final ReadAllSoapProjectsOutput output = readAllSoapProjectsService.process(ReadAllSoapProjectsInput.builder().build());
         return output.getProjects();
     }
 
@@ -128,7 +145,7 @@ public class SoapProjectServiceAdapter implements ProjectServiceAdapter<SoapProj
      */
     @Override
     public SoapProject read(final String id) {
-        final ReadSoapProjectOutput output = serviceProcessor.process(ReadSoapProjectInput.builder()
+        final ReadSoapProjectOutput output = readSoapProjectService.process(ReadSoapProjectInput.builder()
                 .projectId(id)
                 .build());
         return output.getProject();
@@ -162,7 +179,7 @@ public class SoapProjectServiceAdapter implements ProjectServiceAdapter<SoapProj
      */
     @Override
     public String exportProject(final String id) {
-        final ExportSoapProjectOutput output = serviceProcessor.process(ExportSoapProjectInput.builder()
+        final ExportSoapProjectOutput output = exportSoapProjectService.process(ExportSoapProjectInput.builder()
                 .projectId(id)
                 .build());
         return output.getProject();
@@ -175,7 +192,7 @@ public class SoapProjectServiceAdapter implements ProjectServiceAdapter<SoapProj
      */
     @Override
     public SoapProject importProject(final String projectRaw) {
-        final ImportSoapProjectOutput output = serviceProcessor.process(ImportSoapProjectInput.builder()
+        final ImportSoapProjectOutput output = importSoapProjectService.process(ImportSoapProjectInput.builder()
                 .projectRaw(projectRaw)
                 .build());
         return output.getProject();
@@ -189,7 +206,7 @@ public class SoapProjectServiceAdapter implements ProjectServiceAdapter<SoapProj
      */
     @Override
     public List<SearchResult> search(final SearchQuery searchQuery) {
-        final SearchSoapProjectOutput output = serviceProcessor.process(SearchSoapProjectInput.builder()
+        final SearchSoapProjectOutput output = searchSoapProjectService.process(SearchSoapProjectInput.builder()
                 .searchQuery(searchQuery)
                 .build());
         return output.getSearchResults();

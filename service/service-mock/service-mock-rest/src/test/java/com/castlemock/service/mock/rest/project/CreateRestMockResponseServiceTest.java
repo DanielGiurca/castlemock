@@ -16,8 +16,6 @@
 
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestMockResponse;
 import com.castlemock.model.mock.rest.domain.RestMockResponseTestBuilder;
 import com.castlemock.repository.rest.project.RestMockResponseRepository;
@@ -77,11 +75,10 @@ public class CreateRestMockResponseServiceTest {
                 .usingExpressions(mockResponse.isUsingExpressions())
                 .xpathExpressions(mockResponse.getXpathExpressions())
                 .build();
-        final ServiceTask<CreateRestMockResponseInput> serviceTask = new ServiceTask<CreateRestMockResponseInput>(input);
-        final ServiceResult<CreateRestMockResponseOutput> serviceResult = service.process(serviceTask);
+        CreateRestMockResponseOutput serviceResult = service.process(input);
 
-        Assert.assertNotNull(serviceResult.getOutput());
-        Assert.assertEquals(mockResponse, serviceResult.getOutput().getRestMockResponse());
+        Assert.assertNotNull(serviceResult);
+        Assert.assertEquals(mockResponse, serviceResult.getRestMockResponse());
         Mockito.verify(mockResponseRepository, Mockito.times(1)).save(any());
     }
 

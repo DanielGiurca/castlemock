@@ -16,7 +16,7 @@
 
 package com.castlemock.web.mock.soap.controller.resource;
 
-import com.castlemock.model.core.ServiceProcessor;
+import com.castlemock.service.mock.soap.project.LoadSoapResourceService;
 import com.castlemock.service.mock.soap.project.input.LoadSoapResourceInput;
 import com.castlemock.service.mock.soap.project.output.LoadSoapResourceOutput;
 import com.castlemock.web.core.controller.rest.AbstractRestController;
@@ -31,9 +31,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/resource/soap/project")
 public class ResourceController extends AbstractRestController {
 
+    private final LoadSoapResourceService loadSoapResourceService;
+
     @Autowired
-    public ResourceController(final ServiceProcessor serviceProcessor){
-        super(serviceProcessor);
+    public ResourceController(LoadSoapResourceService loadSoapResourceService){
+
+        this.loadSoapResourceService = loadSoapResourceService;
     }
 
     @ResponseBody
@@ -41,7 +44,7 @@ public class ResourceController extends AbstractRestController {
     public String getResource(@PathVariable final String projectId,
                               @PathVariable final String resourceId) {
         final LoadSoapResourceOutput output =
-                this.serviceProcessor.process(LoadSoapResourceInput.builder()
+                this.loadSoapResourceService.process(LoadSoapResourceInput.builder()
                         .projectId(projectId)
                         .resourceId(resourceId)
                         .build());

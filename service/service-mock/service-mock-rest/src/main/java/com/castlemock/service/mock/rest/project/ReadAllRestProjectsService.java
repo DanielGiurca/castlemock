@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestProject;
 import com.castlemock.service.mock.rest.project.input.ReadAllRestProjectsInput;
 import com.castlemock.service.mock.rest.project.output.ReadAllRestProjectsOutput;
@@ -30,21 +27,12 @@ import java.util.List;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class ReadAllRestProjectsService extends AbstractRestProjectService implements Service<ReadAllRestProjectsInput, ReadAllRestProjectsOutput> {
+public class ReadAllRestProjectsService extends AbstractRestProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<ReadAllRestProjectsOutput> process(final ServiceTask<ReadAllRestProjectsInput> serviceTask) {
+    public ReadAllRestProjectsOutput process(ReadAllRestProjectsInput input) {
         final List<RestProject> restProjects = findAll();
-        return createServiceResult(ReadAllRestProjectsOutput.builder()
+        return ReadAllRestProjectsOutput.builder()
                 .restProjects(restProjects)
-                .build());
+                .build();
     }
 }

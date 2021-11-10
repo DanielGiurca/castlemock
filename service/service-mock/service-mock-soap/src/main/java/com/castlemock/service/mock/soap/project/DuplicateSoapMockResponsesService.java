@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapMockResponse;
 import com.castlemock.service.mock.soap.project.input.DuplicateSoapMockResponsesInput;
 import com.castlemock.service.mock.soap.project.output.DuplicateSoapMockResponsesOutput;
@@ -28,19 +25,10 @@ import com.castlemock.service.mock.soap.project.output.DuplicateSoapMockResponse
  * @since 1.52
  */
 @org.springframework.stereotype.Service
-public class DuplicateSoapMockResponsesService extends AbstractSoapProjectService implements Service<DuplicateSoapMockResponsesInput, DuplicateSoapMockResponsesOutput> {
+public class DuplicateSoapMockResponsesService extends AbstractSoapProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<DuplicateSoapMockResponsesOutput> process(final ServiceTask<DuplicateSoapMockResponsesInput> serviceTask) {
-        serviceTask.getInput()
+    public DuplicateSoapMockResponsesOutput process(DuplicateSoapMockResponsesInput input) {
+        input
                 .getMockResponseIds()
                 .stream()
                 .map(this.mockResponseRepository::findOne)
@@ -49,6 +37,6 @@ public class DuplicateSoapMockResponsesService extends AbstractSoapProjectServic
                 .map(SoapMockResponse.Builder::build)
                 .forEach(this.mockResponseRepository::save);
 
-        return createServiceResult(DuplicateSoapMockResponsesOutput.builder().build());
+        return DuplicateSoapMockResponsesOutput.builder().build();
     }
 }

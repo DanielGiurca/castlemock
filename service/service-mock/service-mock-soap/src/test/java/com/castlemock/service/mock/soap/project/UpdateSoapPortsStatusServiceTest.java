@@ -16,14 +16,11 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapOperation;
 import com.castlemock.model.mock.soap.domain.SoapOperationStatus;
 import com.castlemock.model.mock.soap.domain.SoapOperationTestBuilder;
 import com.castlemock.repository.soap.project.SoapOperationRepository;
 import com.castlemock.service.mock.soap.project.input.UpdateSoapPortsStatusInput;
-import com.castlemock.service.mock.soap.project.output.UpdateSoapPortsStatusOutput;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -61,11 +58,10 @@ public class UpdateSoapPortsStatusServiceTest {
                 .portId(portId)
                 .operationStatus(SoapOperationStatus.MOCKED)
                 .build();
-        final ServiceTask<UpdateSoapPortsStatusInput> serviceTask = new ServiceTask<UpdateSoapPortsStatusInput>(input);
 
         Mockito.when(operationRepository.findWithPortId("SOAP PORT")).thenReturn(Arrays.asList(soapOperation));
         Mockito.when(operationRepository.update(Mockito.anyString(), Mockito.any(SoapOperation.class))).thenReturn(soapOperation);
-        final ServiceResult<UpdateSoapPortsStatusOutput> result = service.process(serviceTask);
+        service.process(input);
 
 
         Mockito.verify(operationRepository, Mockito.times(1)).findWithPortId(portId);

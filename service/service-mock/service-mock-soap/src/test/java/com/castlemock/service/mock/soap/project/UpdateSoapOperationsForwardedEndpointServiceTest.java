@@ -16,13 +16,10 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapOperation;
 import com.castlemock.model.mock.soap.domain.SoapOperationTestBuilder;
 import com.castlemock.repository.soap.project.SoapOperationRepository;
 import com.castlemock.service.mock.soap.project.input.UpdateSoapOperationsForwardedEndpointInput;
-import com.castlemock.service.mock.soap.project.output.UpdateSoapOperationsForwardedEndpointOutput;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -63,11 +60,9 @@ public class UpdateSoapOperationsForwardedEndpointServiceTest {
                 .forwardedEndpoint("Forward Endpoint")
                 .build();
 
-        final ServiceTask<UpdateSoapOperationsForwardedEndpointInput> serviceTask = new ServiceTask<UpdateSoapOperationsForwardedEndpointInput>(input);
-
         Mockito.when(operationRepository.findOne(operation.getId())).thenReturn(operation);
         Mockito.when(operationRepository.update(Mockito.anyString(), Mockito.any(SoapOperation.class))).thenReturn(operation);
-        final ServiceResult<UpdateSoapOperationsForwardedEndpointOutput> result = service.process(serviceTask);
+        service.process(input);
 
         Mockito.verify(operationRepository, Mockito.times(1)).findOne(operation.getId());
         Mockito.verify(operationRepository, Mockito.times(1)).update(operation.getId(), operation);

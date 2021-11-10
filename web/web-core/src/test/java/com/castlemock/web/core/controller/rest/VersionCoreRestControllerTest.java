@@ -16,7 +16,6 @@
 
 package com.castlemock.web.core.controller.rest;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.web.core.model.VersionResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,8 +33,7 @@ class VersionCoreRestControllerTest {
 
     @BeforeEach
     void setup(){
-        final ServiceProcessor serviceProcessor = mock(ServiceProcessor.class);
-        this.versionController = new VersionCoreRestController(serviceProcessor);
+        this.versionController = new VersionCoreRestController();
     }
 
     @Test

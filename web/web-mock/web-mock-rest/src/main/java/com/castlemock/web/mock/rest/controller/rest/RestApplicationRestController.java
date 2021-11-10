@@ -16,14 +16,9 @@
 
 package com.castlemock.web.mock.rest.controller.rest;
 
-import com.castlemock.model.core.ServiceProcessor;
 import com.castlemock.model.mock.rest.domain.RestApplication;
-import com.castlemock.service.mock.rest.project.input.CreateRestApplicationInput;
-import com.castlemock.service.mock.rest.project.input.DeleteRestApplicationInput;
-import com.castlemock.service.mock.rest.project.input.ReadRestApplicationInput;
-import com.castlemock.service.mock.rest.project.input.UpdateRestApplicationInput;
-import com.castlemock.service.mock.rest.project.input.UpdateRestResourcesForwardedEndpointInput;
-import com.castlemock.service.mock.rest.project.input.UpdateRestResourcesStatusInput;
+import com.castlemock.service.mock.rest.project.*;
+import com.castlemock.service.mock.rest.project.input.*;
 import com.castlemock.service.mock.rest.project.output.CreateRestApplicationOutput;
 import com.castlemock.service.mock.rest.project.output.DeleteRestApplicationOutput;
 import com.castlemock.service.mock.rest.project.output.ReadRestApplicationOutput;
@@ -33,20 +28,12 @@ import com.castlemock.web.mock.rest.model.CreateRestApplicationRequest;
 import com.castlemock.web.mock.rest.model.UpdateRestApplicationRequest;
 import com.castlemock.web.mock.rest.model.UpdateRestResourceForwardedEndpointsRequest;
 import com.castlemock.web.mock.rest.model.UpdateRestResourceStatusesRequest;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("api/rest/rest")
@@ -55,9 +42,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class RestApplicationRestController extends AbstractRestController {
 
     @Autowired
-    public RestApplicationRestController(final ServiceProcessor serviceProcessor){
-        super(serviceProcessor);
-    }
+    private ReadRestApplicationService readRestApplicationService;
+    @Autowired
+    private DeleteRestApplicationService deleteRestApplicationService;
+    @Autowired
+    private UpdateRestApplicationService updateRestApplicationService;
+    @Autowired
+    private CreateRestApplicationService createRestApplicationService;
+    @Autowired
+    private UpdateRestResourcesStatusService updateRestResourcesStatusService;
+    @Autowired
+    private UpdateRestResourcesForwardedEndpointService updateRestResourcesForwardedEndpointService;
+
 
     @ApiOperation(value = "Get Application", response = RestApplication.class)
     @ApiResponses(value = {
@@ -69,7 +65,7 @@ public class RestApplicationRestController extends AbstractRestController {
             @PathVariable(value = "projectId") final String projectId,
             @ApiParam(name = "applicationId", value = "The id of the application")
             @PathVariable(value = "applicationId") final String applicationId) {
-        final ReadRestApplicationOutput output = super.serviceProcessor.process(ReadRestApplicationInput.builder()
+        final ReadRestApplicationOutput output = readRestApplicationService.process(ReadRestApplicationInput.builder()
                 .restProjectId(projectId)
                 .restApplicationId(applicationId)
                 .build());
@@ -86,7 +82,7 @@ public class RestApplicationRestController extends AbstractRestController {
             @PathVariable(value = "projectId") final String projectId,
             @ApiParam(name = "applicationId", value = "The id of the application")
             @PathVariable(value = "applicationId") final String applicationId) {
-        final DeleteRestApplicationOutput output = super.serviceProcessor.process(DeleteRestApplicationInput.builder()
+        final DeleteRestApplicationOutput output = deleteRestApplicationService.process(DeleteRestApplicationInput.builder()
                 .restProjectId(projectId)
                 .restApplicationId(applicationId)
                 .build());
@@ -104,7 +100,7 @@ public class RestApplicationRestController extends AbstractRestController {
             @ApiParam(name = "applicationId", value = "The id of the application")
             @PathVariable(value = "applicationId") final String applicationId,
             @RequestBody final UpdateRestApplicationRequest request) {
-        final UpdateRestApplicationOutput output = super.serviceProcessor.process(UpdateRestApplicationInput.builder()
+        final UpdateRestApplicationOutput output = updateRestApplicationService.process(UpdateRestApplicationInput.builder()
                 .restProjectId(projectId)
                 .restApplicationId(applicationId)
                 .name(request.getName())
@@ -121,7 +117,7 @@ public class RestApplicationRestController extends AbstractRestController {
             @ApiParam(name = "projectId", value = "The id of the project")
             @PathVariable(value = "projectId") final String projectId,
             @RequestBody CreateRestApplicationRequest request) {
-        final CreateRestApplicationOutput output = super.serviceProcessor.process(CreateRestApplicationInput.builder()
+        final CreateRestApplicationOutput output = createRestApplicationService.process(CreateRestApplicationInput.builder()
                 .projectId(projectId)
                 .name(request.getName())
                 .build());
@@ -141,7 +137,7 @@ public class RestApplicationRestController extends AbstractRestController {
             @PathVariable(value = "applicationId") final String applicationId,
             @RequestBody UpdateRestResourceStatusesRequest request){
         request.getResourceIds()
-                .forEach(resourceId -> super.serviceProcessor.process(UpdateRestResourcesStatusInput.builder()
+                .forEach(resourceId -> updateRestResourcesStatusService.process(UpdateRestResourcesStatusInput.builder()
                         .projectId(projectId)
                         .applicationId(applicationId)
                         .resourceId(resourceId)
@@ -162,7 +158,7 @@ public class RestApplicationRestController extends AbstractRestController {
             @ApiParam(name = "applicationId", value = "The id of the application")
             @PathVariable(value = "applicationId") final String applicationId,
             @org.springframework.web.bind.annotation.RequestBody UpdateRestResourceForwardedEndpointsRequest request){
-        super.serviceProcessor.process(UpdateRestResourcesForwardedEndpointInput.builder()
+        updateRestResourcesForwardedEndpointService.process(UpdateRestResourcesForwardedEndpointInput.builder()
                 .projectId(projectId)
                 .applicationId(applicationId)
                 .resourceIds(request.getResourceIds())

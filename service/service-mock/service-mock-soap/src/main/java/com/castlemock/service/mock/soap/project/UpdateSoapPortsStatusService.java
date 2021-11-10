@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapOperation;
 import com.castlemock.model.mock.soap.domain.SoapOperationStatus;
 import com.castlemock.service.mock.soap.project.input.UpdateSoapPortsStatusInput;
@@ -31,25 +28,16 @@ import java.util.List;
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class UpdateSoapPortsStatusService extends AbstractSoapProjectService implements Service<UpdateSoapPortsStatusInput, UpdateSoapPortsStatusOutput> {
+public class UpdateSoapPortsStatusService extends AbstractSoapProjectService  {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<UpdateSoapPortsStatusOutput> process(final ServiceTask<UpdateSoapPortsStatusInput> serviceTask) {
-        final UpdateSoapPortsStatusInput input = serviceTask.getInput();
+
+    public UpdateSoapPortsStatusOutput process(final UpdateSoapPortsStatusInput input) {
         final SoapOperationStatus soapOperationStatus = input.getOperationStatus();
         final List<SoapOperation> operations = this.operationRepository.findWithPortId(input.getPortId());
         operations.forEach(soapOperation -> {
                     soapOperation.setStatus(soapOperationStatus);
                     this.operationRepository.update(soapOperation.getId(), soapOperation);
                 });
-        return createServiceResult(UpdateSoapPortsStatusOutput.builder().build());
+        return UpdateSoapPortsStatusOutput.builder().build();
     }
 }

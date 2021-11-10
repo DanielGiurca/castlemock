@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.soap.event;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.service.mock.soap.event.input.ClearAllSoapEventInput;
 import com.castlemock.service.mock.soap.event.output.ClearAllSoapEventOutput;
 
@@ -28,20 +25,11 @@ import com.castlemock.service.mock.soap.event.output.ClearAllSoapEventOutput;
  * @since 1.7
  */
 @org.springframework.stereotype.Service
-public class ClearAllSoapEventService extends AbstractSoapEventService implements Service<ClearAllSoapEventInput, ClearAllSoapEventOutput> {
+public class ClearAllSoapEventService extends AbstractSoapEventService {
 
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<ClearAllSoapEventOutput> process(ServiceTask<ClearAllSoapEventInput> serviceTask) {
+    public ClearAllSoapEventOutput process() {
         repository.clearAll();
-        return createServiceResult(ClearAllSoapEventOutput.builder().build());
+        return ClearAllSoapEventOutput.builder().build();
     }
 }

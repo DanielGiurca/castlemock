@@ -16,8 +16,6 @@
 
 package com.castlemock.service.mock.soap.event;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapEvent;
 import com.castlemock.model.mock.soap.domain.SoapEventTestBuilder;
 import com.castlemock.repository.soap.event.SoapEventRepository;
@@ -56,9 +54,7 @@ public class ReadSoapEventServiceTest {
         final ReadSoapEventInput input = ReadSoapEventInput.builder()
                 .soapEventId(soapEvent.getId())
                 .build();
-        final ServiceTask<ReadSoapEventInput> serviceTask = new ServiceTask<ReadSoapEventInput>(input);
-        final ServiceResult<ReadSoapEventOutput> serviceResult = service.process(serviceTask);
-        final ReadSoapEventOutput output = serviceResult.getOutput();
+        ReadSoapEventOutput output = service.process(input);
         final SoapEvent returnedSoapEvent = output.getSoapEvent();
 
         Assert.assertEquals(soapEvent.getId(), returnedSoapEvent.getId());

@@ -16,9 +16,6 @@
 
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.Service;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestMockResponse;
 import com.castlemock.service.mock.rest.project.input.ReadRestMockResponseInput;
 import com.castlemock.service.mock.rest.project.output.ReadRestMockResponseOutput;
@@ -28,22 +25,12 @@ import com.castlemock.service.mock.rest.project.output.ReadRestMockResponseOutpu
  * @since 1.0
  */
 @org.springframework.stereotype.Service
-public class ReadRestMockResponseService extends AbstractRestProjectService implements Service<ReadRestMockResponseInput, ReadRestMockResponseOutput> {
+public class ReadRestMockResponseService extends AbstractRestProjectService {
 
-    /**
-     * The process message is responsible for processing an incoming serviceTask and generate
-     * a response based on the incoming serviceTask input
-     * @param serviceTask The serviceTask that will be processed by the service
-     * @return A result based on the processed incoming serviceTask
-     * @see ServiceTask
-     * @see ServiceResult
-     */
-    @Override
-    public ServiceResult<ReadRestMockResponseOutput> process(final ServiceTask<ReadRestMockResponseInput> serviceTask) {
-        final ReadRestMockResponseInput input = serviceTask.getInput();
+    public ReadRestMockResponseOutput process(ReadRestMockResponseInput input) {
         final RestMockResponse restMockResponse = this.mockResponseRepository.findOne(input.getRestMockResponse());
-        return createServiceResult(ReadRestMockResponseOutput.builder()
+        return ReadRestMockResponseOutput.builder()
                 .restMockResponse(restMockResponse)
-                .build());
+                .build();
     }
 }

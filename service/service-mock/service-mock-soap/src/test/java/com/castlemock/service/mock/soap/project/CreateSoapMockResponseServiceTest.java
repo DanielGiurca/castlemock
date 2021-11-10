@@ -16,27 +16,14 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
-import com.castlemock.model.mock.soap.domain.SoapMockResponse;
-import com.castlemock.model.mock.soap.domain.SoapMockResponseTestBuilder;
-import com.castlemock.model.mock.soap.domain.SoapOperation;
-import com.castlemock.model.mock.soap.domain.SoapOperationTestBuilder;
-import com.castlemock.model.mock.soap.domain.SoapPort;
-import com.castlemock.model.mock.soap.domain.SoapPortTestBuilder;
-import com.castlemock.model.mock.soap.domain.SoapProject;
-import com.castlemock.model.mock.soap.domain.SoapProjectTestBuilder;
+import com.castlemock.model.mock.soap.domain.*;
 import com.castlemock.repository.soap.project.SoapMockResponseRepository;
 import com.castlemock.service.mock.soap.project.input.CreateSoapMockResponseInput;
 import com.castlemock.service.mock.soap.project.output.CreateSoapMockResponseOutput;
 import org.dozer.DozerBeanMapper;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
+import org.mockito.*;
 
 /**
  * @author Karl Dahlgren
@@ -74,9 +61,7 @@ public class CreateSoapMockResponseServiceTest {
                 .name(soapMockResponse.getName())
                 .status(soapMockResponse.getStatus())
                 .build();
-        final ServiceTask<CreateSoapMockResponseInput> serviceTask = new ServiceTask<>(input);
-        final ServiceResult<CreateSoapMockResponseOutput> serviceResult = service.process(serviceTask);
-        final CreateSoapMockResponseOutput output = serviceResult.getOutput();
+        CreateSoapMockResponseOutput output = service.process(input);
 
         Mockito.verify(repository, Mockito.times(1)).save(Mockito.any(SoapMockResponse.class));
     }

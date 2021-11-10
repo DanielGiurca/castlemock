@@ -1,7 +1,5 @@
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapOperation;
 import com.castlemock.model.mock.soap.domain.SoapOperationTestBuilder;
 import com.castlemock.model.mock.soap.domain.SoapPort;
@@ -46,17 +44,16 @@ public class ReadSoapPortServiceTest {
                 .projectId(projectId)
                 .portId(port.getId())
                 .build();
-        final ServiceTask<ReadSoapPortInput> serviceTask = new ServiceTask<ReadSoapPortInput>(input);
 
         Mockito.when(portRepository.findOne(port.getId())).thenReturn(port);
         Mockito.when(operationRepository.findWithPortId(port.getId())).thenReturn(Arrays.asList(operation));
-        final ServiceResult<ReadSoapPortOutput> result = service.process(serviceTask);
+        ReadSoapPortOutput result = service.process(input);
 
         Mockito.verify(portRepository, Mockito.times(1)).findOne(port.getId());
         Mockito.verify(operationRepository, Mockito.times(1)).findWithPortId(port.getId());
 
-        Assert.assertNotNull(result.getOutput());
-        Assert.assertEquals(port, result.getOutput().getPort());
+        Assert.assertNotNull(result);
+        Assert.assertEquals(port, result.getPort());
     }
 
 }

@@ -16,8 +16,6 @@
 
 package com.castlemock.service.mock.soap.project;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.soap.domain.SoapMockResponse;
 import com.castlemock.model.mock.soap.domain.SoapMockResponseTestBuilder;
 import com.castlemock.repository.soap.project.SoapMockResponseRepository;
@@ -68,14 +66,12 @@ public class UpdateSoapMockResponseServiceTest {
                 .usingExpressions(mockResponse.isUsingExpressions())
                 .xpathExpressions(mockResponse.getXpathExpressions())
                 .build();
-        final ServiceTask<UpdateSoapMockResponseInput> serviceTask = new ServiceTask<UpdateSoapMockResponseInput>(input);
 
 
         Mockito.when(mockResponseRepository.findOne(mockResponse.getId())).thenReturn(mockResponse);
         Mockito.when(mockResponseRepository.update(Mockito.anyString(), Mockito.any(SoapMockResponse.class))).thenReturn(mockResponse);
 
-        final ServiceResult<UpdateSoapMockResponseOutput> result = service.process(serviceTask);
-        final UpdateSoapMockResponseOutput output = result.getOutput();
+        final UpdateSoapMockResponseOutput output = service.process(input);
         final SoapMockResponse returnedSoapMockResponse = output.getMockResponse();
 
         Mockito.verify(mockResponseRepository, Mockito.times(1)).findOne(mockResponse.getId());

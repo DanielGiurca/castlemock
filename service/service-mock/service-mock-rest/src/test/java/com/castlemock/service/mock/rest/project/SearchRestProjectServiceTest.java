@@ -18,15 +18,9 @@ package com.castlemock.service.mock.rest.project;
 
 import com.castlemock.model.core.SearchQuery;
 import com.castlemock.model.core.SearchResult;
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
 import com.castlemock.model.mock.rest.domain.RestProject;
 import com.castlemock.model.mock.rest.domain.RestProjectTestBuilder;
-import com.castlemock.repository.rest.project.RestApplicationRepository;
-import com.castlemock.repository.rest.project.RestMethodRepository;
-import com.castlemock.repository.rest.project.RestMockResponseRepository;
-import com.castlemock.repository.rest.project.RestProjectRepository;
-import com.castlemock.repository.rest.project.RestResourceRepository;
+import com.castlemock.repository.rest.project.*;
 import com.castlemock.service.mock.rest.project.input.SearchRestProjectInput;
 import com.castlemock.service.mock.rest.project.output.SearchRestProjectOutput;
 import org.junit.Assert;
@@ -88,11 +82,8 @@ public class SearchRestProjectServiceTest {
         searchQuery.setQuery(query);
 
         final SearchRestProjectInput input = SearchRestProjectInput.builder().searchQuery(searchQuery).build();
-        final ServiceTask<SearchRestProjectInput> serviceTask = new ServiceTask<SearchRestProjectInput>();
-        serviceTask.setInput(input);
 
-        final ServiceResult<SearchRestProjectOutput> serviceResult = service.process(serviceTask);
-        final SearchRestProjectOutput searchRestProjectOutput = serviceResult.getOutput();
+        SearchRestProjectOutput searchRestProjectOutput = service.process(input);
 
         Assert.assertNotNull(searchRestProjectOutput.getSearchResults());
         Assert.assertEquals(1, searchRestProjectOutput.getSearchResults().size());

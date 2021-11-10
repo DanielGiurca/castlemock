@@ -16,16 +16,7 @@
 
 package com.castlemock.service.mock.rest.project;
 
-import com.castlemock.model.core.ServiceResult;
-import com.castlemock.model.core.ServiceTask;
-import com.castlemock.model.mock.rest.domain.RestApplication;
-import com.castlemock.model.mock.rest.domain.RestApplicationTestBuilder;
-import com.castlemock.model.mock.rest.domain.RestMethod;
-import com.castlemock.model.mock.rest.domain.RestMethodTestBuilder;
-import com.castlemock.model.mock.rest.domain.RestProject;
-import com.castlemock.model.mock.rest.domain.RestProjectTestBuilder;
-import com.castlemock.model.mock.rest.domain.RestResource;
-import com.castlemock.model.mock.rest.domain.RestResourceTestBuilder;
+import com.castlemock.model.mock.rest.domain.*;
 import com.castlemock.repository.rest.project.RestMethodRepository;
 import com.castlemock.service.mock.rest.project.input.CreateRestMethodInput;
 import com.castlemock.service.mock.rest.project.output.CreateRestMethodOutput;
@@ -70,9 +61,7 @@ public class CreateRestMethodServiceTest {
                 .name(restMethod.getName())
                 .httpMethod(restMethod.getHttpMethod())
                 .build();
-        final ServiceTask<CreateRestMethodInput> serviceTask = new ServiceTask<CreateRestMethodInput>(input);
-        final ServiceResult<CreateRestMethodOutput> serviceResult = service.process(serviceTask);
-        final CreateRestMethodOutput createRestApplicationOutput = serviceResult.getOutput();
+        CreateRestMethodOutput createRestApplicationOutput = service.process(input);
         final RestMethod returnedRestMethod = createRestApplicationOutput.getCreatedRestMethod();
 
         Assert.assertEquals(restMethod.getName(), returnedRestMethod.getName());
